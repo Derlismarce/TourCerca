@@ -115,6 +115,16 @@ footer{border-top:1px solid var(--line);text-align:center;padding:22px;color:var
 #map{position:absolute;inset:0;background:var(--pink-50)}
 #panel{width:410px;flex:0 0 410px;height:100%;display:flex;flex-direction:column;border-right:1px solid var(--line);background:#fff;z-index:800;order:-1}
 .handle{display:none}
+.splitter{order:-1;flex:0 0 10px;margin:0 -5px;z-index:850;cursor:col-resize;position:relative;touch-action:none;display:flex;align-items:center;justify-content:center}
+.splitter:before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-50%);background:transparent;transition:background .15s}
+.splitter .grip{position:relative;width:14px;height:44px;border-radius:8px;background:#fff;border:1.5px solid var(--pink-300);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;gap:2px}
+.splitter .grip i{width:2px;height:18px;border-radius:2px;background:var(--pink-400)}
+.splitter:hover:before,body.resizing .splitter:before{background:var(--pink-400)}
+.splitter:hover .grip,body.resizing .splitter .grip{background:var(--pink-500);border-color:var(--pink-500)}
+.splitter:hover .grip i,body.resizing .splitter .grip i{background:#fff}
+body.resizing{user-select:none;cursor:col-resize}
+body.resizing.v{cursor:row-resize}
+body.resizing #panel{transition:none!important}
 .panel-head{padding:18px 18px 8px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .panel-head h2{font-size:22px;font-weight:900;letter-spacing:-.5px}
 .panel-head .count{color:var(--ink-3);font-weight:800;font-size:13px}
@@ -238,9 +248,8 @@ footer{border-top:1px solid var(--line);text-align:center;padding:22px;color:var
   .pill.clock{display:none}
   .mapwrap{position:absolute;inset:0}
   #panel{position:absolute;left:0;right:0;bottom:0;width:auto;height:46%;border-right:0;border-radius:24px 24px 0 0;box-shadow:0 -8px 30px rgba(158,68,104,.18);transition:height .3s cubic-bezier(.2,.8,.2,1)}
-  #panel.peek{height:150px}
-  #panel.full{height:88%}
-  .handle{display:block;padding:10px 0 2px;width:100%}
+  .splitter{display:none}
+  .handle{display:block;padding:12px 0 6px;width:100%;touch-action:none;cursor:row-resize}
   .handle:before{content:"";display:block;margin:0 auto;width:44px;height:5px;border-radius:5px;background:var(--pink-300)}
   .panel-head{padding:6px 16px 6px}
   .panel-head h2{font-size:19px}
@@ -336,7 +345,7 @@ footer{border-top:1px solid var(--line);text-align:center;padding:22px;color:var
   </div>
   <div class="layout">
     <aside id="panel">
-      <button class="handle" onclick="cycleSheet()" aria-label="Expandir lista"></button>
+      <button class="handle" id="handle" aria-label="Arrastrá para agrandar o achicar la lista"></button>
       <div id="listView" style="display:flex;flex-direction:column;flex:1;min-height:0">
         <div class="panel-head"><h2>Cerca tuyo ahora</h2><span class="count" id="count"></span></div>
         <div class="chips" id="chips"></div>
@@ -347,6 +356,7 @@ footer{border-top:1px solid var(--line);text-align:center;padding:22px;color:var
       </div>
       <div id="detailView" hidden></div>
     </aside>
+    <div class="splitter" id="splitter" title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)"><span class="grip"><i></i><i></i></span></div>
     <div class="mapwrap">
       <div id="map"></div>
       <div class="map-fab">
@@ -709,7 +719,7 @@ function openDetail(id){
   const s = state(t);
   map.flyToBounds(L.latLngBounds(t.route.map(r=>[r[0],r[1]]).concat(me?[me]:[])).pad(.2), {duration:.7});
   const panel = document.getElementById('panel');
-  if(window.innerWidth <= 800 && !panel.classList.contains('full')){ panel.classList.remove('peek'); }
+  if(isMobile() && panel.offsetHeight < sheetH(.4)) setSheet(sheetH(.46));
   renderDetail(true);
   render(true);
 }
@@ -877,13 +887,87 @@ function openDemo(){
 }
 
 /* ---------- bottom sheet (celular) ---------- */
-function cycleSheet(){
-  const p = document.getElementById('panel');
-  if(p.classList.contains('peek')){ p.classList.remove('peek'); }
-  else if(p.classList.contains('full')){ p.classList.remove('full'); p.classList.add('peek'); }
-  else p.classList.add('full');
-  setTimeout(()=>map && map.invalidateSize(), 320);
+/* ---------- tamaño del panel: arrastrar con mouse o dedo ---------- */
+const isMobile = () => window.innerWidth <= 800;
+const layoutEl = () => document.querySelector('.layout');
+const sheetH = f => Math.round(layoutEl().clientHeight * f);   // alto relativo al área del mapa
+const PANEL_W = 410, SHEET_MIN = 110;
+let panelW = PANEL_W;
+try { panelW = +localStorage.getItem('tourcercaPanelW') || PANEL_W; } catch(e){}
+
+let invPending = false;
+function refreshMap(){
+  if(!map || invPending) return;
+  invPending = true;
+  requestAnimationFrame(()=>{ invPending = false; map.invalidateSize({pan:false}); });
 }
+function setPanelW(w){
+  const p = document.getElementById('panel');
+  panelW = Math.round(Math.max(280, Math.min(window.innerWidth * 0.7, w)));
+  p.style.width = p.style.flexBasis = panelW + 'px';
+  refreshMap();
+}
+function setSheet(h){
+  const p = document.getElementById('panel');
+  p.style.height = Math.round(Math.max(SHEET_MIN, Math.min(sheetH(.92), h))) + 'px';
+}
+function applyLayoutMode(){
+  const p = document.getElementById('panel');
+  if(isMobile()){ p.style.width = p.style.flexBasis = ''; }
+  else { p.style.height = ''; setPanelW(panelW); }
+}
+function cycleSheet(){
+  const h = document.getElementById('panel').offsetHeight;
+  const stops = [SHEET_MIN + 40, sheetH(.46), sheetH(.88)];
+  setSheet(stops.find(s => s > h + 10) ?? stops[0]);
+}
+
+// divisor lista | mapa (computadora)
+(function(){
+  const sp = document.getElementById('splitter');
+  let x0, w0;
+  sp.addEventListener('pointerdown', e=>{
+    x0 = e.clientX; w0 = document.getElementById('panel').offsetWidth;
+    sp.setPointerCapture(e.pointerId); document.body.classList.add('resizing');
+  });
+  sp.addEventListener('pointermove', e=>{ if(x0 != null) setPanelW(w0 + e.clientX - x0); });
+  const end = ()=>{
+    if(x0 == null) return; x0 = null; document.body.classList.remove('resizing');
+    try { localStorage.setItem('tourcercaPanelW', panelW); } catch(e){}
+  };
+  sp.addEventListener('pointerup', end); sp.addEventListener('pointercancel', end);
+  sp.addEventListener('dblclick', ()=>{ setPanelW(PANEL_W); try { localStorage.removeItem('tourcercaPanelW'); } catch(e){} });
+})();
+
+// barrita del panel de abajo (celular): arrastrar o tocar
+(function(){
+  const hd = document.getElementById('handle');
+  let y0, h0, moved;
+  hd.addEventListener('pointerdown', e=>{
+    y0 = e.clientY; h0 = document.getElementById('panel').offsetHeight; moved = false;
+    hd.setPointerCapture(e.pointerId); document.body.classList.add('resizing','v');
+  });
+  hd.addEventListener('pointermove', e=>{
+    if(y0 == null) return;
+    const dy = e.clientY - y0;
+    if(Math.abs(dy) > 4) moved = true;
+    if(moved) setSheet(h0 - dy);
+  });
+  const end = ()=>{
+    if(y0 == null) return; y0 = null; document.body.classList.remove('resizing','v');
+    if(!moved) cycleSheet();
+  };
+  hd.addEventListener('pointerup', end); hd.addEventListener('pointercancel', end);
+})();
+
+let wasMobile = isMobile();
+window.addEventListener('resize', ()=>{
+  if(isMobile() !== wasMobile){ wasMobile = isMobile(); applyLayoutMode(); }
+  else if(!isMobile()) setPanelW(panelW);
+  else { const p = document.getElementById('panel'); if(p.style.height) setSheet(p.offsetHeight); }
+  refreshMap();
+});
+applyLayoutMode();
 
 /* ---------- eventos ---------- */
 document.getElementById('list').addEventListener('click', e=>{
