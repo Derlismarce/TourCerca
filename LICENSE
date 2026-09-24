@@ -1,0 +1,67 @@
+TourCerca
+Copyright © 2026 Derlis Marcelo Fernandez Rivas
+TODOS LOS DERECHOS RESERVADOS
+
+1. TITULARIDAD
+
+   El software TourCerca (código fuente, diseño visual, textos, gráficos,
+   logotipo, estructura de pantallas y documentación contenidos en este
+   repositorio) es una obra protegida por la Ley 11.723 de Propiedad
+   Intelectual de la República Argentina y por los tratados internacionales
+   de derecho de autor, incluido el Convenio de Berna.
+
+   Todos los derechos pertenecen a Derlis Marcelo Fernandez Rivas.
+
+2. SIN LICENCIA DE USO
+
+   Que el código esté visible en GitHub NO otorga ninguna licencia ni
+   permiso. Salvo autorización previa y por escrito del titular, queda
+   prohibido:
+
+   a) copiar o reproducir el código, total o parcialmente;
+   b) modificarlo o crear obras derivadas a partir de él;
+   c) distribuirlo, publicarlo, sublicenciarlo o venderlo;
+   d) usarlo, total o parcialmente, con fines comerciales;
+   e) usar el nombre "TourCerca", su logotipo o su identidad visual para
+      identificar otros productos o servicios.
+
+   Solo se permite ver el código en GitHub y usar la versión de
+   demostración publicada en https://derlismarce.github.io/TourCerca/
+   desde un navegador, con fines de evaluación y consulta (por ejemplo,
+   la evaluación académica del proyecto).
+
+3. NOMBRE Y LOGO
+
+   El nombre "TourCerca" y su logotipo identifican a este proyecto y
+   pertenecen a su autor. Su uso por terceros requiere autorización
+   escrita.
+
+4. CONTENIDO DE EJEMPLO
+
+   Los guías, tours, horarios, precios, reseñas y reservas que muestra la
+   demostración son ficticios y tienen solo fines ilustrativos. Cualquier
+   parecido con personas reales es casual.
+
+5. COMPONENTES DE TERCEROS
+
+   Esta licencia no se aplica a los siguientes componentes, que conservan
+   sus propias licencias y avisos:
+
+   - Leaflet: biblioteca de mapas. © Volodymyr Agafonkin y colaboradores.
+     Licencia BSD-2-Clause.
+   - Datos del mapa: © colaboradores de OpenStreetMap. Licencia ODbL.
+   - Mapa base (tiles): © CARTO.
+   - Tipografía Nunito: © The Nunito Project Authors. SIL Open Font
+     License 1.1.
+   - Nombres de calles al armar recorridos: servicio Nominatim de
+     OpenStreetMap, sujeto a su política de uso.
+
+6. SIN GARANTÍA
+
+   El software se ofrece como prototipo académico, "tal como está", sin
+   garantías de ningún tipo.
+
+7. CONTACTO
+
+   Para solicitar autorizaciones o consultas:
+   https://github.com/Derlismarce

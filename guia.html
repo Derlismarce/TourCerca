@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- TourCerca · panel del guía · © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE. -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -62,6 +63,8 @@ body{background:var(--pink-50)}
 .tcard.new:hover{background:#fff}
 .tcard.new span{font-size:34px}
 .foot-tools{margin-top:34px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.g-copy{margin-top:18px;text-align:center;color:var(--ink-3);font-size:12.5px;font-weight:700}
+.g-copy a{color:var(--pink-600)}
 
 /* login */
 .login-hero{text-align:center;padding:36px 16px 10px}
@@ -322,6 +325,7 @@ function vDash(){
       <a class="mini" href="index.html#mapa" target="_blank" rel="noopener">👀 Abrir la vista del turista</a>
       <button class="mini danger" data-act="reset">🧹 Borrar datos de prueba</button>
     </div>
+    <p class="g-copy">${esc(COPYRIGHT)} · <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a></p>
   </div>`;
 
   view.onclick = async e=>{

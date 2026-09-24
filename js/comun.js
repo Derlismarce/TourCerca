@@ -1,11 +1,17 @@
 /* =====================================================================
    TourCerca · código compartido entre la vista cliente (index.html)
    y el panel del guía (guia.html)
+   © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE.
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '2.0';
+const VERSION = '2.1';
+const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'2.1', f:'2026-09-23', items:[
+    'Licencia "Todos los derechos reservados" y aviso de copyright.',
+    'Términos y condiciones de uso (terminos.html), enlazados desde el pie y desde la reserva.',
+  ]},
   {v:'2.0', f:'2026-09-23', items:[
     'Panel del guía: programar salidas, armar el recorrido en el mapa y ver las reservas.',
     'Modo "en vivo" del guía: comparte su ubicación y los turistas lo ven moverse en el mapa.',
@@ -199,7 +205,8 @@ function openChangelog(){
   const ov = document.createElement('div'); ov.className = 'overlay';
   ov.innerHTML = `<div class="modal"><h3>Novedades</h3><p class="muted">TourCerca · prototipo</p>
     ${CHANGELOG.map(c=>`<h5>V ${c.v}${c.v===VERSION?' · actual':''}</h5><ul class="clog">${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`).join('')}
-    <div style="margin-top:18px"><button class="btn btn-primary" style="width:100%" data-x>Cerrar</button></div></div>`;
+    <p class="muted" style="font-size:12px;margin:16px 0 0;text-align:center">${esc(COPYRIGHT)}</p>
+    <div style="margin-top:14px"><button class="btn btn-primary" style="width:100%" data-x>Cerrar</button></div></div>`;
   ov.onclick = e=>{ if(e.target===ov || e.target.hasAttribute('data-x')) ov.remove(); };
   document.body.appendChild(ov);
 }

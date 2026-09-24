@@ -1,5 +1,6 @@
 /* =====================================================================
    TourCerca · almacén de datos compartido entre guía y turista
+   © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE.
 
    V 2.0: guarda todo en el navegador (localStorage). Guía y turista se
    ven en tiempo real si están en el MISMO navegador (por ejemplo, dos

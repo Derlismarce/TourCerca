@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 2.1**: licencia "Todos los derechos reservados", aviso de copyright y términos y condiciones.
 - **V 2.0**: panel del guía (programar salidas, armar el recorrido en el mapa, ver reservas, salir en vivo compartiendo la ubicación). Las salidas publicadas aparecen en la vista del turista.
 - **V 1.0**: vista del turista (mapa, lista de tours cercanos, ficha, guías simulados en vivo, alertas, modo presentación).
 
@@ -20,6 +21,13 @@ En la V 2.0 los datos se guardan en el navegador: guía y turista se ven en tiem
 
 - `index.html`: vista del turista
 - `guia.html`: panel del guía
+- `terminos.html`: términos y condiciones de uso
 - `js/comun.js`: datos de ejemplo, utilidades y número de versión
 - `js/store.js`: datos compartidos entre guía y turista
 - `css/tourcerca.css`: estilos
+
+## Licencia
+
+© 2026 Derlis Marcelo Fernandez Rivas. **Todos los derechos reservados.**
+
+Que el código esté visible en GitHub no otorga permiso para copiarlo, modificarlo, distribuirlo ni usarlo comercialmente. Ver el archivo [LICENSE](LICENSE). Los componentes de terceros (Leaflet, OpenStreetMap, CARTO, Nunito) conservan sus propias licencias.
