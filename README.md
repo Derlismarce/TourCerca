@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 2.2**: mapa sin líneas blancas entre los mosaicos.
 - **V 2.1**: licencia "Todos los derechos reservados", aviso de copyright y términos y condiciones.
 - **V 2.0**: panel del guía (programar salidas, armar el recorrido en el mapa, ver reservas, salir en vivo compartiendo la ubicación). Las salidas publicadas aparecen en la vista del turista.
 - **V 1.0**: vista del turista (mapa, lista de tours cercanos, ficha, guías simulados en vivo, alertas, modo presentación).

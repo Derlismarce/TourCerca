@@ -256,3 +256,9 @@ body.resizing #panel{transition:none!important}
 .clog li{margin-bottom:4px}
 .inp{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:700;color:var(--ink);background:#fff;outline:none;transition:border-color .15s}
 .inp:focus{border-color:var(--pink-400)}
+
+/* ---------- mapa sin líneas entre mosaicos ----------
+   Con la pantalla o el navegador en una escala distinta de 100 %, Chrome deja
+   huecos de 1 píxel entre los mosaicos (tiles) del mapa y se ven líneas blancas.
+   Cada mosaico se superpone 1 píxel con el vecino para taparlos. */
+.leaflet-container img.leaflet-tile{mix-blend-mode:normal;width:257px!important;height:257px!important}
