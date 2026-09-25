@@ -5,9 +5,12 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '2.2';
+const VERSION = '2.3';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'2.3', f:'2026-09-25', items:[
+    'Política de privacidad (privacidad.html), enlazada desde el pie, la reserva y los términos.',
+  ]},
   {v:'2.2', f:'2026-09-25', items:[
     'Mapa sin las líneas blancas entre los mosaicos en pantallas con escala distinta de 100 %.',
   ]},

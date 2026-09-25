@@ -84,7 +84,7 @@
   <div class="quote" id="guias">
     <div><p>¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html">Entrar al panel del guía</a></div>
   </div>
-  <footer>TourCerca · Prototipo · Proyecto final Licenciatura en Turismo · Ciudad de Buenos Aires<br><span id="copy"></span> · <a href="terminos.html">Términos y condiciones</a></footer>
+  <footer>TourCerca · Prototipo · Proyecto final Licenciatura en Turismo · Ciudad de Buenos Aires<br><span id="copy"></span> · <a href="terminos.html">Términos y condiciones</a> · <a href="privacidad.html">Política de privacidad</a></footer>
 </div>
 
 <!-- =============== APP =============== -->
@@ -470,7 +470,7 @@ function reserve(id){
       <input class="inp" data-name maxlength="40" placeholder="Opcional" value="${esc(nombre)}" style="margin-bottom:14px">
       ${t.price?`<p class="muted" style="text-align:center">Total: <b style="color:var(--ink)">${money(t.price*q)}</b> · se paga al guía</p>`:''}
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>Cancelar</button><button class="btn btn-primary" style="flex:1" data-ok>Confirmar</button></div>
-      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.</p>
+      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.</p>
     </div>`;
   draw();
   ov.onclick = e=>{
