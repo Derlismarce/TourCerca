@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '2.3';
+const VERSION = '3.0';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.0', f:'2026-09-25', items:[
+    '"Pedí tu tour": el turista programa una visita guiada con día, hora, punto de salida y lugares a visitar.',
+    'Reglas del pedido: mínimo 5 personas, 1 hora de recorrido y $ 15.000 por persona; de 2 horas a 30 días de anticipación.',
+    'Panel del guía: pedidos de turistas cerca de su zona (radio a elección), alerta al aparecer uno nuevo y botón "Tomar pedido".',
+    'El turista sigue su pedido en "Mis pedidos" y recibe un aviso cuando un guía lo toma.',
+  ]},
   {v:'2.3', f:'2026-09-25', items:[
     'Política de privacidad (privacidad.html), enlazada desde el pie, la reserva y los términos.',
   ]},
@@ -184,6 +190,51 @@ function nearestBarrio(ll){
   let best = 'Microcentro', bd = Infinity;
   for(const [n,b] of Object.entries(BARRIOS)){ const d = distM(ll, b.c); if(d < bd){ bd = d; best = n; } }
   return best;
+}
+
+/* ---------- fechas y calles ---------- */
+const pad = n => String(n).padStart(2,'0');
+const toLocalInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+function diaLabel(ms){
+  const d = new Date(ms), t = new Date();
+  const dd = Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate()) - new Date(t.getFullYear(),t.getMonth(),t.getDate())) / 864e5);
+  return dd === 0 ? 'Hoy' : dd === 1 ? 'Mañana' : dd === -1 ? 'Ayer' : d.toLocaleDateString('es-AR',{weekday:'short', day:'numeric', month:'numeric'});
+}
+/* nombre de la calle de un punto (OpenStreetMap / Nominatim) */
+async function nombreDe(ll){
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=es&lat=${ll[0].toFixed(6)}&lon=${ll[1].toFixed(6)}`);
+    const j = await r.json(), a = j.address || {};
+    if(j.name && j.name !== a.road) return j.name;
+    if(a.road) return a.road + (a.house_number ? ' ' + a.house_number : '');
+  } catch(e){}
+  return null;
+}
+
+/* ---------- reglas de "Pedí tu tour" (las mismas para turista y guía) ---------- */
+const PEDIDO = {minPersonas:5, maxPersonas:40, minDur:60, minPrecio:15000, anticipacionH:2, maxDias:30};
+const PEDIDO_DURACIONES = [60, 90, 120, 150, 180, 240];
+
+/* devuelve la lista de reglas con si se cumplen o no */
+function reglasPedido(p, T = Date.now()){
+  const desde = T + PEDIDO.anticipacionH * 60 * MIN, hasta = T + PEDIDO.maxDias * 24 * 60 * MIN;
+  return [
+    {k:'personas', ok: p.personas >= PEDIDO.minPersonas && p.personas <= PEDIDO.maxPersonas,
+     txt:`Mínimo ${PEDIDO.minPersonas} personas`, err:`El grupo tiene que ser de ${PEDIDO.minPersonas} a ${PEDIDO.maxPersonas} personas.`},
+    {k:'dur', ok: p.dur >= PEDIDO.minDur, txt:'Mínimo 1 hora', err:'El recorrido tiene que durar al menos 1 hora.'},
+    {k:'precio', ok: p.price >= PEDIDO.minPrecio, txt:`Mínimo ${money(PEDIDO.minPrecio)} c/u`, err:`El precio mínimo es ${money(PEDIDO.minPrecio)} por persona.`},
+    {k:'fecha', ok: !isNaN(p.startAt) && p.startAt >= desde && p.startAt <= hasta,
+     txt:`De ${PEDIDO.anticipacionH} h a ${PEDIDO.maxDias} días`, err:`Pedilo con al menos ${PEDIDO.anticipacionH} horas de anticipación y hasta ${PEDIDO.maxDias} días.`},
+    {k:'ruta', ok: (p.route || []).length >= 2, txt:'Salida + 1 lugar', err:'Marcá en el mapa el punto de salida y al menos un lugar para visitar.'},
+    {k:'nombre', ok: !!(p.nombre || '').trim(), txt:'Tu nombre', err:'Poné tu nombre para que el guía te reconozca.'},
+  ];
+}
+/* estado real: un pedido pendiente cuya hora ya pasó está vencido */
+function estadoPedido(p){ return p.status === 'pendiente' && Date.now() > p.startAt ? 'vencido' : p.status; }
+const fechaLarga = ms => `${diaLabel(ms)} ${hhmm(ms)} h`;
+function fechaFrase(ms){                   // "mañana a las 10:00", "el sáb 27/9 a las 10:00"
+  const d = diaLabel(ms), h = hhmm(ms);
+  return d === 'Hoy' ? `hoy a las ${h}` : d === 'Mañana' ? `mañana a las ${h}` : `el ${d} a las ${h}`;
 }
 
 /* ---------- avisos ---------- */

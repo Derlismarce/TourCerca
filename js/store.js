@@ -2,7 +2,8 @@
    TourCerca · almacén de datos compartido entre guía y turista
    © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE.
 
-   V 2.0: guarda todo en el navegador (localStorage). Guía y turista se
+   V 3.0: suma los pedidos de turistas ("Pedí tu tour").
+   Guarda todo en el navegador (localStorage). Guía y turista se
    ven en tiempo real si están en el MISMO navegador (por ejemplo, dos
    pestañas en la misma computadora o en el mismo celular).
 
@@ -12,7 +13,7 @@
    ===================================================================== */
 const Store = (()=>{
   const KEY = 'tourcerca.datos.v2';
-  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[]});
+  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], pedidos:{}});
   const subs = [];
   let cache = load();
 
@@ -42,6 +43,10 @@ const Store = (()=>{
     salidas: ()=>Object.values(cache.salidas),
     guardarSalida(s){ if(!s.id) s.id = uid('s_'); cache.salidas[s.id] = s; save(); return s; },
     borrarSalida(id){
+      const s = cache.salidas[id], p = s && s.pedidoId && cache.pedidos[s.pedidoId];
+      if(p && p.status === 'tomado' && s.status !== 'finalizada'){
+        p.status = 'pendiente'; p.liberadoPor = p.g; delete p.g; delete p.salidaId; delete p.tomadoAt;
+      }
       delete cache.salidas[id]; delete cache.live[id];
       cache.reservas = cache.reservas.filter(r=>r.salidaId !== id);
       save();
@@ -73,6 +78,37 @@ const Store = (()=>{
     },
     reservasDe: id=>cache.reservas.filter(r=>r.salidaId === id),
     ocupados: id=>cache.reservas.filter(r=>r.salidaId === id).reduce((a,r)=>a + r.qty, 0),
+
+    /* pedidos de turistas ("Pedí tu tour"): el turista pide, un guía lo toma */
+    pedidos: ()=>Object.values(cache.pedidos),
+    crearPedido(p){
+      p.id = uid('p_'); p.status = 'pendiente'; p.createdAt = Date.now();
+      cache.pedidos[p.id] = p; save(); return p;
+    },
+    editarPedido(id, data){
+      const p = cache.pedidos[id];
+      if(!p || p.status !== 'pendiente') return false;
+      Object.assign(p, data); save(); return true;
+    },
+    cancelarPedido(id){
+      const p = cache.pedidos[id];
+      if(p && p.status === 'pendiente'){ p.status = 'cancelado'; save(); }
+    },
+    borrarPedido(id){ delete cache.pedidos[id]; save(); },
+    /* el primer guía que lo toma se lo queda: se crea su salida (privada) con la reserva del turista */
+    tomarPedido(id, g){
+      cache = load();                                   // datos frescos, por si otro guía lo tomó recién
+      const p = cache.pedidos[id];
+      if(!p || p.status !== 'pendiente' || Date.now() > p.startAt) return null;
+      const s = {id:uid('s_'), g, name:p.titulo || `Tour a pedido · ${p.barrio}`, cat:p.cat, desc:p.comentario || '',
+                 price:p.price, dur:p.dur, cupos:p.personas, langs:p.langs, route:p.route, barrio:p.barrio,
+                 startAt:p.startAt, status:'programada', createdAt:Date.now(), privado:true, pedidoId:p.id, cliente:p.nombre};
+      cache.salidas[s.id] = s;
+      cache.reservas.push({id:uid('r_'), salidaId:s.id, qty:p.personas, name:p.nombre, ts:Date.now()});
+      p.status = 'tomado'; p.g = g; p.salidaId = s.id; p.tomadoAt = Date.now();
+      save();
+      return s;
+    },
 
     borrarTodo(){ cache = empty(); save(); },
   };

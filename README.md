@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.0**: "Pedí tu tour". El turista programa una visita guiada (día, hora, punto de salida y lugares; mínimo 5 personas, 1 hora y $ 15.000 por persona) y un guía cercano la toma. El guía elige el radio de su zona y recibe una alerta con cada pedido nuevo.
 - **V 2.3**: política de privacidad.
 - **V 2.2**: mapa sin líneas blancas entre los mosaicos.
 - **V 2.1**: licencia "Todos los derechos reservados", aviso de copyright y términos y condiciones.
@@ -27,6 +28,8 @@ En la V 2.0 los datos se guardan en el navegador: guía y turista se ven en tiem
 - `privacidad.html`: política de privacidad
 - `js/comun.js`: datos de ejemplo, utilidades y número de versión
 - `js/store.js`: datos compartidos entre guía y turista
+- `js/pedidos.js`: "Pedí tu tour" en la vista del turista
+- `js/pedidos-guia.js`: pedidos de turistas en el panel del guía
 - `css/tourcerca.css`: estilos
 
 ## Licencia

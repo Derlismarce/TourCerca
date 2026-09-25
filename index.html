@@ -81,6 +81,16 @@
     </div>
   </section>
 
+  <section class="block" id="pedi">
+    <div class="ask-hero">
+      <div><span class="pill" style="background:#fff">✨ Nuevo</span>
+        <h2 style="margin-top:10px">¿No encontrás el tour que buscás? Pedilo.</h2>
+        <p class="lead" style="margin:6px 0 0">Elegí día, hora, punto de salida y los lugares que querés conocer. Un guía cercano toma tu pedido, como cuando programás un viaje.</p>
+        <p class="ask-rules">👥 Desde 5 personas · ⏱️ Desde 1 hora · 💰 Desde $ 15.000 por persona</p></div>
+      <button class="btn btn-primary" onclick="startApp('demo'); openPedido()">✨ Pedí tu tour</button>
+    </div>
+  </section>
+
   <div class="quote" id="guias">
     <div><p>¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html">Entrar al panel del guía</a></div>
   </div>
@@ -101,6 +111,10 @@
       <button class="handle" id="handle" aria-label="Arrastrá para agrandar o achicar la lista"></button>
       <div id="listView" style="display:flex;flex-direction:column;flex:1;min-height:0">
         <div class="panel-head"><h2>Cerca tuyo ahora</h2><span class="count" id="count"></span></div>
+        <div class="ask-bar">
+          <button class="ask" onclick="openPedido()"><span class="em">✨</span><span><b>Pedí tu tour</b><span>Elegí día, hora y recorrido. Un guía lo toma.</span></span></button>
+          <button class="mine" onclick="openMisPedidos()">🙋 Mis pedidos<span class="nbadge" id="misBadge" hidden>0</span></button>
+        </div>
         <div class="chips" id="chips"></div>
         <div class="sortbar">Ordenar
           <span class="seg"><button data-s="near" class="on">Más cerca</button><button data-s="soon">Empieza antes</button></span>
@@ -108,6 +122,8 @@
         <div id="list"></div>
       </div>
       <div id="detailView" hidden></div>
+      <div id="pedidoView" class="pview" hidden></div>
+      <div id="misView" class="pview" hidden></div>
     </aside>
     <div class="splitter" id="splitter" title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)"><span class="grip"><i></i><i></i></span></div>
     <div class="mapwrap">
@@ -126,6 +142,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
+<script src="js/pedidos.js"></script>
 <script>
 /* =====================================================================
    RELOJ (con acelerador para presentaciones)
@@ -156,6 +173,7 @@ function rebuildExt(){
   const T = Date.now();
   extTours = Store.salidas()
     .filter(x=> x.status !== 'finalizada' && x.route && x.route.length)
+    .filter(x=> !x.privado || misPedidosIds().includes(x.pedidoId))     // tour a pedido: privado
     .filter(x=> x.status === 'en_curso' || T < x.startAt + 30*MIN)      // si no arrancó a los 30 min, se oculta
     .map(x=> prepTour({...x, ext:true, route:x.route.map(r=>r.slice()), ocup:Store.ocupados(x.id)}));
 }
@@ -227,7 +245,8 @@ function initMap(){
   L.control.zoom({position:'bottomright'}).addTo(map);
   baseTiles().addTo(map);
   map.on('dragstart', ()=>{ if(follow){ follow=false; } });
-  map.on('click', e=>{ if(meLabel.includes('demo') || meLabel==='Punto elegido'){ setMe([e.latlng.lat,e.latlng.lng],'Punto elegido'); } });
+  map.on('click', e=>{ if(pedidoMode){ addPedidoStop([e.latlng.lat, e.latlng.lng]); return; }
+    if(meLabel.includes('demo') || meLabel==='Punto elegido'){ setMe([e.latlng.lat,e.latlng.lng],'Punto elegido'); } });
 
   // chips
   const chips = [['todos','Todos'],['vivo','<span class="dot" style="display:inline-block;margin-right:2px"></span> En vivo'],['pronto','⏱️ Próxima hora'],['gratis','🆓 A la gorra'],
@@ -320,7 +339,7 @@ function render(force){
         <span class="body">
           <h3>${esc(t.name)}</h3>
           <span class="meta"><span>📍 ${fmtDist(d)} · ${cuadras(d)} cuadras</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
-          <span class="meta" style="margin-top:2px;color:var(--ink-3)">con ${esc(g.n)} · ⭐ ${g.r}${t.ext?' · <b style="color:var(--pink-600)">✨ publicada por el guía</b>':''}</span>
+          <span class="meta" style="margin-top:2px;color:var(--ink-3)">con ${esc(g.n)} · ⭐ ${g.r}${t.privado?' · <b style="color:var(--pink-700)">🙋 tu tour a pedido</b>':t.ext?' · <b style="color:var(--pink-600)">✨ publicada por el guía</b>':''}</span>
           <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${money(t.price)}</span></span>
         </span></button>`;
     }).join('') : `<div class="empty">No hay tours con este filtro ahora.<br>Probá con "Todos".</div>`;
@@ -361,10 +380,10 @@ function render(force){
 
 /* ---------- detalle ---------- */
 function openDetail(id){
+  if(pedidoMode) return;                     // armando un pedido: los pines no abren fichas
   const t = findTour(id); if(!t) return;
   selected = t; follow = false;
-  document.getElementById('listView').style.display = 'none';
-  document.getElementById('detailView').hidden = false;
+  panelView('detail');
   drawRoute(t);
   map.flyToBounds(L.latLngBounds(t.route.map(r=>[r[0],r[1]]).concat(me?[me]:[])).pad(.2), {duration:.7});
   const panel = document.getElementById('panel');
@@ -375,8 +394,7 @@ function openDetail(id){
 function closeDetail(){
   selected = null; follow = false;
   if(routeLayer){ map.removeLayer(routeLayer); routeLayer = null; }
-  document.getElementById('detailView').hidden = true;
-  document.getElementById('listView').style.display = 'flex';
+  panelView('list');
   render(true);
 }
 function drawRoute(t){
@@ -434,10 +452,11 @@ function renderDetail(force){
       <div class="fact"><small>Duración</small><b>${fmtIn(t.dur)}</b><i>${(t.len/1000).toFixed(1).replace('.',',')} km a pie</i></div>
       <div class="fact"><small>Precio</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?'pagás lo que quieras':'por persona'}</i></div>
       <div class="fact"><small>Idiomas</small><b>${t.langs.join(' · ')}</b></div>
-      <div class="fact"><small>Cupos</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?`Quedan ${libres}`:'Completo'}</b><i>de ${t.cupos} lugares</i></div>
+      ${t.privado ? `<div class="fact"><small>Grupo</small><b>${t.cupos} personas</b><i>tour privado a pedido</i></div>`
+        : `<div class="fact"><small>Cupos</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?`Quedan ${libres}`:'Completo'}</b><i>de ${t.cupos} lugares</i></div>`}
     </div>
     <div class="d-sec"><h4>Punto de encuentro</h4><p>📍 <b>${esc(t.meet[2])}</b></p></div>
-    <div class="d-sec"><h4>De qué se trata</h4><p>${esc(t.desc)}</p></div>
+    ${t.desc ? `<div class="d-sec"><h4>${t.privado ? 'Tu comentario al guía' : 'De qué se trata'}</h4><p>${esc(t.desc)}</p></div>` : ''}
     <div class="d-sec"><h4>Recorrido</h4><ul class="timeline">${stops}</ul></div>
     <div class="d-sec"><h4>Tu guía</h4>
       <div class="guide"><span class="avatar" style="background:${g.c}">${initials(g.n)}</span>
@@ -448,6 +467,7 @@ function renderDetail(force){
       <a class="btn btn-ghost" style="border:1.5px solid var(--pink-200)" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${pos[0]},${pos[1]}&travelmode=walking">🧭 Cómo llegar</a>
       ${s.live
         ? `<button class="btn btn-primary" onclick="toggleFollow()">${follow?'⏸ Dejar de seguir':'🔴 Seguir en vivo'}</button>`
+        : t.privado ? `<button class="btn btn-primary" onclick="openMisPedidos()">🙋 Ver mi pedido</button>`
         : `<button class="btn btn-primary" ${libres<=0?'disabled style="opacity:.5"':''} onclick="reserve('${t.id}')">${libres>0?'Reservar lugar':'Completo'}</button>`}
     </div>`;
 }
@@ -626,6 +646,7 @@ function tick(){
   if(alertTick % 30 === 0){ rebuildExt(); }   // oculta salidas vencidas
 }
 mountVersion();
+badgeMis();
 document.getElementById('copy').textContent = COPYRIGHT;
 // index.html#mapa abre directo el mapa (lo usa el panel del guía)
 if(location.hash === '#mapa') startApp('demo');

@@ -44,11 +44,6 @@ body{background:var(--pink-50)}
 .sal h3{font-size:16px;font-weight:900;line-height:1.2}
 .sal .meta{font-size:13px;color:var(--ink-2);font-weight:700;display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px}
 .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.mini{border-radius:999px;padding:7px 12px;font-weight:900;font-size:12.5px;background:var(--pink-50);border:1.5px solid var(--line);color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-.mini:hover{border-color:var(--pink-300)}
-.mini.go{background:var(--pink-500);border-color:var(--pink-500);color:#fff}
-.mini.go:hover{background:var(--pink-600)}
-.mini.danger{color:var(--live)}
 .livebar{display:flex;gap:12px;align-items:center;background:#FDE8E8;border:1.5px solid #F6C4C6;border-radius:18px;padding:14px;margin-top:16px}
 .livebar .t{flex:1;font-weight:800;color:#8E1F24}
 .livebar .t b{display:block;font-size:16px;font-weight:900}
@@ -82,28 +77,9 @@ body{background:var(--pink-50)}
 .ed-form h2{font-size:21px;font-weight:900;letter-spacing:-.4px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .ed-map{position:relative;min-height:300px}
 .ed-map .mapbox{position:absolute;inset:0}
-.field{margin-bottom:13px}
-.field>label{display:block;font-size:12px;font-weight:900;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.row2c{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-textarea.inp{resize:vertical;min-height:70px;font-weight:600}
-.check{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--ink-2);margin-top:7px;cursor:pointer}
-.check input{width:18px;height:18px;accent-color:var(--pink-500)}
-.langs{display:flex;flex-wrap:wrap;gap:6px}
-.stops{list-style:none}
-.stops li{display:flex;gap:8px;align-items:center;margin-bottom:7px}
-.stops .n{flex:0 0 28px;height:28px;border-radius:50%;background:var(--pink-500);color:#fff;font-weight:900;font-size:12px;display:grid;place-items:center}
-.stops .n.meet{background:var(--pink-700);font-size:14px}
-.stops .inp{padding:8px 10px}
-.stops .del{flex:0 0 32px;height:32px;border-radius:10px;background:var(--pink-50);border:1px solid var(--line);color:var(--ink-3);font-weight:900}
-.stops .del:hover{color:var(--live)}
-.stop-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.help{background:var(--pink-50);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:700;color:var(--ink-2);margin-bottom:10px}
 .ed-actions{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 28%);padding:18px 0 18px;display:flex;gap:8px;margin-top:6px}
 .ed-actions .btn{flex:1}
 .map-tip{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:700;background:rgba(59,42,51,.86);color:#fff;border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;pointer-events:none;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
-.snum{width:28px;height:28px;border-radius:50%;background:var(--pink-500);color:#fff;border:3px solid #fff;font-weight:900;font-size:12px;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
-.snum.meet{background:var(--pink-700);width:34px;height:34px;font-size:15px}
-.snum.done{background:var(--pink-300)}
 
 /* en vivo */
 .lv{position:relative;height:calc(100dvh - 62px)}
@@ -159,6 +135,7 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
+<script src="js/pedidos-guia.js"></script>
 <script>
 /* =====================================================================
    PANEL DEL GUÍA
@@ -181,13 +158,6 @@ function go(fn, arg){
 
 /* ---------- utilidades ---------- */
 const avatar = (g, cls='') => `<span class="avatar ${cls}" style="background:${g.c}">${initials(g.n)}</span>`;
-const pad = n => String(n).padStart(2,'0');
-const toLocalInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
-function diaLabel(ms){
-  const d = new Date(ms), t = new Date();
-  const dd = Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate()) - new Date(t.getFullYear(),t.getMonth(),t.getDate())) / 864e5);
-  return dd === 0 ? 'Hoy' : dd === 1 ? 'Mañana' : dd === -1 ? 'Ayer' : d.toLocaleDateString('es-AR',{weekday:'short', day:'numeric', month:'numeric'});
-}
 const misSalidas = () => Store.salidas().filter(s=>s.g === guia);
 const misTours = () => TOURS.filter(t=>t.g === guia).map(t=>({...t, demo:true}))
   .concat(Object.values(Store.get().tours).filter(t=>t.g === guia));
@@ -262,12 +232,12 @@ function salCard(s){
   return `<div class="sal ${vencida?'old':''}">
     <div class="when"><small>${diaLabel(s.startAt)}</small><b>${hhmm(s.startAt)}</b>${cuando}</div>
     <div class="info">
-      <h3>${CATS[s.cat].e} ${esc(s.name)}</h3>
+      <h3>${CATS[s.cat].e} ${esc(s.name)}${s.pedidoId ? ` <span class="ped-tag">🙋 a pedido de ${esc(s.cliente)}</span>` : ''}</h3>
       <div class="meta"><span>📍 ${esc(s.route[0][2])}</span><span>⏱️ ${fmtIn(s.dur)}</span><span>👥 ${ocup}/${s.cupos} reservados</span><span>${money(s.price)}</span></div>
       <div class="acts">
         ${vencida ? '' : `<button class="mini go" data-act="start" data-id="${s.id}">▶ Empezar tour</button>`}
         <button class="mini" data-act="res" data-id="${s.id}">👥 Reservas</button>
-        ${vencida ? '' : `<button class="mini" data-act="edit" data-id="${s.id}">✏️ Editar</button>`}
+        ${vencida || s.pedidoId ? '' : `<button class="mini" data-act="edit" data-id="${s.id}">✏️ Editar</button>`}
         <button class="mini danger" data-act="del" data-id="${s.id}">🗑 ${vencida?'Borrar':'Cancelar'}</button>
       </div>
     </div></div>`;
@@ -286,12 +256,14 @@ function vDash(){
     <div class="g-hello">${avatar(g)}<div>
       <h1>Hola, ${esc(g.n.split(' ')[0])} 👋</h1>
       <p>${esc(g.bio)}</p>
-      <div class="stats"><span class="stat">📅 ${prox.length} salida${prox.length===1?'':'s'} programada${prox.length===1?'':'s'}</span><span class="stat">👥 ${reservas} reserva${reservas===1?'':'s'}</span><span class="stat">⭐ ${g.r} (${g.rv})</span></div>
+      <div class="stats"><span class="stat">📅 ${prox.length} salida${prox.length===1?'':'s'} programada${prox.length===1?'':'s'}</span><span class="stat">👥 ${reservas} reserva${reservas===1?'':'s'}</span><span class="stat">🙋 ${pedidosParaGuia().cerca.length} pedido${pedidosParaGuia().cerca.length===1?'':'s'} cerca</span><span class="stat">⭐ ${g.r} (${g.rv})</span></div>
     </div></div>
 
     ${live ? `<div class="livebar"><span class="onair"><span class="dot"></span> EN VIVO</span>
       <div class="t"><b>${esc(live.name)}</b>Los turistas te están viendo en el mapa.</div>
       <button class="btn btn-primary btn-sm" data-act="resume" data-id="${live.id}">Volver al tour</button></div>` : ''}
+
+    ${seccionPedidos()}
 
     <section class="g-sec">
       <h2>Próximas salidas <button class="mini go" data-act="new">＋ Programar salida</button></h2>
@@ -333,6 +305,10 @@ function vDash(){
     const id = b.dataset.id, s = id ? Store.get().salidas[id] : null;
     switch(b.dataset.act){
       case 'new': return go(vEditor, {});
+      case 'radio': setRadioGuia(+id); return vDash();
+      case 'ped-ver': return verPedido(id);
+      case 'ped-tomar': return tomarPedidoUI(id);
+      case 'ped-demo': crearPedidoDemo(); return;
       case 'prog': return go(vEditor, {tourId:id});
       case 'edit': return go(vEditor, {salidaId:id});
       case 'res': return openReservas(id);
@@ -350,7 +326,8 @@ function vDash(){
       case 'del': {
         const n = Store.ocupados(id);
         const ok = await confirmBox(s.status === 'finalizada' ? 'Borrar del historial' : 'Cancelar salida',
-          n && s.status !== 'finalizada' ? `Esta salida tiene ${n} persona${n>1?'s':''} con reserva. Se van a quedar sin su lugar.` : `"${s.name}" deja de aparecer en el mapa de los turistas.`,
+          s.pedidoId && s.status !== 'finalizada' ? `${s.cliente} te pidió este tour. Si lo cancelás, su pedido vuelve a quedar disponible para otros guías.`
+          : n && s.status !== 'finalizada' ? `Esta salida tiene ${n} persona${n>1?'s':''} con reserva. Se van a quedar sin su lugar.` : `"${s.name}" deja de aparecer en el mapa de los turistas.`,
           s.status === 'finalizada' ? 'Borrar' : 'Cancelar salida', true);
         if(ok){ Store.borrarSalida(id); toast({ic:'🗑', title:'Listo', text:'La salida se quitó.'}); }
         return;
@@ -373,15 +350,6 @@ function vDash(){
 /* =====================================================================
    3) PROGRAMAR / EDITAR SALIDA (con recorrido en el mapa)
    ===================================================================== */
-async function nombreDe(ll){
-  try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=es&lat=${ll[0].toFixed(6)}&lon=${ll[1].toFixed(6)}`);
-    const j = await r.json(), a = j.address || {};
-    if(j.name && j.name !== a.road) return j.name;
-    if(a.road) return a.road + (a.house_number ? ' ' + a.house_number : '');
-  } catch(e){}
-  return null;
-}
 function vEditor({salidaId, tourId} = {}){
   curView = 'editor';
   const existente = salidaId ? Store.get().salidas[salidaId] : null;
@@ -673,7 +641,7 @@ Store.on(()=>{
   const rs = Store.get().reservas;
   if(rs.length > prevRes && guia){
     const r = rs[rs.length - 1], s = Store.get().salidas[r.salidaId];
-    if(s && s.g === guia) toast({ic:'🎟️', title:'¡Nueva reserva!', text:`${r.name || 'Alguien'} reservó ${r.qty} lugar${r.qty>1?'es':''} para "${s.name}".`});
+    if(s && s.g === guia && !s.pedidoId) toast({ic:'🎟️', title:'¡Nueva reserva!', text:`${r.name || 'Alguien'} reservó ${r.qty} lugar${r.qty>1?'es':''} para "${s.name}".`});
   }
   prevRes = rs.length;
   if(curView === 'dash') vDash();      // refresca contadores
