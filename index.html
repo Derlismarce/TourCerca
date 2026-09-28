@@ -131,6 +131,7 @@
       <div class="map-fab">
         <button onclick="centerMe()" title="Centrar en mí">🎯</button>
         <button id="fitBtn" onclick="fitAll()" title="Ver todos los tours">🗺️</button>
+        <button class="sos-fab" onclick="abrirEmergencia({ll:me})" title="Emergencia">🆘</button>
       </div>
       <div class="hint" id="hint" style="opacity:0"></div>
     </div>
@@ -218,7 +219,7 @@ const alerted = new Set();
 function startApp(mode, barrio){
   document.getElementById('landing').hidden = true;
   document.getElementById('app').hidden = false;
-  if(!started){ initMap(); started = true; }
+  if(!started){ initMap(); started = true; cargarClima().then(()=>{ if(selected) renderDetail(true); }); }
   else map.invalidateSize();
   if(barrio){ setMe(DEMO_SPOTS[barrio], barrio + ' (demo)'); map.setView(BARRIOS[barrio].c, 15); return; }
   if(mode === 'demo'){ setMe(DEMO_SPOTS['9 de Julio'], 'Av. 9 de Julio (demo)'); return; }
@@ -456,6 +457,11 @@ function renderDetail(force){
         : `<div class="fact"><small>Cupos</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?`Quedan ${libres}`:'Completo'}</b><i>de ${t.cupos} lugares</i></div>`}
     </div>
     <div class="d-sec"><h4>Punto de encuentro</h4><p>📍 <b>${esc(t.meet[2])}</b></p></div>
+    <div class="d-sec"><h4>Seguridad</h4>${(()=>{ const df = dificultad(t); return `<div class="safe">
+      <span class="dif ${df.cls}">${df.e} Dificultad ${df.n}</span><p>${esc(df.txt)}</p>
+      <ul class="recs">${recomendaciones(t).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
+      <p class="safe-note">Si tenés alguna condición de salud o movilidad, avisale al guía antes de empezar.</p>
+      <button class="mini" onclick="abrirEmergencia({ll:me})">🆘 Números de emergencia</button></div>`; })()}</div>
     ${t.desc ? `<div class="d-sec"><h4>${t.privado ? 'Tu comentario al guía' : 'De qué se trata'}</h4><p>${esc(t.desc)}</p></div>` : ''}
     <div class="d-sec"><h4>Recorrido</h4><ul class="timeline">${stops}</ul></div>
     <div class="d-sec"><h4>Tu guía</h4>

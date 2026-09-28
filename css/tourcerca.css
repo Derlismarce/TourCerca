@@ -347,3 +347,27 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .ped-pay span{font-weight:800;color:var(--ink-2)}
 .ped-pay b{font-size:24px;font-weight:900;color:var(--pink-700)}
 .ped-pay small{width:100%;font-weight:700;color:var(--ink-3)}
+
+/* ---------- seguridad (V 3.1) ---------- */
+.map-fab .sos-fab{background:#E5484D;color:#fff;font-size:17px}
+.safe{background:var(--pink-50);border:1px solid var(--line);border-radius:14px;padding:12px}
+.safe p{font-size:13.5px}
+.dif{display:inline-block;border-radius:999px;padding:3px 10px;font-weight:900;font-size:12.5px;margin-bottom:6px}
+.dif.baja{background:#E6F5EE;color:#1F7A50}.dif.media{background:#FDF1E1;color:#9A5F0C}.dif.alta{background:#FDE8E8;color:#B3262B}
+.recs{list-style:none;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
+.recs li{background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:800;color:var(--ink-2)}
+.safe-note{font-size:12.5px!important;color:var(--ink-3)!important;margin-bottom:8px}
+.sos h3{color:#B3262B}
+.sos-tels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}
+.sos-tel{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;background:#FDE8E8;border:1.5px solid #F6C4C6;border-radius:14px;padding:10px 6px;color:#8E1F24;text-align:center}
+.sos-tel span{font-size:24px}.sos-tel b{font-size:22px;font-weight:900}.sos-tel small{font-size:10.5px;font-weight:800;line-height:1.2}
+.sos-tel:hover{background:#FBD6D7}
+.sos-share{width:100%;border:1.5px solid var(--line);margin-bottom:6px}
+.aux{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:6px;background:#fff}
+.aux summary{font-weight:900;cursor:pointer;font-size:14px}
+.aux p{margin-top:6px;font-size:13.5px;color:var(--ink-2);font-weight:600}
+.btn-sos{flex:0 0 52px!important;background:#E5484D;color:#fff;padding:12px 0!important}
+.btn-sos:hover{background:#C93A3F}
+.inc{background:#fff;border:1.5px solid var(--line);border-left:4px solid #E5484D;border-radius:14px;padding:10px 12px;margin-bottom:8px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.inc b{color:var(--ink)}
+.inc p{margin-top:4px;font-weight:600}

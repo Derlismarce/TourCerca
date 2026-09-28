@@ -13,7 +13,7 @@
    ===================================================================== */
 const Store = (()=>{
   const KEY = 'tourcerca.datos.v2';
-  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], pedidos:{}});
+  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], pedidos:{}, incidentes:[]});
   const subs = [];
   let cache = load();
 
@@ -109,6 +109,10 @@ const Store = (()=>{
       save();
       return s;
     },
+
+    /* incidentes que registra el guía durante un tour */
+    registrarIncidente(i){ i.id = uid('i_'); i.ts = Date.now(); cache.incidentes.push(i); save(); return i; },
+    incidentesDe: g=>cache.incidentes.filter(i=>i.g === g).sort((a,b)=>b.ts - a.ts),
 
     borrarTodo(){ cache = empty(); save(); },
   };

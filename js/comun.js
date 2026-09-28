@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.0';
+const VERSION = '3.1';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.1', f:'2026-09-28', items:[
+    'Botón de emergencia (🆘) para turistas y guías: SAME 107, 911, bomberos 100 y compartir la ubicación.',
+    'Primeros pasos ante golpe de calor, desmayo o caída.',
+    'Cada tour muestra su dificultad y recomendaciones (agua, calzado, protector), con aviso si hace calor según el clima real de Buenos Aires.',
+    'El guía puede registrar incidentes durante el tour y los ve en su panel.',
+  ]},
   {v:'3.0', f:'2026-09-25', items:[
     '"Pedí tu tour": el turista programa una visita guiada con día, hora, punto de salida y lugares a visitar.',
     'Reglas del pedido: mínimo 5 personas, 1 hora de recorrido y $ 15.000 por persona; de 2 horas a 30 días de anticipación.',
@@ -235,6 +241,76 @@ const fechaLarga = ms => `${diaLabel(ms)} ${hhmm(ms)} h`;
 function fechaFrase(ms){                   // "mañana a las 10:00", "el sáb 27/9 a las 10:00"
   const d = diaLabel(ms), h = hhmm(ms);
   return d === 'Hoy' ? `hoy a las ${h}` : d === 'Mañana' ? `mañana a las ${h}` : `el ${d} a las ${h}`;
+}
+
+/* ---------- seguridad ---------- */
+const EMERGENCIAS = [
+  {e:'🚑', n:'SAME · emergencias médicas', tel:'107'},
+  {e:'🚓', n:'Emergencias · policía', tel:'911'},
+  {e:'🚒', n:'Bomberos', tel:'100'},
+];
+const PRIMEROS_AUXILIOS = [
+  {t:'Golpe de calor', d:'Llevá a la persona a la sombra, aflojale la ropa y mojale la nuca y las muñecas. Si está consciente, dale agua de a sorbos. Si está confundida o no mejora, llamá al 107.'},
+  {t:'Desmayo o no responde', d:'Llamá al 107 de inmediato. Si no respira normalmente y sabés hacerlo, empezá RCP hasta que llegue la ambulancia.'},
+  {t:'Caída o golpe', d:'No muevas a la persona si le duele el cuello o la espalda. Si sangra, presioná la herida con un paño limpio. Ante la duda, llamá al 107.'},
+  {t:'Persona perdida', d:'Llamala por teléfono y compartile el punto de encuentro. Si es un menor o no aparece, avisá al 911.'},
+];
+
+/* dificultad estimada según lo que se camina y lo que dura */
+function dificultad(t){
+  const km = (t.len || 0) / 1000, dur = t.dur || 0, kmTxt = km.toFixed(1).replace('.', ',');
+  // manda lo que se camina; la duración solo suma si además hay bastante caminata
+  if(km >= 4 || (km >= 2.5 && dur >= 180)) return {n:'Alta', cls:'alta', e:'🔴', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: exigente, con muchas cuadras y poco descanso.`};
+  if(km >= 2 || (km >= 1 && dur >= 150)) return {n:'Media', cls:'media', e:'🟠', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: se camina bastante, con algunas paradas.`};
+  return {n:'Baja', cls:'baja', e:'🟢', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: tranquilo, con paradas frecuentes.`};
+}
+
+/* clima actual de Buenos Aires (Open-Meteo, sin datos del usuario) */
+let climaBA = null;
+async function cargarClima(){
+  if(climaBA) return climaBA;
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.61&longitude=-58.38&current=temperature_2m,apparent_temperature&timezone=America%2FArgentina%2FBuenos_Aires');
+    const j = await r.json();
+    climaBA = {t:Math.round(j.current.temperature_2m), st:Math.round(j.current.apparent_temperature)};
+  } catch(e){}
+  return climaBA;
+}
+function recomendaciones(t){
+  const r = ['💧 Llevá agua', '👟 Calzado cómodo', '🧴 Protector solar y gorra'];
+  if(climaBA && climaBA.st >= 28) r.unshift(`🌡️ Hoy hay ${climaBA.st} °C de sensación térmica: tomá agua seguido y buscá la sombra`);
+  else if(climaBA && climaBA.st <= 8) r.unshift(`🧥 Hoy hay ${climaBA.st} °C de sensación térmica: abrigate`);
+  if((t.dur || 0) >= 150) r.push('🍎 Algo para comer');
+  return r;
+}
+
+/* ventana de emergencia (turista y guía) */
+function abrirEmergencia({ll = null, extra = ''} = {}){
+  const ov = document.createElement('div'); ov.className = 'overlay';
+  const link = ll ? `https://www.google.com/maps?q=${ll[0].toFixed(6)},${ll[1].toFixed(6)}` : '';
+  ov.innerHTML = `<div class="modal sos">
+    <h3>🆘 Emergencia</h3>
+    <p class="muted">Si alguien está en peligro, llamá primero. Las llamadas son gratuitas.</p>
+    <div class="sos-tels">${EMERGENCIAS.map(x=>`<a class="sos-tel" href="tel:${x.tel}"><span>${x.e}</span><b>${x.tel}</b><small>${esc(x.n)}</small></a>`).join('')}</div>
+    ${ll ? `<button class="btn btn-ghost sos-share" data-share>📍 Compartir mi ubicación</button>` : ''}
+    ${extra}
+    <h5>Primeros pasos</h5>
+    ${PRIMEROS_AUXILIOS.map(x=>`<details class="aux"><summary>${esc(x.t)}</summary><p>${esc(x.d)}</p></details>`).join('')}
+    <p class="muted" style="font-size:11.5px;margin-top:10px">Orientación general. No reemplaza la atención médica ni las indicaciones del 107.</p>
+    <div style="margin-top:12px"><button class="btn btn-primary" style="width:100%" data-x>Cerrar</button></div>
+  </div>`;
+  ov.onclick = async e=>{
+    if(e.target === ov || e.target.hasAttribute('data-x')) return ov.remove();
+    if(e.target.closest('[data-share]')){
+      const txt = `Necesito ayuda. Estoy acá: ${link}`;
+      try {
+        if(navigator.share){ await navigator.share({title:'Mi ubicación', text:txt}); }
+        else { await navigator.clipboard.writeText(txt); toast({ic:'📋', title:'Ubicación copiada', text:'Pegala en un mensaje de WhatsApp o SMS.'}); }
+      } catch(err){}
+    }
+  };
+  document.body.appendChild(ov);
+  return ov;
 }
 
 /* ---------- avisos ---------- */

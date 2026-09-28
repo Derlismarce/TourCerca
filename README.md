@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.1**: seguridad. Botón de emergencia (107, 911, 100 y compartir ubicación), primeros pasos ante incidentes, dificultad y recomendaciones en cada tour (con el clima real) y registro de incidentes del guía.
 - **V 3.0**: "Pedí tu tour". El turista programa una visita guiada (día, hora, punto de salida y lugares; mínimo 5 personas, 1 hora y $ 15.000 por persona) y un guía cercano la toma. El guía elige el radio de su zona y recibe una alerta con cada pedido nuevo.
 - **V 2.3**: política de privacidad.
 - **V 2.2**: mapa sin líneas blancas entre los mosaicos.

@@ -287,6 +287,11 @@ function vDash(){
       </div>
     </section>
 
+    ${Store.incidentesDe(guia).length ? `<section class="g-sec"><h2>📝 Incidentes registrados <small>${Store.incidentesDe(guia).length}</small></h2>
+      ${Store.incidentesDe(guia).slice(0,5).map(i=>`<div class="inc"><b>${esc(i.tipo)}</b> · ${diaLabel(i.ts)} ${hhmm(i.ts)} h · ${esc(i.salida)}
+        <p>${esc(i.desc)}</p>${i.accion ? `<p><i>Qué se hizo:</i> ${esc(i.accion)}</p>` : ''}</div>`).join('')}
+    </section>` : ''}
+
     ${hist.length ? `<section class="g-sec"><h2>Últimos tours realizados</h2>
       ${hist.map(s=>`<div class="sal old"><div class="when"><small>${diaLabel(s.startedAt||s.startAt)}</small><b>${hhmm(s.startedAt||s.startAt)}</b><i>finalizado</i></div>
         <div class="info"><h3>${CATS[s.cat].e} ${esc(s.name)}</h3><div class="meta"><span>👥 ${Store.ocupados(s.id)} reservas</span>${s.endedAt&&s.startedAt?`<span>⏱️ duró ${fmtIn(Math.max(1,Math.round((s.endedAt-s.startedAt)/MIN)))}</span>`:''}</div>
@@ -489,6 +494,33 @@ function vEditor({salidaId, tourId} = {}){
   cleanup = ()=> map.remove();
 }
 
+/* ---------- registro de incidentes (durante el tour) ---------- */
+function registrarIncidenteUI(salidaId, ll){
+  const s = Store.get().salidas[salidaId];
+  const ov = document.createElement('div'); ov.className = 'overlay';
+  ov.innerHTML = `<div class="modal"><h3>📝 Registrar incidente</h3>
+    <p class="muted">Queda guardado con la hora y el lugar. Sirve para dar seguimiento y como respaldo ante un reclamo.</p>
+    <h5>Qué pasó</h5>
+    <select class="inp" data-tipo>${['Malestar o golpe de calor','Caída o golpe','Persona perdida','Robo o pérdida de objetos','Conflicto o agresión','Otro'].map(x=>`<option>${x}</option>`).join('')}</select>
+    <h5>Descripción</h5>
+    <textarea class="inp" data-desc maxlength="500" placeholder="Quién, qué pasó y cómo está la persona."></textarea>
+    <h5>Qué se hizo</h5>
+    <textarea class="inp" data-acc maxlength="300" placeholder="Ej: se llamó al 107, se dio agua y sombra, siguió el tour."></textarea>
+    <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>Cancelar</button><button class="btn btn-primary" style="flex:1" data-ok>Guardar</button></div></div>`;
+  ov.onclick = e=>{
+    if(e.target === ov || e.target.hasAttribute('data-x')) return ov.remove();
+    if(e.target.hasAttribute('data-ok')){
+      const desc = ov.querySelector('[data-desc]').value.trim();
+      if(!desc) return toast({ic:'✋', title:'Falta la descripción', text:'Contá brevemente qué pasó.'});
+      Store.registrarIncidente({g:guia, salidaId, salida:s ? s.name : '', tipo:ov.querySelector('[data-tipo]').value, desc,
+        accion:ov.querySelector('[data-acc]').value.trim(), ll:ll ? [+ll[0].toFixed(6), +ll[1].toFixed(6)] : null});
+      ov.remove();
+      toast({ic:'📝', title:'Incidente registrado', text:'Lo ves en tu panel. Si alguien necesitó atención médica, avisá también a TourCerca.'});
+    }
+  };
+  document.body.appendChild(ov);
+}
+
 /* =====================================================================
    4) EN VIVO: comparte la ubicación del guía
    ===================================================================== */
@@ -515,7 +547,7 @@ function vLive(id){
     <div class="lv-card lv-bot">
       <div class="gps"><span id="lGps">📡 Buscando GPS…</span><span id="lRes"></span></div>
       <div class="opts" id="lModes"></div>
-      <div class="row"><button class="btn btn-line" data-act="back">← Mis salidas</button><button class="btn btn-danger" data-act="end">■ Finalizar tour</button></div>
+      <div class="row"><button class="btn btn-line" data-act="back">← Mis salidas</button><button class="btn btn-sos" data-act="sos">🆘</button><button class="btn btn-danger" data-act="end">■ Finalizar tour</button></div>
     </div>
   </div>`;
 
@@ -609,6 +641,11 @@ function vLive(id){
     const b = e.target.closest('[data-act]'); if(!b) return;
     switch(b.dataset.act){
       case 'follow': followMe = true; map.panTo(pos); modesUI(); return;
+      case 'sos': {
+        const ov = abrirEmergencia({ll:pos, extra:'<button class="btn btn-ghost sos-share" data-inc>📝 Registrar un incidente</button>'});
+        ov.querySelector('[data-inc]').onclick = ()=>{ ov.remove(); registrarIncidenteUI(id, pos); };
+        return;
+      }
       case 'arrive':
         if(stop >= last) return;
         stop++;
