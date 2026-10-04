@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.2**: la app en español, inglés y portugués de Brasil. Selector "🌐 ES ▾" arriba a la derecha; detecta el idioma del celular la primera vez y recuerda la elección.
 - **V 3.1**: seguridad. Botón de emergencia (107, 911, 100 y compartir ubicación), primeros pasos ante incidentes, dificultad y recomendaciones en cada tour (con el clima real) y registro de incidentes del guía.
 - **V 3.0**: "Pedí tu tour". El turista programa una visita guiada (día, hora, punto de salida y lugares; mínimo 5 personas, 1 hora y $ 15.000 por persona) y un guía cercano la toma. El guía elige el radio de su zona y recibe una alerta con cada pedido nuevo.
 - **V 2.3**: política de privacidad.
@@ -27,6 +28,8 @@ En la V 2.0 los datos se guardan en el navegador: guía y turista se ven en tiem
 - `guia.html`: panel del guía
 - `terminos.html`: términos y condiciones de uso
 - `privacidad.html`: política de privacidad
+- `js/i18n.js`: idiomas (traducción, selector y detección del idioma)
+- `js/i18n-textos.js`: traducciones al inglés y al portugués
 - `js/comun.js`: datos de ejemplo, utilidades y número de versión
 - `js/store.js`: datos compartidos entre guía y turista
 - `js/pedidos.js`: "Pedí tu tour" en la vista del turista

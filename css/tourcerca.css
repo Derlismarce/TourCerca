@@ -371,3 +371,21 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .inc{background:#fff;border:1.5px solid var(--line);border-left:4px solid #E5484D;border-radius:14px;padding:10px 12px;margin-bottom:8px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
 .inc b{color:var(--ink)}
 .inc p{margin-top:4px;font-weight:600}
+
+/* ---------- selector de idioma "🌐 ES ▾" (V 3.2) ---------- */
+.lang-slot{display:inline-flex}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-sel{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--pink-300);background:var(--pink-100);color:var(--pink-700);border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px;line-height:1}
+.lang-btn:hover{border-color:var(--pink-500)}
+.lang-btn .car{font-size:10px;transition:transform .15s}
+.lang-sel.open .lang-btn .car{transform:rotate(180deg)}
+.lang-menu{position:fixed;min-width:180px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 34px rgba(158,68,104,.25);padding:6px;display:none;z-index:2600}
+.lang-menu.open{display:block}
+.lang-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;border-radius:10px;font-weight:800;font-size:14px;color:var(--ink);text-align:left}
+.lang-menu button:hover{background:var(--pink-50)}
+.lang-menu button.on{background:var(--pink-100);color:var(--pink-700)}
+.lang-menu .ck{width:14px;visibility:hidden;color:var(--pink-600);font-weight:900}
+.lang-menu button.on .ck{visibility:visible}
+.lang-menu small{margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:800}
+@media (max-width:800px){ .lang-btn .car{display:none} .lang-btn{padding:6px 9px;font-size:12px} }

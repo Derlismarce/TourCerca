@@ -19,8 +19,8 @@
 <div id="landing">
   <nav class="nav">
     <a class="logo" href="#" onclick="return false"><span class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="brand"><span class="txt">Tour<b>Cerca</b></span></span></a>
-    <div class="nav-links"><a href="#barrios">Barrios</a><a href="#como">Cómo funciona</a><a href="guia.html">Soy guía</a></div>
-    <button class="btn btn-primary btn-sm" onclick="startApp('gps')">Abrir mapa</button>
+    <div class="nav-links"><a href="#barrios" data-i18n="Barrios">Barrios</a><a href="#como" data-i18n="Cómo funciona">Cómo funciona</a><a href="guia.html" data-i18n="Soy guía">Soy guía</a></div>
+    <div class="nav-right"><span class="lang-slot"></span><button class="btn btn-primary btn-sm" onclick="startApp('gps')" data-i18n="Abrir mapa">Abrir mapa</button></div>
   </nav>
 
   <header class="hero">
@@ -28,11 +28,11 @@
     <span class="pin-float" style="right:9%;top:28%;animation-delay:.8s">🗺️</span>
     <span class="pin-float" style="left:15%;top:62%;animation-delay:1.4s">🎭</span>
     <span class="pin-float" style="right:15%;top:60%;animation-delay:2s">🥟</span>
-    <h1>No busques qué hacer en Buenos Aires.<br><em>Descubrí qué podés hacer cerca tuyo, ahora.</em></h1>
-    <p class="sub">Tours de guías locales que empiezan en minutos, a pocas cuadras. Miralos en el mapa en tiempo real y sumate.</p>
+    <h1 data-i18n="No busques qué hacer en Buenos Aires.<br><em>Descubrí qué podés hacer cerca tuyo, ahora.</em>">No busques qué hacer en Buenos Aires.<br><em>Descubrí qué podés hacer cerca tuyo, ahora.</em></h1>
+    <p class="sub" data-i18n="Tours de guías locales que empiezan en minutos, a pocas cuadras. Miralos en el mapa en tiempo real y sumate.">Tours de guías locales que empiezan en minutos, a pocas cuadras. Miralos en el mapa en tiempo real y sumate.</p>
     <div class="hero-cta">
-      <button class="btn btn-primary" onclick="startApp('gps')">📍 Ver tours cerca mío</button>
-      <button class="btn btn-ghost" onclick="startApp('demo')">Probar desde la 9 de Julio</button>
+      <button class="btn btn-primary" onclick="startApp('gps')" data-i18n="📍 Ver tours cerca mío">📍 Ver tours cerca mío</button>
+      <button class="btn btn-ghost" onclick="startApp('demo')" data-i18n="Probar desde la 9 de Julio">Probar desde la 9 de Julio</button>
     </div>
     <div class="skyline" aria-hidden="true">
       <svg viewBox="0 0 1100 170" preserveAspectRatio="xMidYMax slice">
@@ -57,67 +57,68 @@
   </header>
 
   <div class="features">
-    <div class="feature"><span class="ic">📍</span>A pocas cuadras</div>
-    <div class="feature"><span class="ic">🔴</span>Guías en vivo</div>
-    <div class="feature"><span class="ic">⏱️</span>Empiezan ya</div>
-    <div class="feature"><span class="ic">🗣️</span>Varios idiomas</div>
-    <div class="feature"><span class="ic">🆓</span>Pagos y a la gorra</div>
-    <div class="feature"><span class="ic">🔔</span>Alertas cercanas</div>
+    <div class="feature"><span class="ic">📍</span><span data-i18n="A pocas cuadras">A pocas cuadras</span></div>
+    <div class="feature"><span class="ic">🔴</span><span data-i18n="Guías en vivo">Guías en vivo</span></div>
+    <div class="feature"><span class="ic">⏱️</span><span data-i18n="Empiezan ya">Empiezan ya</span></div>
+    <div class="feature"><span class="ic">🗣️</span><span data-i18n="Varios idiomas">Varios idiomas</span></div>
+    <div class="feature"><span class="ic">🆓</span><span data-i18n="Pagos y a la gorra">Pagos y a la gorra</span></div>
+    <div class="feature"><span class="ic">🔔</span><span data-i18n="Alertas cercanas">Alertas cercanas</span></div>
   </div>
 
   <section class="block" id="barrios">
-    <h2>Barrios para recorrer</h2>
-    <p class="lead">Elegí un barrio y mirá qué guías están saliendo ahí.</p>
+    <h2 data-i18n="Barrios para recorrer">Barrios para recorrer</h2>
+    <p class="lead" data-i18n="Elegí un barrio y mirá qué guías están saliendo ahí.">Elegí un barrio y mirá qué guías están saliendo ahí.</p>
     <div class="barrios" id="barrioCards"></div>
   </section>
 
   <section class="block" id="como">
-    <h2>Cómo funciona</h2>
-    <p class="lead">Sin planificar nada.</p>
+    <h2 data-i18n="Cómo funciona">Cómo funciona</h2>
+    <p class="lead" data-i18n="Sin planificar nada.">Sin planificar nada.</p>
     <div class="steps">
-      <div class="step"><div class="n">1</div><h3>Abrís el mapa</h3><p>Activás tu ubicación y vemos qué tours hay alrededor tuyo.</p></div>
-      <div class="step"><div class="n">2</div><h3>Elegís uno que empieza pronto</h3><p>Distancia, horario, precio, idioma y cupos. Y si llegás caminando a tiempo.</p></div>
-      <div class="step"><div class="n">3</div><h3>Te sumás</h3><p>Reservás tu lugar o vas directo al punto de encuentro. Si el tour ya salió, seguí al guía en vivo.</p></div>
+      <div class="step"><div class="n">1</div><h3 data-i18n="Abrís el mapa">Abrís el mapa</h3><p data-i18n="Activás tu ubicación y vemos qué tours hay alrededor tuyo.">Activás tu ubicación y vemos qué tours hay alrededor tuyo.</p></div>
+      <div class="step"><div class="n">2</div><h3 data-i18n="Elegís uno que empieza pronto">Elegís uno que empieza pronto</h3><p data-i18n="Distancia, horario, precio, idioma y cupos. Y si llegás caminando a tiempo.">Distancia, horario, precio, idioma y cupos. Y si llegás caminando a tiempo.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-i18n="Te sumás">Te sumás</h3><p data-i18n="Reservás tu lugar o vas directo al punto de encuentro. Si el tour ya salió, seguí al guía en vivo.">Reservás tu lugar o vas directo al punto de encuentro. Si el tour ya salió, seguí al guía en vivo.</p></div>
     </div>
   </section>
 
   <section class="block" id="pedi">
     <div class="ask-hero">
-      <div><span class="pill" style="background:#fff">✨ Nuevo</span>
-        <h2 style="margin-top:10px">¿No encontrás el tour que buscás? Pedilo.</h2>
-        <p class="lead" style="margin:6px 0 0">Elegí día, hora, punto de salida y los lugares que querés conocer. Un guía cercano toma tu pedido, como cuando programás un viaje.</p>
-        <p class="ask-rules">👥 Desde 5 personas · ⏱️ Desde 1 hora · 💰 Desde $ 15.000 por persona</p></div>
-      <button class="btn btn-primary" onclick="startApp('demo'); openPedido()">✨ Pedí tu tour</button>
+      <div><span class="pill" style="background:#fff" data-i18n="✨ Nuevo">✨ Nuevo</span>
+        <h2 style="margin-top:10px" data-i18n="¿No encontrás el tour que buscás? Pedilo.">¿No encontrás el tour que buscás? Pedilo.</h2>
+        <p class="lead" style="margin:6px 0 0" data-i18n="Elegí día, hora, punto de salida y los lugares que querés conocer. Un guía cercano toma tu pedido, como cuando programás un viaje.">Elegí día, hora, punto de salida y los lugares que querés conocer. Un guía cercano toma tu pedido, como cuando programás un viaje.</p>
+        <p class="ask-rules" id="askRules"></p></div>
+      <button class="btn btn-primary" onclick="startApp('demo'); openPedido()" data-i18n="✨ Pedí tu tour">✨ Pedí tu tour</button>
     </div>
   </section>
 
   <div class="quote" id="guias">
-    <div><p>¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html">Entrar al panel del guía</a></div>
+    <div><p data-i18n="¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.">¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html" data-i18n="Entrar al panel del guía">Entrar al panel del guía</a></div>
   </div>
-  <footer>TourCerca · Prototipo · Proyecto final Licenciatura en Turismo · Ciudad de Buenos Aires<br><span id="copy"></span> · <a href="terminos.html">Términos y condiciones</a> · <a href="privacidad.html">Política de privacidad</a></footer>
+  <footer><span data-i18n="TourCerca · Prototipo · Proyecto final Licenciatura en Turismo · Ciudad de Buenos Aires">TourCerca · Prototipo · Proyecto final Licenciatura en Turismo · Ciudad de Buenos Aires</span><br><span id="copy"></span> · <a href="terminos.html" data-i18n="Términos y condiciones">Términos y condiciones</a> · <a href="privacidad.html" data-i18n="Política de privacidad">Política de privacidad</a></footer>
 </div>
 
 <!-- =============== APP =============== -->
 <div id="app" hidden>
   <div class="topbar">
-    <span class="logo" onclick="goHome()" title="Inicio"><span class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="brand"><span class="txt">Tour<b>Cerca</b></span></span></span>
+    <span class="logo" onclick="goHome()" data-i18n-title="Inicio" title="Inicio"><span class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="brand"><span class="txt">Tour<b>Cerca</b></span></span></span>
     <span class="spacer"></span>
-    <span class="pill" id="locPill">📍 Ubicando…</span>
+    <span class="pill" id="locPill">📍 …</span>
     <span class="pill clock" id="clockPill">🕐 --:--</span>
-    <button class="icon-btn" onclick="openDemo()" title="Modo presentación">⚙️</button>
+    <span class="lang-slot"></span>
+    <button class="icon-btn" onclick="openDemo()" data-i18n-title="Modo presentación" title="Modo presentación">⚙️</button>
   </div>
   <div class="layout">
     <aside id="panel">
-      <button class="handle" id="handle" aria-label="Arrastrá para agrandar o achicar la lista"></button>
+      <button class="handle" id="handle" data-i18n-aria="Arrastrá para agrandar o achicar la lista" aria-label="Arrastrá para agrandar o achicar la lista"></button>
       <div id="listView" style="display:flex;flex-direction:column;flex:1;min-height:0">
-        <div class="panel-head"><h2>Cerca tuyo ahora</h2><span class="count" id="count"></span></div>
+        <div class="panel-head"><h2 data-i18n="Cerca tuyo ahora">Cerca tuyo ahora</h2><span class="count" id="count"></span></div>
         <div class="ask-bar">
-          <button class="ask" onclick="openPedido()"><span class="em">✨</span><span><b>Pedí tu tour</b><span>Elegí día, hora y recorrido. Un guía lo toma.</span></span></button>
-          <button class="mine" onclick="openMisPedidos()">🙋 Mis pedidos<span class="nbadge" id="misBadge" hidden>0</span></button>
+          <button class="ask" onclick="openPedido()"><span class="em">✨</span><span><b data-i18n="Pedí tu tour">Pedí tu tour</b><span data-i18n="Elegí día, hora y recorrido. Un guía lo toma.">Elegí día, hora y recorrido. Un guía lo toma.</span></span></button>
+          <button class="mine" onclick="openMisPedidos()">🙋 <span data-i18n="Mis pedidos">Mis pedidos</span><span class="nbadge" id="misBadge" hidden>0</span></button>
         </div>
         <div class="chips" id="chips"></div>
-        <div class="sortbar">Ordenar
-          <span class="seg"><button data-s="near" class="on">Más cerca</button><button data-s="soon">Empieza antes</button></span>
+        <div class="sortbar"><span data-i18n="Ordenar">Ordenar</span>
+          <span class="seg"><button data-s="near" class="on" data-i18n="Más cerca">Más cerca</button><button data-s="soon" data-i18n="Empieza antes">Empieza antes</button></span>
         </div>
         <div id="list"></div>
       </div>
@@ -125,13 +126,13 @@
       <div id="pedidoView" class="pview" hidden></div>
       <div id="misView" class="pview" hidden></div>
     </aside>
-    <div class="splitter" id="splitter" title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)"><span class="grip"><i></i><i></i></span></div>
+    <div class="splitter" id="splitter" data-i18n-title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)" title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)"><span class="grip"><i></i><i></i></span></div>
     <div class="mapwrap">
       <div id="map"></div>
       <div class="map-fab">
-        <button onclick="centerMe()" title="Centrar en mí">🎯</button>
-        <button id="fitBtn" onclick="fitAll()" title="Ver todos los tours">🗺️</button>
-        <button class="sos-fab" onclick="abrirEmergencia({ll:me})" title="Emergencia">🆘</button>
+        <button onclick="centerMe()" data-i18n-title="Centrar en mí" title="Centrar en mí">🎯</button>
+        <button id="fitBtn" onclick="fitAll()" data-i18n-title="Ver todos los tours" title="Ver todos los tours">🗺️</button>
+        <button class="sos-fab" onclick="abrirEmergencia({ll:me})" data-i18n-title="Emergencia" title="Emergencia">🆘</button>
       </div>
       <div class="hint" id="hint" style="opacity:0"></div>
     </div>
@@ -141,6 +142,8 @@
 <div id="toasts"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/i18n-textos.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos.js"></script>
@@ -193,7 +196,7 @@ Store.on(()=>{
   rebuildExt();
   if(selected){
     const t = findTour(selected.id);
-    if(!t){ closeDetail(); toast({ic:'ℹ️', title:'Esta salida ya no está disponible', text:'El guía la finalizó o la canceló.'}); }
+    if(!t){ closeDetail(); toast({ic:'ℹ️', title:tr('Esta salida ya no está disponible'), text:tr('El guía la finalizó o la canceló.')}); }
     else { selected = t; renderDetail(true); }
   }
   render(true);
@@ -202,10 +205,16 @@ Store.on(()=>{
 /* =====================================================================
    LANDING
    ===================================================================== */
-document.getElementById('barrioCards').innerHTML = Object.entries(BARRIOS).map(([n,b])=>{
-  const c = TOURS.filter(t=>t.barrio===n).length;
-  return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3><span>${c} tours de guías</span></button>`;
-}).join('');
+function buildLanding(){
+  document.getElementById('barrioCards').innerHTML = Object.entries(BARRIOS).map(([n,b])=>{
+    const c = TOURS.filter(t=>t.barrio===n).length;
+    return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3><span>${tr('{n} tours de guías', {n:c})}</span></button>`;
+  }).join('');
+  document.getElementById('askRules').textContent = tr('👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Desde {m} por persona', {p:PEDIDO.minPersonas, m:money(PEDIDO.minPrecio)});
+  document.getElementById('copy').textContent = tr(COPYRIGHT);
+  document.title = tr('TourCerca · Tours cerca tuyo, ahora');
+}
+buildLanding();
 
 /* =====================================================================
    APP
@@ -228,19 +237,24 @@ function startApp(mode, barrio){
 function goHome(){ document.getElementById('app').hidden = true; document.getElementById('landing').hidden = false; window.scrollTo(0,0); }
 
 function useGPS(){
-  if(!navigator.geolocation){ fallbackDemo('Tu navegador no comparte la ubicación.'); return; }
-  document.getElementById('locPill').textContent = '📍 Ubicando…';
+  if(!navigator.geolocation){ fallbackDemo(tr('Tu navegador no comparte la ubicación.')); return; }
+  document.getElementById('locPill').textContent = '📍 ' + tr('Ubicando…');
   navigator.geolocation.getCurrentPosition(pos=>{
     const ll = [pos.coords.latitude, pos.coords.longitude];
-    if(distM(ll, OBELISCO) > 25000){ fallbackDemo('Estás lejos de Buenos Aires.'); return; }
+    if(distM(ll, OBELISCO) > 25000){ fallbackDemo(tr('Estás lejos de Buenos Aires.')); return; }
     setMe(ll, 'Tu ubicación');
-  }, ()=> fallbackDemo('No pudimos obtener tu ubicación.'), {enableHighAccuracy:true, timeout:8000});
+  }, ()=> fallbackDemo(tr('No pudimos obtener tu ubicación.')), {enableHighAccuracy:true, timeout:8000});
 }
 function fallbackDemo(why){
   setMe(DEMO_SPOTS['9 de Julio'], 'Av. 9 de Julio (demo)');
-  toast({ic:'📍', title:why, text:'Te ubicamos en la Av. 9 de Julio para que pruebes la app. Podés arrastrar el punto azul.'});
+  toast({ic:'📍', title:why, text:tr('Te ubicamos en la Av. 9 de Julio para que pruebes la app. Podés arrastrar el punto azul.')});
 }
 
+function buildChips(){
+  const chips = [['todos',tr('Todos')],['vivo','<span class="dot" style="display:inline-block;margin-right:2px"></span> ' + tr('En vivo')],['pronto','⏱️ ' + tr('Próxima hora')],['gratis','🆓 ' + tr('A la gorra')],
+    ...Object.entries(CATS).filter(([k])=>TOURS.some(t=>t.cat===k)).map(([k,c])=>[k, c.e+' '+tr(c.n)])];
+  document.getElementById('chips').innerHTML = chips.map(([k,n])=>`<button class="chip ${k==='vivo'?'live-chip':''} ${k===filter?'on':''}" data-f="${k}">${n}</button>`).join('');
+}
 function initMap(){
   map = L.map('map', {zoomControl:false, attributionControl:true}).setView(DEMO_SPOTS['9 de Julio'], 15);
   L.control.zoom({position:'bottomright'}).addTo(map);
@@ -249,14 +263,11 @@ function initMap(){
   map.on('click', e=>{ if(pedidoMode){ addPedidoStop([e.latlng.lat, e.latlng.lng]); return; }
     if(meLabel.includes('demo') || meLabel==='Punto elegido'){ setMe([e.latlng.lat,e.latlng.lng],'Punto elegido'); } });
 
-  // chips
-  const chips = [['todos','Todos'],['vivo','<span class="dot" style="display:inline-block;margin-right:2px"></span> En vivo'],['pronto','⏱️ Próxima hora'],['gratis','🆓 A la gorra'],
-    ...Object.entries(CATS).filter(([k])=>TOURS.some(t=>t.cat===k)).map(([k,c])=>[k, c.e+' '+c.n])];
-  document.getElementById('chips').innerHTML = chips.map(([k,n])=>`<button class="chip ${k==='vivo'?'live-chip':''} ${k===filter?'on':''}" data-f="${k}">${n}</button>`).join('');
+  buildChips();
   document.getElementById('chips').onclick = e=>{
     const b = e.target.closest('.chip'); if(!b) return;
     filter = b.dataset.f;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c===b));
+    document.querySelectorAll('#chips .chip').forEach(c=>c.classList.toggle('on', c===b));
     render(true);
   };
   document.querySelector('.seg').onclick = e=>{
@@ -269,16 +280,21 @@ function initMap(){
   setTimeout(()=>checkAlerts(true), 5000);
 }
 
+/* la ubicación se guarda en español y se muestra traducida */
+function verUbicacion(l){
+  const m = l.match(/^(.*) \(demo\)$/);
+  return m ? `${tr(m[1])} (${tr('demo')})` : tr(l);
+}
 function setMe(ll, label){
   me = ll; meLabel = label;
-  document.getElementById('locPill').textContent = '📍 ' + label;
+  document.getElementById('locPill').textContent = '📍 ' + verUbicacion(label);
   const icon = L.divIcon({className:'', html:'<div class="me"><div class="h"></div><div class="c"></div></div>', iconSize:[22,22], iconAnchor:[11,11]});
   if(!meMarker){
-    meMarker = L.marker(ll,{icon, draggable:true, zIndexOffset:1000}).addTo(map).bindTooltip('Vos estás acá', {direction:'top', offset:[0,-12]});
+    meMarker = L.marker(ll,{icon, draggable:true, zIndexOffset:1000}).addTo(map).bindTooltip(tr('Vos estás acá'), {direction:'top', offset:[0,-12]});
     meMarker.on('dragend', ()=>{ const p=meMarker.getLatLng(); setMe([p.lat,p.lng],'Punto elegido'); });
   } else meMarker.setLatLng(ll);
   map.setView(ll, 15);
-  if(label !== 'Tu ubicación') showHint('Tocá el mapa o arrastrá el punto azul para moverte');
+  if(label !== 'Tu ubicación') showHint(tr('Tocá el mapa o arrastrá el punto azul para moverte'));
   render(true);
 }
 function centerMe(){ if(me) map.flyTo(me, 16, {duration:.6}); }
@@ -314,10 +330,10 @@ function visibleTours(){
 }
 
 function whenTag(s){
-  if(s.live) return `<span class="tag live"><span class="dot"></span> En vivo · termina en ${fmtIn(s.endsIn)}</span>`;
-  if(s.startsIn <= 0) return `<span class="tag soon">🟢 Por salir</span>`;
-  if(s.startsIn <= 60) return `<span class="tag soon">🕐 Empieza en ${fmtIn(s.startsIn)}</span>`;
-  return `<span class="tag later">🕐 ${hhmm(s.start)} h</span>`;
+  if(s.live) return `<span class="tag live"><span class="dot"></span> ${tr('En vivo · termina en {t}', {t:fmtIn(s.endsIn)})}</span>`;
+  if(s.startsIn <= 0) return `<span class="tag soon">🟢 ${tr('Por salir')}</span>`;
+  if(s.startsIn <= 60) return `<span class="tag soon">🕐 ${tr('Empieza en {t}', {t:fmtIn(s.startsIn)})}</span>`;
+  return `<span class="tag later">🕐 ${hora(s.start)}</span>`;
 }
 
 /* ---------- render ---------- */
@@ -328,22 +344,21 @@ function render(force){
   const ids = new Set(vis.map(v=>v.t.id));
 
   // lista (solo se redibuja si cambió algo visible, para no parpadear)
-  const key = vis.map(v=>`${v.t.id}:${v.s.live?'L'+v.s.endsIn:v.s.startsIn}:${Math.round(v.d/10)}:${v.t.ocup}`).join('|') + sortBy + filter + (selected?.id||'');
+  const key = vis.map(v=>`${v.t.id}:${v.s.live?'L'+v.s.endsIn:v.s.startsIn}:${Math.round(v.d/10)}:${v.t.ocup}`).join('|') + sortBy + filter + (selected?.id||'') + LANG;
   if(force || key !== lastListKey){
     lastListKey = key;
-    document.getElementById('count').textContent = `${vis.length} tour${vis.length===1?'':'s'}`;
-    const vivos = vis.filter(v=>v.s.live).length;
+    document.getElementById('count').textContent = tn(vis.length, '{n} tour', '{n} tours');
     document.getElementById('list').innerHTML = vis.length ? vis.map(({t,s,d})=>{
       const c = CATS[t.cat], g = GUIDES[t.g];
       return `<button class="card ${selected?.id===t.id?'hl':''}" data-id="${t.id}">
         <span class="thumb" style="background:${BARRIOS[t.barrio].bg}">${c.e}</span>
         <span class="body">
-          <h3>${esc(t.name)}</h3>
-          <span class="meta"><span>📍 ${fmtDist(d)} · ${cuadras(d)} cuadras</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
-          <span class="meta" style="margin-top:2px;color:var(--ink-3)">con ${esc(g.n)} · ⭐ ${g.r}${t.privado?' · <b style="color:var(--pink-700)">🙋 tu tour a pedido</b>':t.ext?' · <b style="color:var(--pink-600)">✨ publicada por el guía</b>':''}</span>
+          <h3>${esc(nombreTour(t.name))}</h3>
+          <span class="meta"><span>📍 ${fmtDist(d)} · ${tn(cuadras(d), '{n} cuadra', '{n} cuadras')}</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
+          <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${g.r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-600)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
           <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${money(t.price)}</span></span>
         </span></button>`;
-    }).join('') : `<div class="empty">No hay tours con este filtro ahora.<br>Probá con "Todos".</div>`;
+    }).join('') : `<div class="empty">${tr('No hay tours con este filtro ahora.<br>Probá con "Todos".')}</div>`;
   }
 
   // marcadores (y se borran los de salidas que ya no existen)
@@ -354,7 +369,7 @@ function render(force){
     const s = state(t), show = ids.has(t.id), sel = selected?.id===t.id;
     // punto de encuentro (tours por empezar)
     if(show && !s.live){
-      const lbl = s.startsIn <= 0 ? 'ya' : s.startsIn <= 60 ? `en ${s.startsIn}'` : hhmm(s.start);
+      const lbl = s.startsIn <= 0 ? tr('ya') : s.startsIn <= 60 ? tr("en {n}'", {n:s.startsIn}) : hhmm(s.start);
       const html = `<div class="pin ${sel?'sel':''}"><span class="lbl">${lbl}</span><div class="bub"><span>${CATS[t.cat].e}</span></div></div>`;
       if(!pinMarkers[t.id]){
         pinMarkers[t.id] = L.marker(t.meet, {icon:L.divIcon({className:'',html,iconSize:[42,42],iconAnchor:[21,48]})})
@@ -369,10 +384,10 @@ function render(force){
     if(show && s.live){
       const g = GUIDES[t.g];
       if(!guideMarkers[t.id]){
-        const html = `<div class="gmk"><div class="ring"></div><div class="av" style="background:${g.c}">${initials(g.n)}</div><span class="live-l">EN VIVO</span></div>`;
+        const html = `<div class="gmk"><div class="ring"></div><div class="av" style="background:${g.c}">${initials(g.n)}</div><span class="live-l">${tr('EN VIVO')}</span></div>`;
         guideMarkers[t.id] = L.marker(s.ll, {icon:L.divIcon({className:'guide-icon',html,iconSize:[46,46],iconAnchor:[23,23]}), zIndexOffset:500})
           .addTo(map).on('click',()=>openDetail(t.id))
-          .bindTooltip(`${esc(t.name)} · ${esc(g.n)}`, {direction:'top', offset:[0,-24]});
+          .bindTooltip(`${esc(nombreTour(t.name))} · ${esc(g.n)}`, {direction:'top', offset:[0,-24]});
       } else guideMarkers[t.id].setLatLng(s.ll);
       if(sel && follow) map.panTo(s.ll, {animate:true, duration:1});
     } else if(guideMarkers[t.id]){ map.removeLayer(guideMarkers[t.id]); delete guideMarkers[t.id]; }
@@ -404,7 +419,7 @@ function drawRoute(t){
   routeLayer = L.layerGroup([
     L.polyline(ll,{color:'#fff',weight:9,opacity:.9}),
     L.polyline(ll,{color:'#E07FA3',weight:5,dashArray:'2 10',lineCap:'round'}),
-    ...t.route.slice(1).map(r=>L.circleMarker([r[0],r[1]],{radius:5,color:'#E07FA3',weight:3,fillColor:'#fff',fillOpacity:1}).bindTooltip(esc(r[2]))),
+    ...t.route.slice(1).map(r=>L.circleMarker([r[0],r[1]],{radius:5,color:'#E07FA3',weight:3,fillColor:'#fff',fillOpacity:1}).bindTooltip(esc(verLugar(r[2])))),
   ]).addTo(map);
 }
 
@@ -415,66 +430,67 @@ function renderDetail(force){
   const pos = s.live ? s.ll : t.meet.slice(0,2);
   const d = me ? distM(me, pos) : 0, w = walkMin(d);
   const libres = t.cupos - t.ocup;
-  const key = [t.id, s.live, s.live?s.endsIn:s.startsIn, s.live?s.seg:0, Math.round(d/10), t.ocup, follow].join('|');
+  const key = [t.id, s.live, s.live?s.endsIn:s.startsIn, s.live?s.seg:0, Math.round(d/10), t.ocup, follow, LANG].join('|');
   if(!force && key === lastDetailKey) return;
   lastDetailKey = key;
 
   let status;
   if(s.live){
     const nextStop = t.route[Math.min(s.seg+1, t.route.length-1)][2];
-    status = `<div class="status live"><span class="dot"></span><span>El tour está en curso. ${esc(g.n.split(' ')[0])} va hacia <b>${esc(nextStop)}</b>. Termina en ${fmtIn(s.endsIn)}. Estás a ${walkMin(d)} min caminando.</span></div>`;
+    status = `<div class="status live"><span class="dot"></span><span>${tr('El tour está en curso. {g} va hacia <b>{p}</b>. Termina en {t}. Estás a {w} min caminando.', {g:esc(g.n.split(' ')[0]), p:esc(verLugar(nextStop)), t:fmtIn(s.endsIn), w:walkMin(d)})}</span></div>`;
   } else if(s.startsIn <= 0){
-    status = `<div class="status ok">🟢 <span>El guía está por salir desde el punto de encuentro. Estás a ${w} min caminando.</span></div>`;
+    status = `<div class="status ok">🟢 <span>${tr('El guía está por salir desde el punto de encuentro. Estás a {w} min caminando.', {w})}</span></div>`;
   } else if(w <= s.startsIn - 3){
-    status = `<div class="status ok">✅ <span>Llegás caminando: ${w} min hasta el punto de encuentro y el tour empieza en ${fmtIn(s.startsIn)}.</span></div>`;
+    status = `<div class="status ok">✅ <span>${tr('Llegás caminando: {w} min hasta el punto de encuentro y el tour empieza en {t}.', {w, t:fmtIn(s.startsIn)})}</span></div>`;
   } else if(w <= s.startsIn + 2){
-    status = `<div class="status warn">⚡ <span>Llegás justo: ${w} min caminando y empieza en ${fmtIn(s.startsIn)}. ¡Salí ya!</span></div>`;
+    status = `<div class="status warn">⚡ <span>${tr('Llegás justo: {w} min caminando y empieza en {t}. ¡Salí ya!', {w, t:fmtIn(s.startsIn)})}</span></div>`;
   } else {
-    status = `<div class="status soon">🕐 <span>Caminando no llegás a esta salida (${w} min). ${t.ext ? 'Mirá otras salidas cerca' : `Próxima a las ${hhmm(s.start + t.every*MIN)} h`}, o tomá un taxi.</span></div>`;
+    status = `<div class="status soon">🕐 <span>${t.ext ? tr('Caminando no llegás a esta salida ({w} min). Mirá otras salidas cerca, o tomá un taxi.', {w})
+      : tr('Caminando no llegás a esta salida ({w} min). Próxima a las {h}, o tomá un taxi.', {w, h:hora(s.start + t.every*MIN)})}</span></div>`;
   }
 
   const stops = t.route.map((r,i)=>{
     let cls = '';
     if(s.live){ if(i <= s.seg) cls='done'; if(i === s.seg+1) cls='now'; }
-    return `<li class="${cls}">${esc(r[2])}</li>`;
+    return `<li class="${cls}">${esc(verLugar(r[2]))}</li>`;
   }).join('');
 
   document.getElementById('detailView').innerHTML = `
-    <div class="d-top"><button class="icon-btn" onclick="closeDetail()" aria-label="Volver">←</button><span class="t">${esc(t.name)}</span></div>
+    <div class="d-top"><button class="icon-btn" onclick="closeDetail()" aria-label="${tr('Volver')}">←</button><span class="t">${esc(nombreTour(t.name))}</span></div>
     <div class="d-hero" style="background:${BARRIOS[t.barrio].bg}">
       <div class="big">${c.e}</div>
-      <h2>${esc(t.name)}</h2>
-      <div class="sub">${c.n} · ${esc(t.barrio)}</div>
+      <h2>${esc(nombreTour(t.name))}</h2>
+      <div class="sub">${tr(c.n)} · ${esc(t.barrio)}</div>
     </div>
     ${status}
     <div class="facts">
-      <div class="fact"><small>Distancia</small><b>${fmtDist(d)}</b><i>${cuadras(d)} cuadras · ${w} min a pie</i></div>
-      <div class="fact"><small>${s.live?'Empezó':'Empieza'}</small><b>${hhmm(s.start)} h</b><i>${s.live?`termina en ${fmtIn(s.endsIn)}`:s.startsIn<=0?'por salir':`en ${fmtIn(s.startsIn)}`}</i></div>
-      <div class="fact"><small>Duración</small><b>${fmtIn(t.dur)}</b><i>${(t.len/1000).toFixed(1).replace('.',',')} km a pie</i></div>
-      <div class="fact"><small>Precio</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?'pagás lo que quieras':'por persona'}</i></div>
-      <div class="fact"><small>Idiomas</small><b>${t.langs.join(' · ')}</b></div>
-      ${t.privado ? `<div class="fact"><small>Grupo</small><b>${t.cupos} personas</b><i>tour privado a pedido</i></div>`
-        : `<div class="fact"><small>Cupos</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?`Quedan ${libres}`:'Completo'}</b><i>de ${t.cupos} lugares</i></div>`}
+      <div class="fact"><small>${tr('Distancia')}</small><b>${fmtDist(d)}</b><i>${tn(cuadras(d), '{n} cuadra', '{n} cuadras')} · ${tr('{w} min a pie', {w})}</i></div>
+      <div class="fact"><small>${s.live?tr('Empezó'):tr('Empieza')}</small><b>${hora(s.start)}</b><i>${s.live?tr('termina en {t}', {t:fmtIn(s.endsIn)}):s.startsIn<=0?tr('por salir'):tr('en {t}', {t:fmtIn(s.startsIn)})}</i></div>
+      <div class="fact"><small>${tr('Duración')}</small><b>${fmtIn(t.dur)}</b><i>${tr('{km} km a pie', {km:dec1(t.len/1000)})}</i></div>
+      <div class="fact"><small>${tr('Precio')}</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?tr('pagás lo que quieras'):tr('por persona')}</i></div>
+      <div class="fact"><small>${tr('Idiomas')}</small><b>${t.langs.join(' · ')}</b></div>
+      ${t.privado ? `<div class="fact"><small>${tr('Grupo')}</small><b>${tr('{n} personas', {n:t.cupos})}</b><i>${tr('tour privado a pedido')}</i></div>`
+        : `<div class="fact"><small>${tr('Cupos')}</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?tr('Quedan {n}', {n:libres}):tr('Completo')}</b><i>${tr('de {n} lugares', {n:t.cupos})}</i></div>`}
     </div>
-    <div class="d-sec"><h4>Punto de encuentro</h4><p>📍 <b>${esc(t.meet[2])}</b></p></div>
-    <div class="d-sec"><h4>Seguridad</h4>${(()=>{ const df = dificultad(t); return `<div class="safe">
-      <span class="dif ${df.cls}">${df.e} Dificultad ${df.n}</span><p>${esc(df.txt)}</p>
+    <div class="d-sec"><h4>${tr('Punto de encuentro')}</h4><p>📍 <b>${esc(verLugar(t.meet[2]))}</b></p></div>
+    <div class="d-sec"><h4>${tr('Seguridad')}</h4>${(()=>{ const df = dificultad(t); return `<div class="safe">
+      <span class="dif ${df.cls}">${df.e} ${tr('Dificultad {n}', {n:df.n})}</span><p>${esc(df.txt)}</p>
       <ul class="recs">${recomendaciones(t).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
-      <p class="safe-note">Si tenés alguna condición de salud o movilidad, avisale al guía antes de empezar.</p>
-      <button class="mini" onclick="abrirEmergencia({ll:me})">🆘 Números de emergencia</button></div>`; })()}</div>
-    ${t.desc ? `<div class="d-sec"><h4>${t.privado ? 'Tu comentario al guía' : 'De qué se trata'}</h4><p>${esc(t.desc)}</p></div>` : ''}
-    <div class="d-sec"><h4>Recorrido</h4><ul class="timeline">${stops}</ul></div>
-    <div class="d-sec"><h4>Tu guía</h4>
+      <p class="safe-note">${tr('Si tenés alguna condición de salud o movilidad, avisale al guía antes de empezar.')}</p>
+      <button class="mini" onclick="abrirEmergencia({ll:me})">🆘 ${tr('Números de emergencia')}</button></div>`; })()}</div>
+    ${t.desc ? `<div class="d-sec"><h4>${t.privado ? tr('Tu comentario al guía') : tr('De qué se trata')}</h4><p>${esc(tr(t.desc))}</p></div>` : ''}
+    <div class="d-sec"><h4>${tr('Recorrido')}</h4><ul class="timeline">${stops}</ul></div>
+    <div class="d-sec"><h4>${tr('Tu guía')}</h4>
       <div class="guide"><span class="avatar" style="background:${g.c}">${initials(g.n)}</span>
-        <div><b>${esc(g.n)}</b><small>⭐ ${g.r} (${g.rv} reseñas) · ${g.y} años guiando</small><br><span class="badge-ok">✔ Guía verificada</span></div></div>
-      <p style="margin-top:8px">${esc(g.bio)}</p>
+        <div><b>${esc(g.n)}</b><small>⭐ ${g.r} (${tr('{n} reseñas', {n:g.rv})}) · ${tr('{n} años guiando', {n:g.y})}</small><br><span class="badge-ok">✔ ${tr('Guía verificada')}</span></div></div>
+      <p style="margin-top:8px">${esc(tr(g.bio))}</p>
     </div>
     <div class="d-actions">
-      <a class="btn btn-ghost" style="border:1.5px solid var(--pink-200)" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${pos[0]},${pos[1]}&travelmode=walking">🧭 Cómo llegar</a>
+      <a class="btn btn-ghost" style="border:1.5px solid var(--pink-200)" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${pos[0]},${pos[1]}&travelmode=walking">🧭 ${tr('Cómo llegar')}</a>
       ${s.live
-        ? `<button class="btn btn-primary" onclick="toggleFollow()">${follow?'⏸ Dejar de seguir':'🔴 Seguir en vivo'}</button>`
-        : t.privado ? `<button class="btn btn-primary" onclick="openMisPedidos()">🙋 Ver mi pedido</button>`
-        : `<button class="btn btn-primary" ${libres<=0?'disabled style="opacity:.5"':''} onclick="reserve('${t.id}')">${libres>0?'Reservar lugar':'Completo'}</button>`}
+        ? `<button class="btn btn-primary" onclick="toggleFollow()">${follow?'⏸ '+tr('Dejar de seguir'):'🔴 '+tr('Seguir en vivo')}</button>`
+        : t.privado ? `<button class="btn btn-primary" onclick="openMisPedidos()">🙋 ${tr('Ver mi pedido')}</button>`
+        : `<button class="btn btn-primary" ${libres<=0?'disabled style="opacity:.5"':''} onclick="reserve('${t.id}')">${libres>0?tr('Reservar lugar'):tr('Completo')}</button>`}
     </div>`;
 }
 function toggleFollow(){
@@ -488,15 +504,15 @@ function reserve(id){
   const t = findTour(id), libres = t.cupos - t.ocup; let q = 1, nombre = '';
   const ov = document.createElement('div'); ov.className = 'overlay';
   const draw = ()=> ov.innerHTML = `<div class="modal">
-      <h3>Reservar: ${esc(t.name)}</h3>
-      <p class="muted">Salida de las ${hhmm(state(t).start)} h · ${esc(t.meet[2])} · ${money(t.price)}${t.price?' c/u':''}</p>
-      <h5>¿Cuántas personas?</h5>
+      <h3>${tr('Reservar: {n}', {n:esc(nombreTour(t.name))})}</h3>
+      <p class="muted">${tr('Salida de las {h}', {h:hora(state(t).start)})} · ${esc(verLugar(t.meet[2]))} · ${money(t.price)}${t.price?' '+tr('c/u'):''}</p>
+      <h5>${tr('¿Cuántas personas?')}</h5>
       <div class="qty"><button data-q="-1">−</button><b>${q}</b><button data-q="1">+</button></div>
-      <h5>Tu nombre (para que el guía te reconozca)</h5>
-      <input class="inp" data-name maxlength="40" placeholder="Opcional" value="${esc(nombre)}" style="margin-bottom:14px">
-      ${t.price?`<p class="muted" style="text-align:center">Total: <b style="color:var(--ink)">${money(t.price*q)}</b> · se paga al guía</p>`:''}
-      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>Cancelar</button><button class="btn btn-primary" style="flex:1" data-ok>Confirmar</button></div>
-      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.</p>
+      <h5>${tr('Tu nombre (para que el guía te reconozca)')}</h5>
+      <input class="inp" data-name maxlength="40" placeholder="${esc(tr('Opcional'))}" value="${esc(nombre)}" style="margin-bottom:14px">
+      ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al guía', {t:money(t.price*q)})}</p>`:''}
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>${tr('Cancelar')}</button><button class="btn btn-primary" style="flex:1" data-ok>${tr('Confirmar')}</button></div>
+      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">${tr('Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.')}</p>
     </div>`;
   draw();
   ov.onclick = e=>{
@@ -505,9 +521,9 @@ function reserve(id){
     if(e.target.hasAttribute('data-ok')){
       nombre = ov.querySelector('[data-name]').value;
       if(t.ext) Store.reservar(t.id, q, nombre); else t.ocup += q;
-      ov.innerHTML = `<div class="modal" style="text-align:center"><div class="big-ok">🎉</div><h3>¡Listo, reservaste ${q} lugar${q>1?'es':''}!</h3>
-        <p class="muted">Te esperamos a las <b>${hhmm(state(t).start)} h</b> en <b>${esc(t.meet[2])}</b>. ${esc(GUIDES[t.g].n.split(' ')[0])} va a tener un cartel rosa de TourCerca.</p>
-        <button class="btn btn-primary" data-x style="width:100%">Genial</button></div>`;
+      ov.innerHTML = `<div class="modal" style="text-align:center"><div class="big-ok">🎉</div><h3>${tn(q, '¡Listo, reservaste {n} lugar!', '¡Listo, reservaste {n} lugares!')}</h3>
+        <p class="muted">${tr('Te esperamos a las <b>{h}</b> en <b>{p}</b>. {g} va a tener un cartel rosa de TourCerca.', {h:hora(state(t).start), p:esc(verLugar(t.meet[2])), g:esc(GUIDES[t.g].n.split(' ')[0])})}</p>
+        <button class="btn btn-primary" data-x style="width:100%">${tr('Genial')}</button></div>`;
       renderDetail(true); render(true);
     }
   };
@@ -524,25 +540,25 @@ function checkAlerts(first){
     .sort((a,b)=> a.s.startsIn - b.s.startsIn);
   const c = cands[0]; if(!c) return;
   alerted.add(c.t.id + '@' + c.s.start);
-  toast({ic:CATS[c.t.cat].e, title:`En ${c.s.startsIn} minutos empieza un tour cerca tuyo`,
-    text:`${c.t.name}, a ${cuadras(c.d)} cuadras (${fmtDist(c.d)}). ${c.t.price?money(c.t.price):'A la gorra'}.`,
-    action:{label:'Ver tour', fn:()=>openDetail(c.t.id)}, ttl:12000});
+  toast({ic:CATS[c.t.cat].e, title:tr('En {n} minutos empieza un tour cerca tuyo', {n:c.s.startsIn}),
+    text:tr('{tour}, a {c} ({d}). {p}.', {tour:nombreTour(c.t.name), c:tn(cuadras(c.d), '{n} cuadra', '{n} cuadras'), d:fmtDist(c.d), p:money(c.t.price)}),
+    action:{label:tr('Ver tour'), fn:()=>openDetail(c.t.id)}, ttl:12000});
 }
 
 /* ---------- panel de presentación ---------- */
 function openDemo(){
   const ov = document.createElement('div'); ov.className = 'overlay';
   ov.innerHTML = `<div class="modal">
-    <h3>⚙️ Modo presentación</h3>
-    <p class="muted">Herramientas para mostrar el prototipo en la defensa de la tesis.</p>
-    <h5>Ubicarme en</h5>
-    <div class="opts">${Object.keys(DEMO_SPOTS).map(k=>`<button class="chip" data-spot="${k}">${k}</button>`).join('')}<button class="chip" data-gps>📡 Mi GPS real</button></div>
-    <h5>Velocidad del tiempo</h5>
-    <div class="opts">${[1,10,30,60].map(v=>`<button class="chip ${speed===v?'on':''}" data-speed="${v}">${v===1?'Real':'×'+v}</button>`).join('')}</div>
-    <p class="muted" style="font-size:12.5px;margin-top:8px">Acelerá el tiempo para ver a los guías caminar y las cuentas regresivas.</p>
-    <h5>Alertas</h5>
-    <div class="opts"><button class="chip" data-alert>🔔 Probar alerta de proximidad</button></div>
-    <div style="margin-top:18px"><button class="btn btn-primary" style="width:100%" data-x>Listo</button></div>
+    <h3>⚙️ ${tr('Modo presentación')}</h3>
+    <p class="muted">${tr('Herramientas para mostrar el prototipo en la defensa de la tesis.')}</p>
+    <h5>${tr('Ubicarme en')}</h5>
+    <div class="opts">${Object.keys(DEMO_SPOTS).map(k=>`<button class="chip" data-spot="${k}">${k}</button>`).join('')}<button class="chip" data-gps>📡 ${tr('Mi GPS real')}</button></div>
+    <h5>${tr('Velocidad del tiempo')}</h5>
+    <div class="opts">${[1,10,30,60].map(v=>`<button class="chip ${speed===v?'on':''}" data-speed="${v}">${v===1?tr('Real'):'×'+v}</button>`).join('')}</div>
+    <p class="muted" style="font-size:12.5px;margin-top:8px">${tr('Acelerá el tiempo para ver a los guías caminar y las cuentas regresivas.')}</p>
+    <h5>${tr('Alertas')}</h5>
+    <div class="opts"><button class="chip" data-alert>🔔 ${tr('Probar alerta de proximidad')}</button></div>
+    <div style="margin-top:18px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Listo')}</button></div>
   </div>`;
   ov.onclick = e=>{
     const b = e.target.closest('button');
@@ -551,12 +567,11 @@ function openDemo(){
     if(b.dataset.spot){ setMe(DEMO_SPOTS[b.dataset.spot], b.dataset.spot + ' (demo)'); ov.remove(); }
     else if(b.hasAttribute('data-gps')){ useGPS(); ov.remove(); }
     else if(b.dataset.speed){ setSpeed(+b.dataset.speed); ov.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('on',x===b)); }
-    else if(b.hasAttribute('data-alert')){ alerted.clear(); ov.remove(); checkAlerts(); if(!document.querySelector('.toast')) toast({ic:'🔔',title:'Sin tours cerca que empiecen pronto',text:'Probá moverte a otro barrio desde este panel.'}); }
+    else if(b.hasAttribute('data-alert')){ alerted.clear(); ov.remove(); checkAlerts(); if(!document.querySelector('.toast')) toast({ic:'🔔',title:tr('Sin tours cerca que empiecen pronto'),text:tr('Probá moverte a otro barrio desde este panel.')}); }
   };
   document.body.appendChild(ov);
 }
 
-/* ---------- bottom sheet (celular) ---------- */
 /* ---------- tamaño del panel: arrastrar con mouse o dedo ---------- */
 const isMobile = () => window.innerWidth <= 800;
 const layoutEl = () => document.querySelector('.layout');
@@ -651,9 +666,23 @@ function tick(){
   if(++alertTick % 20 === 0) checkAlerts();
   if(alertTick % 30 === 0){ rebuildExt(); }   // oculta salidas vencidas
 }
+
+/* ---------- cambio de idioma: se redibuja todo lo que se arma por código ---------- */
+onLang(()=>{
+  buildLanding();
+  if(!map) return;
+  buildChips();
+  if(meLabel) document.getElementById('locPill').textContent = '📍 ' + verUbicacion(meLabel);
+  if(meMarker) meMarker.setTooltipContent(tr('Vos estás acá'));
+  for(const id of Object.keys(guideMarkers)){ map.removeLayer(guideMarkers[id]); delete guideMarkers[id]; }   // tooltips y etiqueta "EN VIVO"
+  if(routeLayer && selected) drawRoute(selected);
+  render(true);
+  if(selected) renderDetail(true);
+});
+
+iniciarIdioma();
 mountVersion();
 badgeMis();
-document.getElementById('copy').textContent = COPYRIGHT;
 // index.html#mapa abre directo el mapa (lo usa el panel del guía)
 if(location.hash === '#mapa') startApp('demo');
 </script>

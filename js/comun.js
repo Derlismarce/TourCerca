@@ -5,9 +5,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.1';
+const VERSION = '3.2';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.2', f:'2026-10-04', items:[
+    'La app en tres idiomas: español, inglés y portugués, con selector arriba a la derecha.',
+    'Detecta el idioma del celular la primera vez y recuerda el que elijas.',
+  ]},
   {v:'3.1', f:'2026-09-28', items:[
     'Botón de emergencia (🆘) para turistas y guías: SAME 107, 911, bomberos 100 y compartir la ubicación.',
     'Primeros pasos ante golpe de calor, desmayo o caída.',
@@ -175,12 +179,14 @@ function pointAlong(t, p){
 /* =====================================================================
    UTILIDADES DE FORMATO
    ===================================================================== */
-const hhmm = ms => new Date(ms).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false});
+const hhmm = ms => new Date(ms).toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit',hour12:false});
+const hora = ms => hhmm(ms) + (LANG === 'es' ? ' h' : '');      // "10:00 h" en español, "10:00" en inglés y portugués
+const dec1 = x => x.toLocaleString(LOC(), {minimumFractionDigits:1, maximumFractionDigits:1});
 const fmtIn = m => m < 60 ? `${m} min` : `${Math.floor(m/60)} h${m%60?` ${String(m%60).padStart(2,'0')}`:''}`;
-const fmtDist = d => d < 1000 ? `${Math.round(d/10)*10} m` : `${(d/1000).toFixed(1).replace('.',',')} km`;
+const fmtDist = d => d < 1000 ? `${Math.round(d/10)*10} m` : `${dec1(d/1000)} km`;
 const cuadras = d => Math.max(1,Math.round(d/100));
 const walkMin = d => Math.max(1,Math.round(d/75));   // ~4,5 km/h
-const money = n => n===0 ? 'A la gorra' : '$ ' + n.toLocaleString('es-AR');
+const money = n => n===0 ? tr('A la gorra') : (LANG === 'es' ? '$ ' : 'ARS ') + n.toLocaleString(LOC());
 const initials = n => n.split(' ').map(w=>w[0]).slice(0,2).join('');
 const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -204,7 +210,7 @@ const toLocalInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-
 function diaLabel(ms){
   const d = new Date(ms), t = new Date();
   const dd = Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate()) - new Date(t.getFullYear(),t.getMonth(),t.getDate())) / 864e5);
-  return dd === 0 ? 'Hoy' : dd === 1 ? 'Mañana' : dd === -1 ? 'Ayer' : d.toLocaleDateString('es-AR',{weekday:'short', day:'numeric', month:'numeric'});
+  return dd === 0 ? tr('Hoy') : dd === 1 ? tr('Mañana') : dd === -1 ? tr('Ayer') : d.toLocaleDateString(LOC(),{weekday:'short', day:'numeric', month:'numeric'});
 }
 /* nombre de la calle de un punto (OpenStreetMap / Nominatim) */
 async function nombreDe(ll){
@@ -217,6 +223,15 @@ async function nombreDe(ll){
   return null;
 }
 
+/* ---------- nombres guardados en español (datos compartidos) que se muestran traducidos ---------- */
+function verLugar(s){
+  s = String(s ?? ''); let m;
+  if(s === 'Punto de salida' || s === 'Punto de encuentro') return tr(s);
+  if((m = s.match(/^(Lugar|Parada) (\d+)$/))) return tr(m[1] + ' {n}', {n:m[2]});
+  return tr(s);
+}
+const nombreTour = n => (n || '').startsWith('Tour a pedido · ') ? tr('Tour a pedido') + ' · ' + n.slice(16) : tr(n);
+
 /* ---------- reglas de "Pedí tu tour" (las mismas para turista y guía) ---------- */
 const PEDIDO = {minPersonas:5, maxPersonas:40, minDur:60, minPrecio:15000, anticipacionH:2, maxDias:30};
 const PEDIDO_DURACIONES = [60, 90, 120, 150, 180, 240];
@@ -226,21 +241,22 @@ function reglasPedido(p, T = Date.now()){
   const desde = T + PEDIDO.anticipacionH * 60 * MIN, hasta = T + PEDIDO.maxDias * 24 * 60 * MIN;
   return [
     {k:'personas', ok: p.personas >= PEDIDO.minPersonas && p.personas <= PEDIDO.maxPersonas,
-     txt:`Mínimo ${PEDIDO.minPersonas} personas`, err:`El grupo tiene que ser de ${PEDIDO.minPersonas} a ${PEDIDO.maxPersonas} personas.`},
-    {k:'dur', ok: p.dur >= PEDIDO.minDur, txt:'Mínimo 1 hora', err:'El recorrido tiene que durar al menos 1 hora.'},
-    {k:'precio', ok: p.price >= PEDIDO.minPrecio, txt:`Mínimo ${money(PEDIDO.minPrecio)} c/u`, err:`El precio mínimo es ${money(PEDIDO.minPrecio)} por persona.`},
+     txt:tr('Mínimo {n} personas', {n:PEDIDO.minPersonas}), err:tr('El grupo tiene que ser de {a} a {b} personas.', {a:PEDIDO.minPersonas, b:PEDIDO.maxPersonas})},
+    {k:'dur', ok: p.dur >= PEDIDO.minDur, txt:tr('Mínimo 1 hora'), err:tr('El recorrido tiene que durar al menos 1 hora.')},
+    {k:'precio', ok: p.price >= PEDIDO.minPrecio, txt:tr('Mínimo {m} c/u', {m:money(PEDIDO.minPrecio)}), err:tr('El precio mínimo es {m} por persona.', {m:money(PEDIDO.minPrecio)})},
     {k:'fecha', ok: !isNaN(p.startAt) && p.startAt >= desde && p.startAt <= hasta,
-     txt:`De ${PEDIDO.anticipacionH} h a ${PEDIDO.maxDias} días`, err:`Pedilo con al menos ${PEDIDO.anticipacionH} horas de anticipación y hasta ${PEDIDO.maxDias} días.`},
-    {k:'ruta', ok: (p.route || []).length >= 2, txt:'Salida + 1 lugar', err:'Marcá en el mapa el punto de salida y al menos un lugar para visitar.'},
-    {k:'nombre', ok: !!(p.nombre || '').trim(), txt:'Tu nombre', err:'Poné tu nombre para que el guía te reconozca.'},
+     txt:tr('De {h} h a {d} días', {h:PEDIDO.anticipacionH, d:PEDIDO.maxDias}), err:tr('Pedilo con al menos {h} horas de anticipación y hasta {d} días.', {h:PEDIDO.anticipacionH, d:PEDIDO.maxDias})},
+    {k:'ruta', ok: (p.route || []).length >= 2, txt:tr('Salida + 1 lugar'), err:tr('Marcá en el mapa el punto de salida y al menos un lugar para visitar.')},
+    {k:'nombre', ok: !!(p.nombre || '').trim(), txt:tr('Tu nombre'), err:tr('Poné tu nombre para que el guía te reconozca.')},
   ];
 }
 /* estado real: un pedido pendiente cuya hora ya pasó está vencido */
 function estadoPedido(p){ return p.status === 'pendiente' && Date.now() > p.startAt ? 'vencido' : p.status; }
-const fechaLarga = ms => `${diaLabel(ms)} ${hhmm(ms)} h`;
+const fechaLarga = ms => `${diaLabel(ms)} ${hora(ms)}`;
 function fechaFrase(ms){                   // "mañana a las 10:00", "el sáb 27/9 a las 10:00"
-  const d = diaLabel(ms), h = hhmm(ms);
-  return d === 'Hoy' ? `hoy a las ${h}` : d === 'Mañana' ? `mañana a las ${h}` : `el ${d} a las ${h}`;
+  const d = new Date(ms), hoy = new Date(), h = hhmm(ms);
+  const dd = Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate()) - new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate())) / 864e5);
+  return dd === 0 ? tr('hoy a las {h}', {h}) : dd === 1 ? tr('mañana a las {h}', {h}) : tr('el {d} a las {h}', {d:diaLabel(ms), h});
 }
 
 /* ---------- seguridad ---------- */
@@ -257,12 +273,13 @@ const PRIMEROS_AUXILIOS = [
 ];
 
 /* dificultad estimada según lo que se camina y lo que dura */
-function dificultad(t){
-  const km = (t.len || 0) / 1000, dur = t.dur || 0, kmTxt = km.toFixed(1).replace('.', ',');
+function dificultad(tour){
+  const km = (tour.len || 0) / 1000, dur = tour.dur || 0, kmTxt = dec1(km);
   // manda lo que se camina; la duración solo suma si además hay bastante caminata
-  if(km >= 4 || (km >= 2.5 && dur >= 180)) return {n:'Alta', cls:'alta', e:'🔴', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: exigente, con muchas cuadras y poco descanso.`};
-  if(km >= 2 || (km >= 1 && dur >= 150)) return {n:'Media', cls:'media', e:'🟠', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: se camina bastante, con algunas paradas.`};
-  return {n:'Baja', cls:'baja', e:'🟢', txt:`${kmTxt} km a pie en ${fmtIn(dur)}: tranquilo, con paradas frecuentes.`};
+  const v = {km:kmTxt, d:fmtIn(dur)};
+  if(km >= 4 || (km >= 2.5 && dur >= 180)) return {n:tr('Alta'), cls:'alta', e:'🔴', txt:tr('{km} km a pie en {d}: exigente, con muchas cuadras y poco descanso.', v)};
+  if(km >= 2 || (km >= 1 && dur >= 150)) return {n:tr('Media'), cls:'media', e:'🟠', txt:tr('{km} km a pie en {d}: se camina bastante, con algunas paradas.', v)};
+  return {n:tr('Baja'), cls:'baja', e:'🟢', txt:tr('{km} km a pie en {d}: tranquilo, con paradas frecuentes.', v)};
 }
 
 /* clima actual de Buenos Aires (Open-Meteo, sin datos del usuario) */
@@ -276,11 +293,11 @@ async function cargarClima(){
   } catch(e){}
   return climaBA;
 }
-function recomendaciones(t){
-  const r = ['💧 Llevá agua', '👟 Calzado cómodo', '🧴 Protector solar y gorra'];
-  if(climaBA && climaBA.st >= 28) r.unshift(`🌡️ Hoy hay ${climaBA.st} °C de sensación térmica: tomá agua seguido y buscá la sombra`);
-  else if(climaBA && climaBA.st <= 8) r.unshift(`🧥 Hoy hay ${climaBA.st} °C de sensación térmica: abrigate`);
-  if((t.dur || 0) >= 150) r.push('🍎 Algo para comer');
+function recomendaciones(tour){
+  const r = [tr('💧 Llevá agua'), tr('👟 Calzado cómodo'), tr('🧴 Protector solar y gorra')];
+  if(climaBA && climaBA.st >= 28) r.unshift(tr('🌡️ Hoy hay {c} °C de sensación térmica: tomá agua seguido y buscá la sombra', {c:climaBA.st}));
+  else if(climaBA && climaBA.st <= 8) r.unshift(tr('🧥 Hoy hay {c} °C de sensación térmica: abrigate', {c:climaBA.st}));
+  if((tour.dur || 0) >= 150) r.push(tr('🍎 Algo para comer'));
   return r;
 }
 
@@ -289,23 +306,24 @@ function abrirEmergencia({ll = null, extra = ''} = {}){
   const ov = document.createElement('div'); ov.className = 'overlay';
   const link = ll ? `https://www.google.com/maps?q=${ll[0].toFixed(6)},${ll[1].toFixed(6)}` : '';
   ov.innerHTML = `<div class="modal sos">
-    <h3>🆘 Emergencia</h3>
-    <p class="muted">Si alguien está en peligro, llamá primero. Las llamadas son gratuitas.</p>
-    <div class="sos-tels">${EMERGENCIAS.map(x=>`<a class="sos-tel" href="tel:${x.tel}"><span>${x.e}</span><b>${x.tel}</b><small>${esc(x.n)}</small></a>`).join('')}</div>
-    ${ll ? `<button class="btn btn-ghost sos-share" data-share>📍 Compartir mi ubicación</button>` : ''}
+    <h3>🆘 ${tr('Emergencia')}</h3>
+    <p class="muted">${tr('Si alguien está en peligro, llamá primero. Las llamadas son gratuitas.')}</p>
+    ${LANG !== 'es' ? `<p class="muted" style="font-size:12.5px">${tr('Números de emergencia de Argentina.')}</p>` : ''}
+    <div class="sos-tels">${EMERGENCIAS.map(x=>`<a class="sos-tel" href="tel:${x.tel}"><span>${x.e}</span><b>${x.tel}</b><small>${esc(tr(x.n))}</small></a>`).join('')}</div>
+    ${ll ? `<button class="btn btn-ghost sos-share" data-share>📍 ${tr('Compartir mi ubicación')}</button>` : ''}
     ${extra}
-    <h5>Primeros pasos</h5>
-    ${PRIMEROS_AUXILIOS.map(x=>`<details class="aux"><summary>${esc(x.t)}</summary><p>${esc(x.d)}</p></details>`).join('')}
-    <p class="muted" style="font-size:11.5px;margin-top:10px">Orientación general. No reemplaza la atención médica ni las indicaciones del 107.</p>
-    <div style="margin-top:12px"><button class="btn btn-primary" style="width:100%" data-x>Cerrar</button></div>
+    <h5>${tr('Primeros pasos')}</h5>
+    ${PRIMEROS_AUXILIOS.map(x=>`<details class="aux"><summary>${esc(tr(x.t))}</summary><p>${esc(tr(x.d))}</p></details>`).join('')}
+    <p class="muted" style="font-size:11.5px;margin-top:10px">${tr('Orientación general. No reemplaza la atención médica ni las indicaciones del 107.')}</p>
+    <div style="margin-top:12px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Cerrar')}</button></div>
   </div>`;
   ov.onclick = async e=>{
     if(e.target === ov || e.target.hasAttribute('data-x')) return ov.remove();
     if(e.target.closest('[data-share]')){
-      const txt = `Necesito ayuda. Estoy acá: ${link}`;
+      const txt = tr('Necesito ayuda. Estoy acá: {link}', {link});
       try {
-        if(navigator.share){ await navigator.share({title:'Mi ubicación', text:txt}); }
-        else { await navigator.clipboard.writeText(txt); toast({ic:'📋', title:'Ubicación copiada', text:'Pegala en un mensaje de WhatsApp o SMS.'}); }
+        if(navigator.share){ await navigator.share({title:tr('Mi ubicación'), text:txt}); }
+        else { await navigator.clipboard.writeText(txt); toast({ic:'📋', title:tr('Ubicación copiada'), text:tr('Pegala en un mensaje de WhatsApp o SMS.')}); }
       } catch(err){}
     }
   };
@@ -317,7 +335,7 @@ function abrirEmergencia({ll = null, extra = ''} = {}){
 function toast({ic, title, text, action, ttl=7000}){
   const el = document.createElement('div'); el.className = 'toast';
   el.innerHTML = `<span class="ic">${ic}</span><div style="flex:1"><b>${esc(title)}</b><p>${esc(text)}</p>
-    <div class="acts">${action?`<button class="go">${esc(action.label)}</button>`:''}<button class="x">Cerrar</button></div></div>`;
+    <div class="acts">${action?`<button class="go">${esc(action.label)}</button>`:''}<button class="x">${tr('Cerrar')}</button></div></div>`;
   el.querySelector('.x').onclick = ()=>el.remove();
   if(action) el.querySelector('.go').onclick = ()=>{ el.remove(); action.fn(); };
   document.getElementById('toasts').prepend(el);
@@ -329,17 +347,17 @@ function mountVersion(){
   document.querySelectorAll('.logo').forEach(lg=>{
     if(lg.querySelector('.ver')) return;
     const v = document.createElement('button');
-    v.className = 'ver'; v.type = 'button'; v.textContent = 'V ' + VERSION; v.title = 'Novedades de esta versión';
+    v.className = 'ver'; v.type = 'button'; v.textContent = 'V ' + VERSION; v.dataset.i18nTitle = 'Novedades de esta versión'; v.title = tr('Novedades de esta versión');
     v.onclick = e=>{ e.preventDefault(); e.stopPropagation(); openChangelog(); };
     (lg.querySelector('.brand') || lg).appendChild(v);
   });
 }
 function openChangelog(){
   const ov = document.createElement('div'); ov.className = 'overlay';
-  ov.innerHTML = `<div class="modal"><h3>Novedades</h3><p class="muted">TourCerca · prototipo</p>
-    ${CHANGELOG.map(c=>`<h5>V ${c.v}${c.v===VERSION?' · actual':''}</h5><ul class="clog">${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`).join('')}
-    <p class="muted" style="font-size:12px;margin:16px 0 0;text-align:center">${esc(COPYRIGHT)}</p>
-    <div style="margin-top:14px"><button class="btn btn-primary" style="width:100%" data-x>Cerrar</button></div></div>`;
+  ov.innerHTML = `<div class="modal"><h3>${tr('Novedades')}</h3><p class="muted">${tr('TourCerca · prototipo')}</p>
+    ${CHANGELOG.map(c=>`<h5>V ${c.v}${c.v===VERSION?' · '+tr('actual'):''}</h5><ul class="clog">${c.items.map(i=>`<li>${esc(tr(i))}</li>`).join('')}</ul>`).join('')}
+    <p class="muted" style="font-size:12px;margin:16px 0 0;text-align:center">${esc(tr(COPYRIGHT))}</p>
+    <div style="margin-top:14px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Cerrar')}</button></div></div>`;
   ov.onclick = e=>{ if(e.target===ov || e.target.hasAttribute('data-x')) ov.remove(); };
   document.body.appendChild(ov);
 }
