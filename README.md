@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.3**: "Mis tours" (reservas y pedidos del turista en un solo lugar), cancelar una reserva antes de que empiece (el guía recibe el aviso) y ventana "¿Confirmás la reserva?" antes de reservar.
 - **V 3.2**: la app en español, inglés y portugués de Brasil. Selector "🌐 ES ▾" arriba a la derecha; detecta el idioma del celular la primera vez y recuerda la elección.
 - **V 3.1**: seguridad. Botón de emergencia (107, 911, 100 y compartir ubicación), primeros pasos ante incidentes, dificultad y recomendaciones en cada tour (con el clima real) y registro de incidentes del guía.
 - **V 3.0**: "Pedí tu tour". El turista programa una visita guiada (día, hora, punto de salida y lugares; mínimo 5 personas, 1 hora y $ 15.000 por persona) y un guía cercano la toma. El guía elige el radio de su zona y recibe una alerta con cada pedido nuevo.

@@ -100,8 +100,6 @@ body{background:var(--pink-50)}
 .lv-bot .opts{margin-top:10px}
 .lv-bot .row{display:flex;gap:8px;margin-top:12px}
 .lv-bot .row .btn{flex:1;padding:12px 10px;font-size:14.5px}
-.btn-danger{background:#fff;color:var(--live);border:1.5px solid #F6C4C6}
-.btn-danger:hover{background:#FDE8E8}
 .res-list{list-style:none;margin-top:6px}
 .res-list li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-weight:800}
 .res-list li span{color:var(--ink-3);font-weight:700;font-size:13px}
@@ -170,19 +168,6 @@ const findMiTour = id => misTours().find(t=>String(t.id) === String(id));
 /* los textos de los tours de ejemplo se guardan en español y se muestran traducidos */
 const fromTour = t => ({name:t.name, cat:t.cat, desc:t.desc||'', price:t.price, dur:t.dur, cupos:t.cupos, langs:[...t.langs], route:t.route.map(r=>r.slice())});
 
-function confirmBox(title, text, okLabel, danger){
-  return new Promise(res=>{
-    const ov = document.createElement('div'); ov.className = 'overlay';
-    ov.innerHTML = `<div class="modal"><h3>${esc(title)}</h3><p class="muted">${esc(text)}</p>
-      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-no>${tr('Volver')}</button>
-      <button class="btn ${danger?'btn-danger':'btn-primary'}" style="flex:1" data-yes>${esc(okLabel)}</button></div></div>`;
-    ov.onclick = e=>{
-      if(e.target === ov || e.target.hasAttribute('data-no')){ ov.remove(); res(false); }
-      else if(e.target.hasAttribute('data-yes')){ ov.remove(); res(true); }
-    };
-    document.body.appendChild(ov);
-  });
-}
 function openReservas(id){
   const s = Store.get().salidas[id]; if(!s) return;
   const rs = Store.reservasDe(id), tot = Store.ocupados(id);
@@ -694,14 +679,22 @@ function vLive(id){
 }
 
 /* ---------- cambios desde otra pestaña (reservas nuevas, etc.) ---------- */
-let prevRes = Store.get().reservas.length;
+let prevRes = Store.get().reservas.slice();
 Store.on(()=>{
-  const rs = Store.get().reservas;
-  if(rs.length > prevRes && guia){
-    const r = rs[rs.length - 1], s = Store.get().salidas[r.salidaId];
-    if(s && s.g === guia && !s.pedidoId) toast({ic:'🎟️', title:tr('¡Nueva reserva!'), text:tn(r.qty, '{q} reservó {n} lugar para "{s}".', '{q} reservó {n} lugares para "{s}".', {q:r.name || tr('Alguien'), s:nombreTour(s.name)})});
+  const rs = Store.get().reservas, ids = new Set(rs.map(r=>r.id)), antes = new Set(prevRes.map(r=>r.id));
+  if(guia){
+    for(const r of rs){
+      if(antes.has(r.id)) continue;
+      const s = Store.get().salidas[r.salidaId];
+      if(s && s.g === guia && !s.pedidoId) toast({ic:'🎟️', title:tr('¡Nueva reserva!'), text:tn(r.qty, '{q} reservó {n} lugar para "{s}".', '{q} reservó {n} lugares para "{s}".', {q:r.name || tr('Alguien'), s:nombreTour(s.name)})});
+    }
+    for(const r of prevRes){                  // reservas canceladas por el turista (la salida sigue existiendo)
+      if(ids.has(r.id)) continue;
+      const s = Store.get().salidas[r.salidaId];
+      if(s && s.g === guia && !s.pedidoId && s.status !== 'finalizada') toast({ic:'↩️', title:tr('Cancelaron una reserva'), text:tn(r.qty, '{q} canceló {n} lugar para "{s}". El lugar quedó libre.', '{q} canceló {n} lugares para "{s}". Los lugares quedaron libres.', {q:r.name || tr('Alguien'), s:nombreTour(s.name)})});
+    }
   }
-  prevRes = rs.length;
+  prevRes = rs.slice();
   if(curView === 'dash') vDash();      // refresca contadores
 });
 

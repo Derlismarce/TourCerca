@@ -5,9 +5,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.2';
+const VERSION = '3.3';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.3', f:'2026-10-04', items:[
+    '"Mis tours": el turista ve sus reservas y sus pedidos en un solo lugar.',
+    'Se puede cancelar una reserva antes de que empiece el tour; el lugar queda libre y el guía recibe el aviso.',
+    'Antes de reservar se muestra un resumen para confirmar ("¿Confirmás la reserva?"), así no se reserva por error.',
+  ]},
   {v:'3.2', f:'2026-10-04', items:[
     'La app en tres idiomas: español, inglés y portugués, con selector arriba a la derecha.',
     'Detecta el idioma del celular la primera vez y recuerda el que elijas.',
@@ -340,6 +345,21 @@ function toast({ic, title, text, action, ttl=7000}){
   if(action) el.querySelector('.go').onclick = ()=>{ el.remove(); action.fn(); };
   document.getElementById('toasts').prepend(el);
   setTimeout(()=>el.remove(), ttl);
+}
+
+/* ventana "¿estás seguro?": devuelve true si confirma */
+function confirmBox(title, text, okLabel, danger){
+  return new Promise(res=>{
+    const ov = document.createElement('div'); ov.className = 'overlay';
+    ov.innerHTML = `<div class="modal"><h3>${esc(title)}</h3><p class="muted">${esc(text)}</p>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-no>${tr('Volver')}</button>
+      <button class="btn ${danger?'btn-danger':'btn-primary'}" style="flex:1" data-yes>${esc(okLabel)}</button></div></div>`;
+    ov.onclick = e=>{
+      if(e.target === ov || e.target.hasAttribute('data-no')){ ov.remove(); res(false); }
+      else if(e.target.hasAttribute('data-yes')){ ov.remove(); res(true); }
+    };
+    document.body.appendChild(ov);
+  });
 }
 
 /* ---------- versión debajo del logo + novedades ---------- */

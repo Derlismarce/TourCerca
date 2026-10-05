@@ -114,7 +114,7 @@
         <div class="panel-head"><h2 data-i18n="Cerca tuyo ahora">Cerca tuyo ahora</h2><span class="count" id="count"></span></div>
         <div class="ask-bar">
           <button class="ask" onclick="openPedido()"><span class="em">✨</span><span><b data-i18n="Pedí tu tour">Pedí tu tour</b><span data-i18n="Elegí día, hora y recorrido. Un guía lo toma.">Elegí día, hora y recorrido. Un guía lo toma.</span></span></button>
-          <button class="mine" onclick="openMisPedidos()">🙋 <span data-i18n="Mis pedidos">Mis pedidos</span><span class="nbadge" id="misBadge" hidden>0</span></button>
+          <button class="mine" onclick="openMisPedidos()">🎟️ <span data-i18n="Mis tours">Mis tours</span><span class="nbadge" id="misBadge" hidden>0</span></button>
         </div>
         <div class="chips" id="chips"></div>
         <div class="sortbar"><span data-i18n="Ordenar">Ordenar</span>
@@ -485,6 +485,8 @@ function renderDetail(force){
         <div><b>${esc(g.n)}</b><small>⭐ ${g.r} (${tr('{n} reseñas', {n:g.rv})}) · ${tr('{n} años guiando', {n:g.y})}</small><br><span class="badge-ok">✔ ${tr('Guía verificada')}</span></div></div>
       <p style="margin-top:8px">${esc(tr(g.bio))}</p>
     </div>
+    ${(()=>{ const mr = !s.live && !t.privado && reservaDe(t.id, s.start); return mr ? `<div class="status ok">🎟️ <span>${tn(mr.qty, 'Tenés {n} lugar reservado en esta salida.', 'Tenés {n} lugares reservados en esta salida.')}
+      <button class="mini danger" style="margin-left:6px" onclick="cancelarMiReserva('${mr.id}')">${tr('Cancelar reserva')}</button></span></div>` : ''; })()}
     <div class="d-actions">
       <a class="btn btn-ghost" style="border:1.5px solid var(--pink-200)" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${pos[0]},${pos[1]}&travelmode=walking">🧭 ${tr('Cómo llegar')}</a>
       ${s.live
@@ -514,16 +516,36 @@ function reserve(id){
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>${tr('Cancelar')}</button><button class="btn btn-primary" style="flex:1" data-ok>${tr('Confirmar')}</button></div>
       <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">${tr('Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.')}</p>
     </div>`;
+  /* segundo paso: resumen y "¿Confirmás la reserva?", para no reservar por error */
+  const drawConfirm = ()=> ov.innerHTML = `<div class="modal">
+      <h3>${tr('¿Confirmás la reserva?')}</h3>
+      <p class="muted">${tr('Revisá los datos antes de confirmar.')}</p>
+      <ul class="resumen">
+        <li><span class="k">${CATS[t.cat].e}</span><b>${esc(nombreTour(t.name))}</b></li>
+        <li><span class="k">📅</span><span>${esc(fechaLarga(state(t).start))}</span></li>
+        <li><span class="k">📍</span><span>${esc(verLugar(t.meet[2]))}</span></li>
+        <li><span class="k">👥</span><span>${tn(q, '{n} persona', '{n} personas')}${nombre.trim() ? ' · ' + esc(nombre.trim()) : ''}</span></li>
+        <li><span class="k">💰</span><span>${t.price ? tr('{t} en total · se paga al guía', {t:money(t.price*q)}) : tr('A la gorra (cada uno paga lo que quiere)')}</span></li>
+      </ul>
+      <p class="aviso-conf">${tr('Si después no podés ir, cancelala desde "Mis tours" así el lugar queda libre.')}</p>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-back>← ${tr('Volver')}</button><button class="btn btn-primary" style="flex:1" data-yes>✓ ${tr('Sí, reservar')}</button></div>
+    </div>`;
   draw();
   ov.onclick = e=>{
     if(e.target===ov || e.target.hasAttribute('data-x')) return ov.remove();
     const b = e.target.closest('[data-q]'); if(b){ nombre = ov.querySelector('[data-name]').value; q = Math.max(1, Math.min(libres, q + +b.dataset.q)); draw(); return; }
-    if(e.target.hasAttribute('data-ok')){
-      nombre = ov.querySelector('[data-name]').value;
-      if(t.ext) Store.reservar(t.id, q, nombre); else t.ocup += q;
+    if(e.target.hasAttribute('data-ok')){ nombre = ov.querySelector('[data-name]').value; drawConfirm(); return; }
+    if(e.target.hasAttribute('data-back')){ draw(); return; }
+    if(e.target.hasAttribute('data-mis')){ ov.remove(); openMisPedidos(); return; }
+    if(e.target.hasAttribute('data-yes')){
+      const start = state(t).start;
+      let rid = null;
+      if(t.ext) rid = Store.reservar(t.id, q, nombre); else t.ocup += q;
+      guardarMiReserva({rid, tourId:t.id, ext:!!t.ext, start, dur:t.dur, qty:q, nombre:nombre.trim(),
+        name:t.name, cat:t.cat, meet:t.meet.slice(), price:t.price, barrio:t.barrio, g:t.g});
       ov.innerHTML = `<div class="modal" style="text-align:center"><div class="big-ok">🎉</div><h3>${tn(q, '¡Listo, reservaste {n} lugar!', '¡Listo, reservaste {n} lugares!')}</h3>
-        <p class="muted">${tr('Te esperamos a las <b>{h}</b> en <b>{p}</b>. {g} va a tener un cartel rosa de TourCerca.', {h:hora(state(t).start), p:esc(verLugar(t.meet[2])), g:esc(GUIDES[t.g].n.split(' ')[0])})}</p>
-        <button class="btn btn-primary" data-x style="width:100%">${tr('Genial')}</button></div>`;
+        <p class="muted">${tr('Te esperamos a las <b>{h}</b> en <b>{p}</b>. {g} va a tener un cartel rosa de TourCerca.', {h:hora(start), p:esc(verLugar(t.meet[2])), g:esc(GUIDES[t.g].n.split(' ')[0])})}</p>
+        <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-mis>🎟️ ${tr('Mis tours')}</button><button class="btn btn-primary" data-x style="flex:1">${tr('Genial')}</button></div></div>`;
       renderDetail(true); render(true);
     }
   };
@@ -664,7 +686,7 @@ function tick(){
   render(false);
   if(selected) renderDetail(false);
   if(++alertTick % 20 === 0) checkAlerts();
-  if(alertTick % 30 === 0){ rebuildExt(); }   // oculta salidas vencidas
+  if(alertTick % 30 === 0){ rebuildExt(); badgeMis(); renderMis(); }   // oculta salidas vencidas y actualiza "Mis tours"
 }
 
 /* ---------- cambio de idioma: se redibuja todo lo que se arma por código ---------- */

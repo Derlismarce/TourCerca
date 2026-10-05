@@ -73,9 +73,17 @@ const Store = (()=>{
 
     /* reservas */
     reservar(salidaId, qty, name){
-      cache.reservas.push({id:uid('r_'), salidaId, qty, name:(name||'').trim(), ts:Date.now()});
+      const r = {id:uid('r_'), salidaId, qty, name:(name||'').trim(), ts:Date.now()};
+      cache.reservas.push(r);
       save();
+      return r.id;
     },
+    cancelarReserva(id){
+      const n = cache.reservas.length;
+      cache.reservas = cache.reservas.filter(r=>r.id !== id);
+      if(cache.reservas.length !== n) save();
+    },
+    existeReserva: id=>cache.reservas.some(r=>r.id === id),
     reservasDe: id=>cache.reservas.filter(r=>r.salidaId === id),
     ocupados: id=>cache.reservas.filter(r=>r.salidaId === id).reduce((a,r)=>a + r.qty, 0),
 

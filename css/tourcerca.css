@@ -389,3 +389,17 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .lang-menu button.on .ck{visibility:visible}
 .lang-menu small{margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:800}
 @media (max-width:800px){ .lang-btn .car{display:none} .lang-btn{padding:6px 9px;font-size:12px} }
+
+/* ---------- V 3.3: Mis tours (reservas + pedidos) y confirmación ---------- */
+.btn-danger{background:#fff;color:var(--live);border:1.5px solid #F6C4C6}
+.btn-danger:hover{background:#FDE8E8}
+.mis-h{font-size:14px;font-weight:900;color:var(--ink-2);margin:6px 0 10px;display:flex;align-items:center;gap:6px}
+.mis-h small{font-weight:700;color:var(--ink-3);font-size:12px}
+.mis-h + .mis-empty{margin-top:0}
+.mis-empty{border:1.5px dashed var(--line);border-radius:16px;padding:14px;text-align:center;color:var(--ink-3);font-size:13px;font-weight:700;margin-bottom:16px}
+.mis-sep{height:6px}
+.resumen{list-style:none;margin:6px 0 14px;padding:12px 14px;border-radius:16px;background:var(--pink-50);border:1px solid var(--pink-100)}
+.resumen li{display:flex;gap:10px;padding:5px 0;font-size:14px;color:var(--ink-2)}
+.resumen li b{color:var(--ink)}
+.resumen li .k{width:22px;flex:0 0 22px;text-align:center}
+.aviso-conf{font-size:12.5px;color:var(--ink-3);text-align:center;margin:0 0 12px}

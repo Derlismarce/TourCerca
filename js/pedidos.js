@@ -16,6 +16,31 @@ const misPedidos = () => { const ids = misPedidosIds(); return Store.pedidos().f
 const misPedidosActivos = () => misPedidos().filter(p=>['pendiente','tomado'].includes(estadoPedido(p)) &&
   !(p.salidaId && Store.get().salidas[p.salidaId]?.status === 'finalizada'));
 
+/* ---------- mis reservas (V 3.3; sin cuentas: se recuerdan en este navegador) ---------- */
+const RES_KEY = 'tourcerca.misreservas';
+function misReservas(){ try { return JSON.parse(localStorage.getItem(RES_KEY) || '[]'); } catch(e){ return []; } }
+function setMisReservas(a){ try { localStorage.setItem(RES_KEY, JSON.stringify(a)); } catch(e){} }
+function guardarMiReserva(r){
+  r.id = 'mr_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); r.ts = Date.now();
+  setMisReservas(misReservas().concat(r)); badgeMis();
+}
+/* estado: 'prox' | 'vivo' | 'hecho' | 'cancelada' (el guía canceló la salida) */
+function estadoReserva(r){
+  if(r.ext){
+    const s = Store.get().salidas[r.tourId];
+    if(!s || (r.rid && !Store.existeReserva(r.rid))) return s && s.status === 'finalizada' ? 'hecho' : 'cancelada';
+    return s.status === 'en_curso' ? 'vivo' : s.status === 'finalizada' ? 'hecho' : 'prox';
+  }
+  const T = now();                                  // tours de ejemplo: reloj de la app (acelerable)
+  return T < r.start ? 'prox' : T < r.start + r.dur*MIN ? 'vivo' : 'hecho';
+}
+/* se muestran las vigentes y, hasta un día después, las terminadas o canceladas */
+const misReservasVisibles = () => misReservas()
+  .filter(r=> estadoReserva(r) === 'prox' || estadoReserva(r) === 'vivo' || Date.now() - (r.start + r.dur*MIN) < 864e5 || estadoReserva(r) === 'cancelada')
+  .sort((a,b)=>a.start - b.start);
+const misReservasActivas = () => misReservas().filter(r=>['prox','vivo'].includes(estadoReserva(r)));
+const reservaDe = (tourId, start) => misReservas().find(r=>String(r.tourId) === String(tourId) && r.start === start && estadoReserva(r) === 'prox');
+
 /* ---------- vistas del panel ---------- */
 function panelView(v){                 // 'list' | 'detail' | 'pedido' | 'mis'
   document.getElementById('listView').style.display = v === 'list' ? 'flex' : 'none';
@@ -24,7 +49,7 @@ function panelView(v){                 // 'list' | 'detail' | 'pedido' | 'mis'
   document.getElementById('misView').hidden = v !== 'mis';
 }
 function badgeMis(){
-  const n = misPedidosActivos().length, b = document.getElementById('misBadge');
+  const n = misPedidosActivos().length + misReservasActivas().length, b = document.getElementById('misBadge');
   if(b){ b.textContent = n; b.hidden = !n; }
 }
 
@@ -204,13 +229,62 @@ function openMisPedidos(){
 function renderMis(){
   const v = document.getElementById('misView'); if(v.hidden) return;
   const ps = misPedidos().filter(p=>p.status !== 'cancelado' || Date.now() - p.createdAt < 864e5);
+  const rs = misReservasVisibles();
   v.innerHTML = `
-    <div class="d-top"><button class="icon-btn" onclick="panelView('list')" aria-label="${tr('Volver')}">←</button><span class="t">🙋 ${tr('Mis pedidos')}</span>
-      <span style="flex:1"></span><button class="mini go" onclick="openPedido()">＋ ${tr('Nuevo')}</button></div>
+    <div class="d-top"><button class="icon-btn" onclick="panelView('list')" aria-label="${tr('Volver')}">←</button><span class="t">🎟️ ${tr('Mis tours')}</span></div>
     <div class="pv">
+      <h4 class="mis-h">🎟️ ${tr('Mis reservas')} ${rs.length ? `<small>· ${rs.length}</small>` : ''}</h4>
+      ${rs.length ? rs.map(reservaCardTurista).join('') : `<div class="mis-empty">${tr('Todavía no reservaste ningún tour. Elegí uno de la lista y tocá "Reservar lugar".')}</div>`}
+      <div class="mis-sep"></div>
+      <h4 class="mis-h">🙋 ${tr('Mis pedidos')} ${ps.length ? `<small>· ${ps.length}</small>` : ''}<span style="flex:1"></span><button class="mini go" onclick="openPedido()">＋ ${tr('Nuevo')}</button></h4>
       ${ps.length ? ps.map(pedidoCardTurista).join('') : `<div class="empty-ped"><div style="font-size:42px">🗺️</div><b>${tr('Todavía no pediste ningún tour')}</b><p>${tr('Elegí día, hora y los lugares que querés conocer. Un guía cercano lo toma.')}</p><button class="btn btn-primary" onclick="openPedido()">✨ ${tr('Pedí tu tour')}</button></div>`}
     </div>`;
 }
+function reservaCardTurista(r){
+  const st = estadoReserva(r), g = GUIDES[r.g];
+  let estado, acciones;
+  if(st === 'prox'){
+    estado = `<div class="pst ok">✅ <span>${tr('Reservado · te esperan en el punto de encuentro')}</span></div>`;
+    acciones = `${findTour(r.tourId) ? `<button class="mini go" onclick="verTourReservado('${r.id}')">${tr('Ver detalle')}</button>` : ''}<button class="mini danger" onclick="cancelarMiReserva('${r.id}')">${tr('Cancelar reserva')}</button>`;
+  } else if(st === 'vivo'){
+    estado = `<div class="pst live"><span class="dot"></span> ${tr('¡Tu tour está en vivo!')}</div>`;
+    acciones = findTour(r.tourId) ? `<button class="mini go" onclick="verTourReservado('${r.id}')">🔴 ${tr('Ver en el mapa')}</button>` : '';
+  } else if(st === 'hecho'){
+    estado = `<div class="pst done">🎉 ${g ? tr('Tour realizado con {g}', {g:esc(g.n)}) : tr('Tour realizado')}</div>`;
+    acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
+  } else {
+    estado = `<div class="pst off">${tr('El guía canceló esta salida')}</div>`;
+    acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
+  }
+  return `<div class="pcard">
+    <div class="pc-top"><span class="pc-when"><small>${diaLabel(r.start)}</small><b>${hhmm(r.start)}</b></span>
+      <span class="pc-info"><b>${CATS[r.cat].e} ${esc(nombreTour(r.name))}</b>
+      <span>📍 ${esc(verLugar(r.meet[2]))}${g ? ' · ' + esc(g.n) : ''}</span>
+      <span>👥 ${tn(r.qty, '{n} persona', '{n} personas')} · ⏱️ ${fmtIn(r.dur)} · 💰 ${r.price ? money(r.price * r.qty) : tr('A la gorra')}</span></span></div>
+    ${estado}
+    <div class="acts">${acciones}</div></div>`;
+}
+function verTourReservado(id){
+  const r = misReservas().find(x=>x.id === id); if(!r) return;
+  openDetail(r.tourId);
+}
+async function cancelarMiReserva(id){
+  const r = misReservas().find(x=>x.id === id); if(!r) return;
+  if(estadoReserva(r) !== 'prox') return toast({ic:'ℹ️', title:tr('Ya no se puede cancelar'), text:tr('El tour ya empezó.')});
+  const ok = await confirmBox(tr('Cancelar reserva'),
+    tn(r.qty, '¿Seguro que querés cancelar tu reserva de {n} lugar para "{t}" ({f})? El lugar queda libre para otra persona.',
+              '¿Seguro que querés cancelar tu reserva de {n} lugares para "{t}" ({f})? Los lugares quedan libres para otras personas.',
+              {t:nombreTour(r.name), f:fechaLarga(r.start)}),
+    tr('Sí, cancelar'), true);
+  if(!ok) return;
+  if(r.ext && r.rid) Store.cancelarReserva(r.rid);
+  else { const t = findTour(r.tourId); if(t && !t.ext) t.ocup = Math.max(0, t.ocup - r.qty); }
+  setMisReservas(misReservas().filter(x=>x.id !== id));
+  toast({ic:'↩️', title:tr('Reserva cancelada'), text:tr('Tu lugar quedó libre. Podés reservar otro tour cuando quieras.')});
+  badgeMis(); renderMis();
+  if(typeof render === 'function'){ render(true); if(selected) renderDetail(true); }
+}
+function borrarMiReserva(id){ setMisReservas(misReservas().filter(x=>x.id !== id)); badgeMis(); renderMis(); }
 function pedidoCardTurista(p){
   const st = estadoPedido(p), s = p.salidaId ? Store.get().salidas[p.salidaId] : null, g = p.g ? GUIDES[p.g] : null;
   let estado, acciones;
@@ -244,7 +318,9 @@ function pedidoCardTurista(p){
     ${estado}
     <div class="acts">${acciones}</div></div>`;
 }
-function cancelarMiPedido(id){ Store.cancelarPedido(id); toast({ic:'🗑', title:tr('Pedido cancelado'), text:tr('Ya no lo ven los guías.')}); }
+async function cancelarMiPedido(id){
+  if(!await confirmBox(tr('Cancelar pedido'), tr('¿Seguro que querés cancelar tu pedido? Los guías dejan de verlo.'), tr('Sí, cancelar'), true)) return;
+  Store.cancelarPedido(id); toast({ic:'🗑', title:tr('Pedido cancelado'), text:tr('Ya no lo ven los guías.')}); }
 function borrarMiPedido(id){ Store.borrarPedido(id); }
 
 /* ---------- avisos cuando cambia el estado de mis pedidos ---------- */
