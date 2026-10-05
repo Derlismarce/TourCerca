@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.7';
+const VERSION = '3.8';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.8', f:'2026-10-05', items:[
+    'Los recorridos van por la calle: al marcar las paradas, el camino a pie se acomoda a las calles (datos de OpenStreetMap).',
+    'Los kilómetros a pie y la dificultad se calculan con el camino real, no en línea recta.',
+    'Los guías en vivo (simulados) caminan por las calles.',
+    'Si no hay conexión, se muestra la línea recta como antes.',
+  ]},
   {v:'3.7', f:'2026-10-05', items:[
     'Los 48 barrios oficiales de la Ciudad: el barrio de cada salida y de cada pedido sale de los límites reales (por ejemplo, Parque Centenario es Caballito).',
     'El editor de recorridos muestra en qué barrio está el punto de encuentro.',
@@ -187,25 +193,91 @@ function distM(a,b){
   const s=Math.sin(dLat/2)**2+Math.cos(a[0]*toR)*Math.cos(b[0]*toR)*Math.sin(dLng/2)**2;
   return 2*R*Math.asin(Math.sqrt(s));
 }
-/* precalcula punto de encuentro y largo del recorrido */
+/* ---------- recorridos por la calle (V 3.8) ----------
+   t.legs (opcional): un tramo por cada par de paradas, con los puntos [lat, lng] del camino
+   a pie por las calles (de parada i a parada i+1). Si no hay tramos, se usa la línea recta. */
+const legsOk = t => Array.isArray(t.legs) && t.legs.length === t.route.length - 1 && t.legs.every(l=>Array.isArray(l));
+/* puntos de un tramo: siempre arranca y termina exactamente en las paradas */
+const tramo = (t, i) => legsOk(t) ? [t.route[i], ...t.legs[i], t.route[i+1]] : [t.route[i], t.route[i+1]];
+const largoLinea = pts => { let d = 0; for(let i = 1; i < pts.length; i++) d += distM(pts[i-1], pts[i]); return d; };
+/* línea completa para dibujar en el mapa */
+function lineaTour(t){
+  if(t.route.length < 2) return t.route.map(r=>[r[0], r[1]]);
+  const out = [];
+  for(let i = 0; i < t.route.length - 1; i++) out.push(...tramo(t, i).slice(i ? 1 : 0).map(p=>[p[0], p[1]]));
+  return out;
+}
+
+/* precalcula punto de encuentro y largo del recorrido (por la calle si hay tramos) */
 function prepTour(t){
   t.meet = t.route[0];
   t.segs = []; let acc = 0;
-  for(let i=1;i<t.route.length;i++){ const d=distM(t.route[i-1],t.route[i]); t.segs.push({from:acc,len:d}); acc+=d; }
+  for(let i=1;i<t.route.length;i++){ const d = largoLinea(tramo(t, i-1)); t.segs.push({from:acc,len:d}); acc+=d; }
   t.len = acc;
   return t;
 }
+if(typeof RUTAS_EJEMPLO === 'object') TOURS.forEach(t=>{ if(RUTAS_EJEMPLO[t.id]) t.legs = RUTAS_EJEMPLO[t.id]; });
 TOURS.forEach(prepTour);
+/* posición a una fracción p del recorrido (para los guías simulados); seg = última parada pasada */
 function pointAlong(t, p){
   const target = Math.max(0,Math.min(1,p)) * t.len;
   for(let i=0;i<t.segs.length;i++){
     const s=t.segs[i];
     if(target <= s.from + s.len || i===t.segs.length-1){
-      const f = s.len ? (target - s.from)/s.len : 0, a=t.route[i], b=t.route[i+1];
-      return {ll:[a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f], seg:i};
+      let falta = Math.max(0, target - s.from);
+      const pts = tramo(t, i);
+      for(let k = 1; k < pts.length; k++){
+        const a = pts[k-1], b = pts[k], d = distM(a, b);
+        if(falta <= d || k === pts.length - 1){
+          const f = d ? Math.min(1, falta / d) : 0;
+          return {ll:[a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f], seg:i};
+        }
+        falta -= d;
+      }
     }
   }
   return {ll:t.route[0], seg:0};
+}
+
+/* pide el camino a pie por las calles (servicio público de OpenStreetMap, sin clave).
+   Devuelve los tramos, o null si no hay conexión (entonces se dibuja la línea recta).
+   Cada tramo se guarda en el navegador para no volver a pedirlo. */
+const CALLES_URL = 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/';
+const CALLES_KEY = 'tourcerca.calles.v1';
+let callesCache = null;
+const claveTramo = (a, b) => `${a[0].toFixed(5)},${a[1].toFixed(5)}>${b[0].toFixed(5)},${b[1].toFixed(5)}`;
+function cacheCalles(){
+  if(!callesCache){ try { callesCache = JSON.parse(localStorage.getItem(CALLES_KEY) || '{}'); } catch(e){ callesCache = {}; } }
+  return callesCache;
+}
+function guardarCacheCalles(){
+  const c = cacheCalles(), ks = Object.keys(c);
+  if(ks.length > 400) ks.slice(0, ks.length - 400).forEach(k=>delete c[k]);     // no llenar el navegador
+  try { localStorage.setItem(CALLES_KEY, JSON.stringify(c)); } catch(e){}
+}
+async function trazarCalles(route){
+  if(!route || route.length < 2) return [];
+  const c = cacheCalles(), claves = route.slice(1).map((r,i)=>claveTramo(route[i], r));
+  if(claves.every(k=>c[k])) return claves.map(k=>c[k]);
+  try {
+    const coords = route.map(r=>`${r[1].toFixed(6)},${r[0].toFixed(6)}`).join(';');
+    const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 9000);
+    const res = await fetch(`${CALLES_URL}${coords}?overview=false&steps=true&geometries=geojson`, {signal:ctl.signal});
+    clearTimeout(to);
+    const j = await res.json();
+    if(j.code !== 'Ok' || !j.routes?.[0]?.legs) return null;
+    const legs = j.routes[0].legs.map(l=>{
+      const pts = [];
+      for(const st of l.steps) for(const [lng, lat] of st.geometry.coordinates){
+        const p = [+lat.toFixed(6), +lng.toFixed(6)], u = pts[pts.length-1];
+        if(!u || u[0] !== p[0] || u[1] !== p[1]) pts.push(p);
+      }
+      return pts;
+    });
+    if(legs.length !== claves.length) return null;
+    claves.forEach((k,i)=> c[k] = legs[i]); guardarCacheCalles();
+    return legs;
+  } catch(e){ return null; }
 }
 
 /* =====================================================================

@@ -168,13 +168,28 @@ function reglasUI(){
 
 /* ---------- recorrido en el mapa ---------- */
 function drawPedido(){ drawPedidoMap(); drawPedidoList(); if(document.getElementById('pRules')) reglasUI(); }
+/* recorrido por la calle del pedido: se vuelve a pedir solo cuando cambian los puntos */
+let pedLegs = null, pedLegsKey = '', pedTrazo = null;
+const clavePed = () => pedRoute.map(r=>`${(+r[0]).toFixed(5)},${(+r[1]).toFixed(5)}`).join(';');
+function trazarPedido(){
+  const key = clavePed();
+  if(key === pedLegsKey) return;
+  pedLegsKey = key; pedLegs = null;
+  if(pedRoute.length < 2){ pedTrazo = null; return; }
+  pedTrazo = trazarCalles(pedRoute.map(r=>[+r[0], +r[1]])).then(l=>{
+    if(key !== pedLegsKey) return;                 // ya cambiaron los puntos
+    pedLegs = l; pedTrazo = null; drawPedidoMap();
+  });
+}
+const pedidoConTramos = () => ({route:pedRoute, legs: pedLegs && pedLegs.length === pedRoute.length - 1 && clavePed() === pedLegsKey ? pedLegs : undefined});
 function drawPedidoMap(){
   if(!pedLayer) return;
   pedLayer.clearLayers();
+  trazarPedido();
   if(pedRoute.length > 1){
-    const ll = pedRoute.map(r=>[r[0],r[1]]);
-    L.polyline(ll,{color:'#fff',weight:9,opacity:.9}).addTo(pedLayer);
-    L.polyline(ll,{color:'#9E4468',weight:5,dashArray:'2 10',lineCap:'round'}).addTo(pedLayer);
+    const t = pedidoConTramos(), ll = lineaTour(t), calle = !!t.legs;
+    L.polyline(ll,{color:'#fff',weight:9,opacity:calle ? .9 : .6}).addTo(pedLayer);
+    L.polyline(ll,{color:'#9E4468',weight:5,dashArray:'2 10',lineCap:'round',opacity:calle ? 1 : .55}).addTo(pedLayer);
   }
   pedRoute.forEach((r,i)=>{
     const m = L.marker([r[0],r[1]], {draggable:true, zIndexOffset:900, icon:L.divIcon({className:'', html:`<div class="snum ${i===0?'meet':''}">${i===0?'★':i}</div>`, iconSize:i===0?[34,34]:[28,28], iconAnchor:i===0?[17,17]:[14,14]})})
@@ -211,13 +226,15 @@ async function pedidoDesdeMi(){
 }
 
 /* ---------- publicar ---------- */
-function publicarPedido(){
+async function publicarPedido(){
+  if(pedTrazo) await pedTrazo;                       // esperar el recorrido por la calle
   const p = leerPedido();
   const falla = reglasPedido(p).find(r=>!r.ok);
   if(falla) return toast({ic:'✋', title:tr('Falta algo'), text:falla.err});
   if(!p.langs.length) return toast({ic:'✋', title:tr('Falta algo'), text:tr('Elegí al menos un idioma.')});
   pedRoute.forEach((r,i)=>{ if(!String(r[2]).trim()) r[2] = pedDefName(i); });
   const datos = {...p, route:pedRoute.map(r=>[+r[0].toFixed(6), +r[1].toFixed(6), String(r[2]).trim()]), barrio:nearestBarrio(pedRoute[0])};
+  const tl = pedidoConTramos().legs; datos.legs = tl || null;
   try { localStorage.setItem(NOMBRE_KEY, p.nombre); } catch(e){}
   if(pedEdit){
     if(!Store.editarPedido(pedEdit.id, datos)) return toast({ic:'ℹ️', title:tr('No se pudo editar'), text:tr('Un guía ya tomó este pedido o fue cancelado.')});

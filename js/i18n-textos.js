@@ -1295,3 +1295,21 @@ Object.assign(I18N.pt, {
 "Casco histórico": "Centro histórico",
 "Microcentro": "Microcentro (centro)"
 });
+
+/* V 3.8: recorridos por la calle */
+Object.assign(I18N.en, {
+"Los recorridos van por la calle: al marcar las paradas, el camino a pie se acomoda a las calles (datos de OpenStreetMap).": "Routes follow the streets: when you mark the stops, the walking path snaps to the streets (OpenStreetMap data).",
+"Los kilómetros a pie y la dificultad se calculan con el camino real, no en línea recta.": "Walking distance and difficulty are calculated with the real path, not a straight line.",
+"Los guías en vivo (simulados) caminan por las calles.": "Live (simulated) guides walk along the streets.",
+"Si no hay conexión, se muestra la línea recta como antes.": "Without a connection, the straight line is shown as before.",
+"buscando las calles…": "finding the streets…",
+"línea recta (sin conexión)": "straight line (offline)"
+});
+Object.assign(I18N.pt, {
+"Los recorridos van por la calle: al marcar las paradas, el camino a pie se acomoda a las calles (datos de OpenStreetMap).": "Os roteiros seguem as ruas: ao marcar as paradas, o caminho a pé se ajusta às ruas (dados do OpenStreetMap).",
+"Los kilómetros a pie y la dificultad se calculan con el camino real, no en línea recta.": "Os quilômetros a pé e a dificuldade são calculados com o caminho real, não em linha reta.",
+"Los guías en vivo (simulados) caminan por las calles.": "Os guias ao vivo (simulados) caminham pelas ruas.",
+"Si no hay conexión, se muestra la línea recta como antes.": "Sem conexão, aparece a linha reta como antes.",
+"buscando las calles…": "buscando as ruas…",
+"línea recta (sin conexión)": "linha reta (sem conexão)"
+});

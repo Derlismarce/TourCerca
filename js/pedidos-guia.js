@@ -63,7 +63,7 @@ function verPedido(id){
   document.body.appendChild(ov);
   const mm = L.map('pedMap', {zoomControl:false, attributionControl:false});
   baseTiles().addTo(mm);
-  const ll = p.route.map(r=>[r[0],r[1]]);
+  const ll = lineaTour(p);                    // por la calle si el pedido tiene tramos
   L.polyline(ll,{color:'#fff',weight:8}).addTo(mm);
   L.polyline(ll,{color:'#E07FA3',weight:4,dashArray:'2 9',lineCap:'round'}).addTo(mm);
   p.route.forEach((r,i)=>L.marker([r[0],r[1]], {icon:L.divIcon({className:'', html:`<div class="snum ${i===0?'meet':''}">${i===0?'★':i}</div>`, iconSize:[28,28], iconAnchor:[14,14]})}).addTo(mm).bindTooltip(esc(verLugar(r[2]))));

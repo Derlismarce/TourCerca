@@ -137,6 +137,7 @@ body{background:var(--pink-50)}
 <script src="js/i18n.js"></script>
 <script src="js/i18n-textos.js"></script>
 <script src="js/barrios.js"></script>
+<script src="js/rutas.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos-guia.js"></script>
@@ -167,7 +168,7 @@ const misTours = () => TOURS.filter(t=>t.g === guia).map(t=>({...t, demo:true}))
   .concat(Object.values(Store.get().tours).filter(t=>t.g === guia));
 const findMiTour = id => misTours().find(t=>String(t.id) === String(id));
 /* los textos de los tours de ejemplo se guardan en español y se muestran traducidos */
-const fromTour = t => ({name:t.name, cat:t.cat, desc:t.desc||'', price:t.price, dur:t.dur, cupos:t.cupos, langs:[...t.langs], route:t.route.map(r=>r.slice())});
+const fromTour = t => ({name:t.name, cat:t.cat, desc:t.desc||'', price:t.price, dur:t.dur, cupos:t.cupos, langs:[...t.langs], route:t.route.map(r=>r.slice()), ...(legsOk(t) ? {legs:t.legs} : {})});
 
 function openReservas(id){
   const s = Store.get().salidas[id]; if(!s) return;
@@ -443,22 +444,36 @@ function vEditor({salidaId, tourId} = {}){
   /* los nombres por defecto se guardan en español y se muestran traducidos (verLugar) */
   const defName = i => i === 0 ? 'Punto de encuentro' : `Parada ${i}`;
 
+  /* recorrido por la calle: se pide cada vez que cambian los puntos; mientras tanto, línea recta */
+  let legs = legsOk(d) ? d.legs : null, trazando = false, trazo = null, sinConexion = false, nTrazo = 0;
+  const conTramos = () => ({route, legs: legs && legs.length === route.length - 1 ? legs : undefined});
+  function recalcular(){
+    legs = null; sinConexion = false;
+    if(route.length < 2){ trazando = false; drawMap(); return; }
+    const n = ++nTrazo; trazando = true; drawMap();
+    trazo = trazarCalles(route.map(r=>[r[0], r[1]])).then(l=>{
+      if(n !== nTrazo) return;                       // ya cambiaron los puntos: vale el pedido más nuevo
+      trazando = false; legs = l; sinConexion = !l; drawMap();
+    });
+  }
+
   function drawMap(){
     layer.clearLayers();
     if(route.length > 1){
-      const ll = route.map(r=>[r[0],r[1]]);
-      L.polyline(ll,{color:'#fff',weight:9,opacity:.9}).addTo(layer);
-      L.polyline(ll,{color:'#E07FA3',weight:5,dashArray:'2 10',lineCap:'round'}).addTo(layer);
+      const t = conTramos(), ll = lineaTour(t), calle = !!t.legs;
+      L.polyline(ll,{color:'#fff',weight:9,opacity:calle ? .9 : .6}).addTo(layer);
+      L.polyline(ll,{color:'#E07FA3',weight:5,dashArray:'2 10',lineCap:'round',opacity:calle ? 1 : .55}).addTo(layer);
     }
     route.forEach((r,i)=>{
       const m = L.marker([r[0],r[1]], {draggable:true, icon:L.divIcon({className:'', html:`<div class="snum ${i===0?'meet':''}">${i===0?'★':i}</div>`, iconSize:i===0?[34,34]:[28,28], iconAnchor:i===0?[17,17]:[14,14]})})
         .addTo(layer).bindTooltip(esc(verLugar(r[2])), {direction:'top', offset:[0,-14]});
-      m.on('dragend', ()=>{ const p = m.getLatLng(); r[0] = p.lat; r[1] = p.lng; drawMap(); });
+      m.on('dragend', ()=>{ const p = m.getLatLng(); r[0] = p.lat; r[1] = p.lng; recalcular(); });
     });
     // el barrio sale del punto de encuentro, con los límites oficiales de los 48 barrios
     const barrio = route.length ? (enCABA(route[0]) ? '📍 ' + barrioDe(route[0]) : '⚠️ ' + tr('Fuera de la Ciudad')) + ' · ' : '';
     tip.textContent = route.length === 0 ? tr('👆 Tocá el mapa para marcar el punto de encuentro')
-      : barrio + (route.length === 1 ? tr('👆 Ahora tocá la primera parada') : tn(route.length - 1, '{n} parada · {d} a pie', '{n} paradas · {d} a pie', {d:fmtDist(prepTour({route}).len)}));
+      : barrio + (route.length === 1 ? tr('👆 Ahora tocá la primera parada') : tn(route.length - 1, '{n} parada · {d} a pie', '{n} paradas · {d} a pie', {d:fmtDist(prepTour(conTramos()).len)})
+        + (trazando ? ' · ' + tr('buscando las calles…') : sinConexion ? ' · ' + tr('línea recta (sin conexión)') : ''));
   }
   function drawList(){
     document.getElementById('fStops').innerHTML = route.map((r,i)=>`<li>
@@ -469,14 +484,15 @@ function vEditor({salidaId, tourId} = {}){
   }
   async function addStop(ll){
     const entry = [ll[0], ll[1], defName(route.length)];
-    route.push(entry); drawMap(); drawList();
+    route.push(entry); recalcular(); drawList();
     const nm = await nombreDe(ll);
     if(nm && route.includes(entry) && entry[2] === defName(route.indexOf(entry))){
       entry[2] = nm; drawMap(); drawList();
     }
   }
   map.on('click', e=> addStop([e.latlng.lat, e.latlng.lng]));
-  drawMap(); drawList();
+  if(route.length > 1 && !legs) recalcular(); else drawMap();      // salidas viejas sin tramos: se calculan al abrir
+  drawList();
   setTimeout(()=>{
     map.invalidateSize();
     if(route.length) map.fitBounds(L.latLngBounds(route.map(r=>[r[0],r[1]])).pad(.3));
@@ -500,11 +516,11 @@ function vEditor({salidaId, tourId} = {}){
     const b = e.target.closest('[data-act]'); if(!b) return;
     switch(b.dataset.act){
       case 'back': return go(vDash);
-      case 'undo': route.pop(); drawMap(); drawList(); return;
+      case 'undo': route.pop(); recalcular(); drawList(); return;
       case 'delstop': {
         route.splice(+b.dataset.i, 1);
         route.forEach((r,i)=>{ if(/^(Punto de encuentro|Parada \d+)$/.test(r[2])) r[2] = defName(i); });
-        drawMap(); drawList(); return;
+        recalcular(); drawList(); return;
       }
       case 'myloc': {
         if(!navigator.geolocation) return toast({ic:'📍', title:tr('Sin GPS'), text:tr('Este navegador no comparte la ubicación. Marcalo tocando el mapa.')});
@@ -513,7 +529,7 @@ function vEditor({salidaId, tourId} = {}){
           if(distM(ll, OBELISCO) > 25000) return toast({ic:'📍', title:tr('Estás lejos de Buenos Aires'), text:tr('Marcá el punto de encuentro tocando el mapa.')});
           const entry = [ll[0], ll[1], 'Punto de encuentro'];
           if(route.length) route[0] = entry; else route.push(entry);
-          drawMap(); drawList(); map.setView(ll, 16);
+          recalcular(); drawList(); map.setView(ll, 16);
           const nm = await nombreDe(ll); if(nm && route[0] === entry){ entry[2] = nm; drawMap(); drawList(); }
         }, ()=> toast({ic:'📍', title:tr('No pudimos obtener tu ubicación'), text:tr('Marcá el punto de encuentro tocando el mapa.')}), {enableHighAccuracy:true, timeout:8000});
         return;
@@ -534,8 +550,10 @@ function vEditor({salidaId, tourId} = {}){
           : (!existente || existente.startAt !== startAt) && startAt < Date.now() - 5*MIN ? tr('La hora de salida ya pasó. Elegí una hora futura.')
           : !langs.length ? tr('Elegí al menos un idioma.') : '';
         if(err) return toast({ic:'✋', title:tr('Falta algo'), text:err});
+        if(trazando && trazo){ b.disabled = true; await trazo; b.disabled = false; }   // esperar el recorrido por la calle
         route.forEach((r,i)=>{ if(!r[2].trim()) r[2] = defName(i); });
         const datos = {name, cat:document.getElementById('fCat').value, desc, price, dur, cupos, langs, route:route.map(r=>[+r[0].toFixed(6), +r[1].toFixed(6), r[2].trim()])};
+        const tl = conTramos().legs; if(tl) datos.legs = tl; else if(existente) delete existente.legs;
         if(esNuevo && document.getElementById('fTpl')?.checked) Store.guardarTour({...datos, g:guia});
         Store.guardarSalida({...(existente||{}), ...datos, g:guia, barrio:nearestBarrio(datos.route[0]), startAt, status:existente?.status || 'programada', createdAt:existente?.createdAt || Date.now()});
         go(vDash);
@@ -608,7 +626,7 @@ function vLive(id){
 
   const map = L.map('lmap', {zoomControl:false}).setView(pos, 17);
   baseTiles().addTo(map);
-  const ll = t.route.map(r=>[r[0],r[1]]);
+  const ll = lineaTour(t);                    // por la calle si la salida tiene tramos
   if(ll.length > 1){
     L.polyline(ll,{color:'#fff',weight:9,opacity:.9}).addTo(map);
     L.polyline(ll,{color:'#E07FA3',weight:5,dashArray:'2 10',lineCap:'round'}).addTo(map);

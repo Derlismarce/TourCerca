@@ -113,7 +113,7 @@ const Store = (()=>{
       const p = cache.pedidos[id];
       if(!p || p.status !== 'pendiente' || Date.now() > p.startAt) return null;
       const s = {id:uid('s_'), g, name:p.titulo || `Tour a pedido · ${p.barrio}`, cat:p.cat, desc:p.comentario || '',
-                 price:p.price, dur:p.dur, cupos:p.personas, langs:p.langs, route:p.route, barrio:p.barrio,
+                 price:p.price, dur:p.dur, cupos:p.personas, langs:p.langs, route:p.route, legs:p.legs, barrio:p.barrio,
                  startAt:p.startAt, status:'programada', createdAt:Date.now(), privado:true, pedidoId:p.id, cliente:p.nombre};
       cache.salidas[s.id] = s;
       cache.reservas.push({id:uid('r_'), salidaId:s.id, qty:p.personas, name:p.nombre, ts:Date.now()});
