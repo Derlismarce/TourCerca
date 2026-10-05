@@ -136,6 +136,7 @@ body{background:var(--pink-50)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/i18n-textos.js"></script>
+<script src="js/barrios.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos-guia.js"></script>
@@ -434,7 +435,7 @@ function vEditor({salidaId, tourId} = {}){
   </div>`;
 
   // ---- mapa ----
-  const map = L.map('emap', {zoomControl:false}).setView(BARRIOS[(TOURS.find(t=>t.g===guia)||{}).barrio || 'Microcentro'].c, 15);
+  const map = L.map('emap', {zoomControl:false}).setView(centroBarrio((TOURS.find(t=>t.g===guia)||{}).barrio || 'San Nicolás'), 15);
   L.control.zoom({position:'bottomright'}).addTo(map);
   baseTiles().addTo(map);
   const layer = L.layerGroup().addTo(map);
@@ -454,8 +455,10 @@ function vEditor({salidaId, tourId} = {}){
         .addTo(layer).bindTooltip(esc(verLugar(r[2])), {direction:'top', offset:[0,-14]});
       m.on('dragend', ()=>{ const p = m.getLatLng(); r[0] = p.lat; r[1] = p.lng; drawMap(); });
     });
+    // el barrio sale del punto de encuentro, con los límites oficiales de los 48 barrios
+    const barrio = route.length ? (enCABA(route[0]) ? '📍 ' + barrioDe(route[0]) : '⚠️ ' + tr('Fuera de la Ciudad')) + ' · ' : '';
     tip.textContent = route.length === 0 ? tr('👆 Tocá el mapa para marcar el punto de encuentro')
-      : route.length === 1 ? tr('👆 Ahora tocá la primera parada') : tn(route.length - 1, '{n} parada · {d} a pie', '{n} paradas · {d} a pie', {d:fmtDist(prepTour({route}).len)});
+      : barrio + (route.length === 1 ? tr('👆 Ahora tocá la primera parada') : tn(route.length - 1, '{n} parada · {d} a pie', '{n} paradas · {d} a pie', {d:fmtDist(prepTour({route}).len)}));
   }
   function drawList(){
     document.getElementById('fStops').innerHTML = route.map((r,i)=>`<li>

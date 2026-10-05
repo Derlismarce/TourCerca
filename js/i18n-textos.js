@@ -1271,3 +1271,27 @@ Object.assign(I18N.pt, {
 "¿Cancelar la salida?": "Cancelar a saída?",
 "¿Seguro que querés cancelar {s}?": "Tem certeza de que quer cancelar {s}?"
 });
+
+/* V 3.7: 48 barrios */
+Object.assign(I18N.en, {
+"El editor de recorridos muestra en qué barrio está el punto de encuentro.": "The route editor shows which barrio the meeting point is in.",
+"En la portada se suman Monserrat, San Nicolás (Microcentro) y Puerto Madero, y una tarjeta para ver toda la Ciudad.": "The home page adds Monserrat, San Nicolás (Microcentro) and Puerto Madero, plus a card to see the whole City.",
+"Fuera de la Ciudad": "Outside the City",
+"Los 48 barrios oficiales de la Ciudad: el barrio de cada salida y de cada pedido sale de los límites reales (por ejemplo, Parque Centenario es Caballito).": "The City's 48 official barrios: each departure's and request's barrio comes from the real boundaries (for example, Parque Centenario is in Caballito).",
+"Toda la Ciudad": "The whole City",
+"{n} barrios": "{n} barrios",
+"{n} tour de guías": "{n} guided tour",
+"Casco histórico": "Historic center",
+"Microcentro": "Microcentro (downtown)"
+});
+Object.assign(I18N.pt, {
+"El editor de recorridos muestra en qué barrio está el punto de encuentro.": "O editor de roteiros mostra em qual bairro fica o ponto de encontro.",
+"En la portada se suman Monserrat, San Nicolás (Microcentro) y Puerto Madero, y una tarjeta para ver toda la Ciudad.": "A página inicial ganha Monserrat, San Nicolás (Microcentro) e Puerto Madero, e um cartão para ver toda a Cidade.",
+"Fuera de la Ciudad": "Fora da Cidade",
+"Los 48 barrios oficiales de la Ciudad: el barrio de cada salida y de cada pedido sale de los límites reales (por ejemplo, Parque Centenario es Caballito).": "Os 48 bairros oficiais da Cidade: o bairro de cada saída e de cada pedido vem dos limites reais (por exemplo, o Parque Centenario fica em Caballito).",
+"Toda la Ciudad": "Toda a Cidade",
+"{n} barrios": "{n} bairros",
+"{n} tour de guías": "{n} tour com guia",
+"Casco histórico": "Centro histórico",
+"Microcentro": "Microcentro (centro)"
+});

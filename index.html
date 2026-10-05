@@ -144,6 +144,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/i18n-textos.js"></script>
+<script src="js/barrios.js"></script>
 <script src="js/comun.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos.js"></script>
@@ -215,8 +216,8 @@ Store.on(()=>{
 function buildLanding(){
   document.getElementById('barrioCards').innerHTML = Object.entries(BARRIOS).map(([n,b])=>{
     const c = TOURS.filter(t=>t.barrio===n).length;
-    return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3><span>${tr('{n} tours de guías', {n:c})}</span></button>`;
-  }).join('');
+    return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3>${b.alias ? `<small class="alias">${esc(tr(b.alias))}</small>` : ''}<span>${tn(c, '{n} tour de guías', '{n} tours de guías')}</span></button>`;
+  }).join('') + `<button class="barrio mas" onclick="startApp('demo')"><span class="em">🗺️</span><h3>${tr('Toda la Ciudad')}</h3><span>${tr('{n} barrios', {n:BARRIOS_CABA.length})}</span></button>`;
   document.getElementById('askRules').textContent = tr('👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Desde {m} por persona', {p:PEDIDO.minPersonas, m:money(PEDIDO.minPrecio)});
   document.getElementById('copy').textContent = tr(COPYRIGHT);
   document.title = tr('TourCerca · Tours cerca tuyo, ahora');
@@ -237,7 +238,7 @@ function startApp(mode, barrio){
   document.getElementById('app').hidden = false;
   if(!started){ initMap(); started = true; cargarClima().then(()=>{ if(selected) renderDetail(true); }); }
   else map.invalidateSize();
-  if(barrio){ setMe(DEMO_SPOTS[barrio], barrio + ' (demo)'); map.setView(BARRIOS[barrio].c, 15); return; }
+  if(barrio){ setMe(BARRIOS[barrio]?.spot || centroBarrio(barrio), barrio + ' (demo)'); map.setView(centroBarrio(barrio), 15); return; }
   if(mode === 'demo'){ setMe(DEMO_SPOTS['9 de Julio'], 'Av. 9 de Julio (demo)'); return; }
   useGPS();
 }
@@ -358,7 +359,7 @@ function render(force){
     document.getElementById('list').innerHTML = vis.length ? vis.map(({t,s,d})=>{
       const c = CATS[t.cat], g = GUIDES[t.g];
       return `<button class="card ${selected?.id===t.id?'hl':''}" data-id="${t.id}">
-        <span class="thumb" style="background:${BARRIOS[t.barrio].bg}">${c.e}</span>
+        <span class="thumb" style="background:${bgBarrio(t.barrio)}">${c.e}</span>
         <span class="body">
           <h3>${esc(nombreTour(t.name))}</h3>
           <span class="meta"><span>📍 ${fmtDist(d)} · ${tn(cuadras(d), '{n} cuadra', '{n} cuadras')}</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
@@ -464,7 +465,7 @@ function renderDetail(force){
 
   document.getElementById('detailView').innerHTML = `
     <div class="d-top"><button class="icon-btn" onclick="closeDetail()" aria-label="${tr('Volver')}">←</button><span class="t">${esc(nombreTour(t.name))}</span></div>
-    <div class="d-hero" style="background:${BARRIOS[t.barrio].bg}">
+    <div class="d-hero" style="background:${bgBarrio(t.barrio)}">
       <div class="big">${c.e}</div>
       <h2>${esc(nombreTour(t.name))}</h2>
       <div class="sub">${tr(c.n)} · ${esc(t.barrio)}</div>

@@ -5,9 +5,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.6';
+const VERSION = '3.7';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.7', f:'2026-10-05', items:[
+    'Los 48 barrios oficiales de la Ciudad: el barrio de cada salida y de cada pedido sale de los límites reales (por ejemplo, Parque Centenario es Caballito).',
+    'El editor de recorridos muestra en qué barrio está el punto de encuentro.',
+    'En la portada se suman Monserrat, San Nicolás (Microcentro) y Puerto Madero, y una tarjeta para ver toda la Ciudad.',
+  ]},
   {v:'3.6', f:'2026-10-04', items:[
     'Si el guía cancela una salida, el turista recibe el aviso de que se le reembolsa el total de lo abonado.',
     'Antes de cancelar, el guía ve "¿Cancelar la salida?" con cuántas personas tienen reserva y cuánto se les devuelve.',
@@ -107,19 +112,19 @@ const TOURS = [
   {id:2, name:'Sabores de San Telmo', cat:'gastro', barrio:'San Telmo', g:'martin', price:45000, first:-40, every:240, dur:150, cupos:10, ocup:10, langs:['ES','EN'],
    desc:'Empanadas, choripán, vermut y alfajores. Cinco paradas en bodegones y puestos del Mercado de San Telmo.',
    route:[[-34.6206,-58.3733,'Mercado de San Telmo'],[-34.6205,-58.3713,'Plaza Dorrego'],[-34.6218,-58.3702,'Balcarce y Humberto 1º'],[-34.6195,-58.3690,'Pasaje Giuffra'],[-34.6178,-58.3719,'Bodegón de Defensa']]},
-  {id:3, name:'Casco Histórico en 90 minutos', cat:'historico', barrio:'Microcentro', g:'diego', price:0, first:40, every:180, dur:90, cupos:30, ocup:12, langs:['ES','EN','PT'],
+  {id:3, name:'Casco Histórico en 90 minutos', cat:'historico', barrio:'Monserrat', g:'diego', price:0, first:40, every:180, dur:90, cupos:30, ocup:12, langs:['ES','EN','PT'],
    desc:'La Plaza de Mayo, la Catedral, la Casa Rosada y la Manzana de las Luces. Ideal para ubicarte el primer día. A la gorra.',
    route:[[-34.6088,-58.3736,'Cabildo'],[-34.6076,-58.3730,'Catedral Metropolitana'],[-34.6081,-58.3703,'Casa Rosada'],[-34.6117,-58.3740,'Manzana de las Luces'],[-34.6088,-58.3736,'Cabildo']]},
   {id:4, name:'Leyendas y fantasmas de San Telmo', cat:'misterio', barrio:'San Telmo', g:'tomas', price:22000, first:95, every:300, dur:100, cupos:18, ocup:15, langs:['ES'],
    desc:'Casas embrujadas, crímenes del 1900 y las leyendas que los vecinos cuentan en voz baja. Apto mayores de 12.',
    route:[[-34.6179,-58.3712,'El Zanjón de Granados'],[-34.6160,-58.3708,'Casa Mínima'],[-34.6205,-58.3713,'Plaza Dorrego'],[-34.6230,-58.3712,'La casa de los Ezeiza'],[-34.6268,-58.3703,'Defensa y Brasil']]},
-  {id:5, name:'Arquitectura de Avenida de Mayo', cat:'arquitectura', barrio:'Microcentro', g:'carla', price:15000, first:-20, every:180, dur:90, cupos:16, ocup:11, langs:['ES','EN'],
+  {id:5, name:'Arquitectura de Avenida de Mayo', cat:'arquitectura', barrio:'Monserrat', g:'carla', price:15000, first:-20, every:180, dur:90, cupos:16, ocup:11, langs:['ES','EN'],
    desc:'Art nouveau, cafés notables y el Palacio Barolo, inspirado en la Divina Comedia. Una avenida pensada como bulevar parisino.',
    route:[[-34.6088,-58.3787,'Café Tortoni'],[-34.6092,-58.3825,'Hotel Chile'],[-34.6096,-58.3857,'Palacio Barolo'],[-34.6098,-58.3926,'Congreso de la Nación']]},
-  {id:6, name:'Teatro Colón y alrededores', cat:'arte', barrio:'Microcentro', g:'diego', price:0, first:55, every:180, dur:75, cupos:25, ocup:8, langs:['ES','EN'],
+  {id:6, name:'Teatro Colón y alrededores', cat:'arte', barrio:'San Nicolás', g:'diego', price:0, first:55, every:180, dur:75, cupos:25, ocup:8, langs:['ES','EN'],
    desc:'Del Obelisco al Teatro Colón: la historia de la 9 de Julio, los teatros de Corrientes y la Plaza Lavalle. A la gorra.',
    route:[[-34.6037,-58.3816,'Obelisco'],[-34.6010,-58.3831,'Teatro Colón'],[-34.6020,-58.3855,'Plaza Lavalle'],[-34.6040,-58.3790,'Av. Corrientes'],[-34.6037,-58.3816,'Obelisco']]},
-  {id:7, name:'Microcentro fotográfico', cat:'foto', barrio:'Microcentro', g:'sofia', price:20000, first:12, every:240, dur:120, cupos:8, ocup:6, langs:['ES','EN'],
+  {id:7, name:'Microcentro fotográfico', cat:'foto', barrio:'San Nicolás', g:'sofia', price:20000, first:12, every:240, dur:120, cupos:8, ocup:6, langs:['ES','EN'],
    desc:'Galerías, pasajes y edificios icónicos, con tips para sacar fotos increíbles con el celular.',
    route:[[-34.6045,-58.3749,'Galería Güemes'],[-34.5990,-58.3748,'Galerías Pacífico'],[-34.5953,-58.3750,'Plaza San Martín'],[-34.5950,-58.3736,'Edificio Kavanagh']]},
   {id:8, name:'Recoleta: cementerio y palacios', cat:'historico', barrio:'Recoleta', g:'lucia', price:25000, first:35, every:240, dur:120, cupos:20, ocup:14, langs:['ES','EN','FR'],
@@ -146,17 +151,24 @@ const TOURS = [
   {id:15, name:'Noche de tango en San Telmo', cat:'nocturno', barrio:'San Telmo', g:'paula', price:60000, first:150, every:360, dur:180, cupos:12, ocup:9, langs:['ES','EN'],
    desc:'Clase de tango para principiantes, milonga en un salón histórico y cena porteña. La noche más auténtica de Buenos Aires.',
    route:[[-34.6205,-58.3713,'Plaza Dorrego'],[-34.6190,-58.3730,'Salón de clases'],[-34.6215,-58.3740,'Milonga del barrio']]},
-  {id:16, name:'Puerto Madero al atardecer', cat:'foto', barrio:'Microcentro', g:'sofia', price:18000, first:110, every:300, dur:90, cupos:10, ocup:3, langs:['ES','EN'],
+  {id:16, name:'Puerto Madero al atardecer', cat:'foto', barrio:'Puerto Madero', g:'sofia', price:18000, first:110, every:300, dur:90, cupos:10, ocup:3, langs:['ES','EN'],
    desc:'El Puente de la Mujer, la Fragata Sarmiento y la Costanera Sur, con la mejor luz del día para fotos.',
    route:[[-34.6078,-58.3650,'Puente de la Mujer'],[-34.6070,-58.3654,'Fragata Sarmiento'],[-34.6110,-58.3625,'Dique 3'],[-34.6135,-58.3605,'Costanera Sur']]},
 ];
+/* barrios destacados en la portada (los nombres son los oficiales; ver js/barrios.js con los 48) */
 const BARRIOS = {
-  'San Telmo':{c:[-34.6200,-58.3715],e:'🎭',bg:'linear-gradient(150deg,#FDEAF0,#F6C1D3)'},
-  'Microcentro':{c:[-34.6060,-58.3770],e:'🏛️',bg:'linear-gradient(150deg,#FFF1E6,#F9D5E2)'},
-  'Recoleta':{c:[-34.5855,-58.3925],e:'🌸',bg:'linear-gradient(150deg,#F3EAFD,#F6C1D3)'},
-  'Palermo':{c:[-34.5840,-58.4230],e:'🌳',bg:'linear-gradient(150deg,#EAF7F0,#F9D5E2)'},
-  'La Boca':{c:[-34.6370,-58.3620],e:'🎨',bg:'linear-gradient(150deg,#FFF6D9,#F6C1D3)'},
+  'San Telmo':{c:[-34.6200,-58.3715],spot:[-34.6160,-58.3735],e:'🎭',bg:'linear-gradient(150deg,#FDEAF0,#F6C1D3)'},
+  'Monserrat':{c:[-34.6095,-58.3780],spot:[-34.6095,-58.3760],e:'🏛️',bg:'linear-gradient(150deg,#FFF1E6,#F9D5E2)',alias:'Casco histórico'},
+  'San Nicolás':{c:[-34.6030,-58.3790],spot:[-34.6050,-58.3800],e:'🌆',bg:'linear-gradient(150deg,#EAF1FD,#F9D5E2)',alias:'Microcentro'},
+  'Recoleta':{c:[-34.5855,-58.3925],spot:[-34.5890,-58.3950],e:'🌸',bg:'linear-gradient(150deg,#F3EAFD,#F6C1D3)'},
+  'Palermo':{c:[-34.5840,-58.4230],spot:[-34.5870,-58.4260],e:'🌳',bg:'linear-gradient(150deg,#EAF7F0,#F9D5E2)'},
+  'La Boca':{c:[-34.6370,-58.3620],spot:[-34.6340,-58.3640],e:'🎨',bg:'linear-gradient(150deg,#FFF6D9,#F6C1D3)'},
+  'Puerto Madero':{c:[-34.6100,-58.3630],spot:[-34.6090,-58.3660],e:'⚓',bg:'linear-gradient(150deg,#E6F4FA,#F6C1D3)'},
 };
+/* fondo y centro de cualquiera de los 48 barrios (los no destacados usan un fondo genérico) */
+const BARRIO_BG = 'linear-gradient(150deg,#FDEAF0,#F9D5E2)';
+const bgBarrio = n => BARRIOS[n]?.bg || BARRIO_BG;
+const centroBarrio = n => BARRIOS[n]?.c || (typeof datosBarrio === 'function' && datosBarrio(n)?.c) || OBELISCO;
 const DEMO_SPOTS = {
   '9 de Julio':[-34.6086,-58.3816],
   'San Telmo':[-34.6160,-58.3735],
@@ -217,9 +229,10 @@ function baseTiles(){
     maxZoom:19, subdomains:'abcd', attribution:'&copy; OpenStreetMap &copy; CARTO'
   });
 }
-/* barrio más cercano a un punto (para salidas nuevas) */
+/* barrio oficial de un punto (para salidas y pedidos nuevos): usa los límites de js/barrios.js */
 function nearestBarrio(ll){
-  let best = 'Microcentro', bd = Infinity;
+  if(typeof barrioDe === 'function') return barrioDe(ll);
+  let best = 'San Nicolás', bd = Infinity;          // respaldo si la página no cargó los límites
   for(const [n,b] of Object.entries(BARRIOS)){ const d = distM(ll, b.c); if(d < bd){ bd = d; best = n; } }
   return best;
 }

@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.7**: los 48 barrios oficiales de la Ciudad (`js/barrios.js`, límites del dataset de Buenos Aires Data simplificados); el barrio de salidas y pedidos sale del punto de encuentro; el editor lo muestra; portada con 7 barrios destacados y "Toda la Ciudad".
 - **V 3.6**: si el guía cancela una salida, el turista recibe el aviso con el reembolso total; el guía confirma antes con "¿Cancelar la salida?" (personas con reserva y monto a devolver).
 - **V 3.5**: las reservas de los tours de ejemplo le llegan al guía (copia de la salida en su panel); barra de cupos "X de Y lugares · faltan N" y "Actividad reciente" con reservas y cancelaciones.
 - **V 3.4**: pago al reservar (simulado) y política de cancelación: gratis hasta 24 h antes, 50% de reembolso entre 24 h y 1 h antes, sin reembolso con menos de 1 h; si el guía cancela se devuelve todo; los tours a la gorra no se pagan.
@@ -34,6 +35,7 @@ En la V 2.0 los datos se guardan en el navegador: guía y turista se ven en tiem
 - `privacidad.html`: política de privacidad
 - `js/i18n.js`: idiomas (traducción, selector y detección del idioma)
 - `js/i18n-textos.js`: traducciones al inglés y al portugués
+- `js/barrios.js`: los 48 barrios oficiales de CABA y `barrioDe()` (qué barrio es un punto)
 - `js/comun.js`: datos de ejemplo, utilidades y número de versión
 - `js/store.js`: datos compartidos entre guía y turista
 - `js/pedidos.js`: "Pedí tu tour" en la vista del turista
