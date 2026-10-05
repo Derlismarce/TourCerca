@@ -5,9 +5,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.4';
+const VERSION = '3.5';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.5', f:'2026-10-04', items:[
+    'Las reservas de los tours de ejemplo ahora le llegan al guía: aparecen en sus próximas salidas y recibe el aviso al reservar y al cancelar.',
+    'Cada salida del guía muestra cuántos lugares van reservados y cuántos faltan para completar, con una barra de avance.',
+    'Nuevo bloque "Actividad reciente" en el panel del guía con las reservas y cancelaciones de los turistas.',
+  ]},
   {v:'3.4', f:'2026-10-04', items:[
     'Las reservas se pagan al reservar (pago simulado en el prototipo).',
     'Política de cancelación: gratis hasta 24 h antes; entre 24 h y 1 h antes se devuelve el 50%; con menos de 1 h o si no vas, no hay reembolso.',

@@ -1195,3 +1195,41 @@ Object.assign(I18N.pt, {
 "se te devuelve todo ({d})": "reembolso total ({d})",
 "sin reembolso": "sem reembolso"
 });
+
+/* V 3.5: cupos y actividad en el panel del guía */
+Object.assign(I18N.en, {
+"Actividad reciente": "Recent activity",
+"Cada salida del guía muestra cuántos lugares van reservados y cuántos faltan para completar, con una barra de avance.": "Each of the guide's departures shows how many spots are booked and how many are left to fill, with a progress bar.",
+"Las reservas de los tours de ejemplo ahora le llegan al guía: aparecen en sus próximas salidas y recibe el aviso al reservar y al cancelar.": "Bookings for the sample tours now reach the guide: they appear in their upcoming departures and the guide is notified of bookings and cancellations.",
+"Nuevo bloque \"Actividad reciente\" en el panel del guía con las reservas y cancelaciones de los turistas.": "New \"Recent activity\" block in the guide panel with tourists' bookings and cancellations.",
+"Reservas anteriores (ejemplo)": "Earlier bookings (sample)",
+"falta {n} para completar": "{n} spot left to fill",
+"faltan {n} para completar": "{n} spots left to fill",
+"hace {t}": "{t} ago",
+"recién": "just now",
+"{n} cancelaciones": "{n} cancellations",
+"{n} cancelación": "{n} cancellation",
+"{q} canceló {n} lugar": "{q} cancelled {n} spot",
+"{q} canceló {n} lugares": "{q} cancelled {n} spots",
+"{q} reservó {n} lugar": "{q} booked {n} spot",
+"{q} reservó {n} lugares": "{q} booked {n} spots",
+"¡Completo!": "Full!"
+});
+Object.assign(I18N.pt, {
+"Actividad reciente": "Atividade recente",
+"Cada salida del guía muestra cuántos lugares van reservados y cuántos faltan para completar, con una barra de avance.": "Cada saída do guia mostra quantas vagas já foram reservadas e quantas faltam para completar, com uma barra de progresso.",
+"Las reservas de los tours de ejemplo ahora le llegan al guía: aparecen en sus próximas salidas y recibe el aviso al reservar y al cancelar.": "As reservas dos tours de exemplo agora chegam ao guia: aparecem nas próximas saídas e o guia recebe o aviso ao reservar e ao cancelar.",
+"Nuevo bloque \"Actividad reciente\" en el panel del guía con las reservas y cancelaciones de los turistas.": "Novo bloco \"Atividade recente\" no painel do guia com as reservas e cancelamentos dos turistas.",
+"Reservas anteriores (ejemplo)": "Reservas anteriores (exemplo)",
+"falta {n} para completar": "falta {n} para completar",
+"faltan {n} para completar": "faltam {n} para completar",
+"hace {t}": "há {t}",
+"recién": "agora mesmo",
+"{n} cancelaciones": "{n} cancelamentos",
+"{n} cancelación": "{n} cancelamento",
+"{q} canceló {n} lugar": "{q} cancelou {n} vaga",
+"{q} canceló {n} lugares": "{q} cancelou {n} vagas",
+"{q} reservó {n} lugar": "{q} reservou {n} vaga",
+"{q} reservó {n} lugares": "{q} reservou {n} vagas",
+"¡Completo!": "Lotado!"
+});

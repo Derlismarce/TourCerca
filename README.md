@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.5**: las reservas de los tours de ejemplo le llegan al guía (copia de la salida en su panel); barra de cupos "X de Y lugares · faltan N" y "Actividad reciente" con reservas y cancelaciones.
 - **V 3.4**: pago al reservar (simulado) y política de cancelación: gratis hasta 24 h antes, 50% de reembolso entre 24 h y 1 h antes, sin reembolso con menos de 1 h; si el guía cancela se devuelve todo; los tours a la gorra no se pagan.
 - **V 3.3**: "Mis tours" (reservas y pedidos del turista en un solo lugar), cancelar una reserva antes de que empiece (el guía recibe el aviso) y ventana "¿Confirmás la reserva?" antes de reservar.
 - **V 3.2**: la app en español, inglés y portugués de Brasil. Selector "🌐 ES ▾" arriba a la derecha; detecta el idioma del celular la primera vez y recuerda la elección.

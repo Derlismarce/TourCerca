@@ -412,3 +412,23 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .poli.libre{background:#F4F1F2;color:var(--ink-2)}
 .d-sec .poli{margin:0}
 .pc-pago{display:block;margin-top:8px;font-size:12.5px;font-weight:700;color:var(--ink-3)}
+
+/* ---------- V 3.5: cupos y actividad en el panel del guía ---------- */
+.cupos{margin-top:8px;background:var(--pink-50);border:1px solid var(--pink-100);border-radius:12px;padding:8px 10px}
+.cupos-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.cupos-top span{font-weight:800;color:var(--pink-700)}
+.cupos-bar{height:8px;border-radius:99px;background:#fff;border:1px solid var(--pink-100);margin-top:6px;overflow:hidden}
+.cupos-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pink-300),var(--pink-500));transition:width .4s}
+.cupos.full{background:#E6F5EE;border-color:#BFE6D2}
+.cupos.full .cupos-top span{color:#1F7A50}
+.cupos.full .cupos-bar i{background:#2FA36B}
+.cupos-canc{margin-top:5px;font-size:12px;font-weight:800;color:var(--ink-3)}
+.act-list{display:flex;flex-direction:column;gap:8px}
+.act{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:9px 12px}
+.act .ai{font-size:20px}
+.act div{flex:1;min-width:0}
+.act b{display:block;font-size:14px}
+.act small{display:block;color:var(--ink-3);font-weight:700;font-size:12.5px}
+.act .at{font-size:12px;font-weight:800;color:var(--ink-3);white-space:nowrap}
+.act.res{border-left:4px solid #2FA36B}
+.act.can{border-left:4px solid var(--live)}

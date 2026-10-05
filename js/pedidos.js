@@ -41,6 +41,7 @@ function estadoReserva(r){
     if(!s || (r.rid && !Store.existeReserva(r.rid))) return s && s.status === 'finalizada' ? 'hecho' : 'cancelada';
     return s.status === 'en_curso' ? 'vivo' : s.status === 'finalizada' ? 'hecho' : 'prox';
   }
+  if(r.rid && !Store.existeReserva(r.rid)) return 'cancelada';     // el guía canceló la copia de la salida
   const T = now();                                  // tours de ejemplo: reloj de la app (acelerable)
   return T < r.start ? 'prox' : T < r.start + r.dur*MIN ? 'vivo' : 'hecho';
 }
@@ -301,8 +302,7 @@ async function cancelarMiReserva(id){
   const ok = await confirmBox(pol.tipo === 'gratis' ? tr('Cancelar reserva') : tr('Cancelar reserva con cargo'),
     base + (plata ? '\n\n' + plata : ''), pol.tipo === 'gratis' ? tr('Sí, cancelar') : tr('Cancelar igual'), true);
   if(!ok) return;
-  if(r.ext && r.rid) Store.cancelarReserva(r.rid, pol.cargo);
-  else { const t = findTour(r.tourId); if(t && !t.ext) t.ocup = Math.max(0, t.ocup - r.qty); }
+  if(r.rid) Store.cancelarReserva(r.rid, pol.cargo);                       // el guía recibe el aviso; los cupos se recalculan solos
   setMisReservas(misReservas().map(x=>x.id === id ? {...x, cancelada:{ts:Date.now(), reembolso:pol.reembolso, cargo:pol.cargo}} : x));
   toast({ic:'↩️', title:tr('Reserva cancelada'), ttl:9000, text:!pag ? tr('Tu lugar quedó libre. Podés reservar otro tour cuando quieras.')
     : pol.reembolso ? tr('Tu lugar quedó libre. Se te devuelven {d}.', {d:money(pol.reembolso)}) : tr('Tu lugar quedó libre. Esta cancelación no tiene reembolso.')});

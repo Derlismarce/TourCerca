@@ -72,8 +72,8 @@ const Store = (()=>{
     },
 
     /* reservas */
-    reservar(salidaId, qty, name){
-      const r = {id:uid('r_'), salidaId, qty, name:(name||'').trim(), ts:Date.now()};
+    reservar(salidaId, qty, name, extra = {}){
+      const r = {id:uid('r_'), salidaId, qty, name:(name||'').trim(), ts:Date.now(), ...extra};
       cache.reservas.push(r);
       save();
       return r.id;

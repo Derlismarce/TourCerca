@@ -176,10 +176,17 @@ let extTours = [];
 function rebuildExt(){
   const T = Date.now();
   extTours = Store.salidas()
+    .filter(x=> !x.demoTourId)                                           // copia de un tour de ejemplo: ya está en el mapa
     .filter(x=> x.status !== 'finalizada' && x.route && x.route.length)
     .filter(x=> !x.privado || misPedidosIds().includes(x.pedidoId))     // tour a pedido: privado
     .filter(x=> x.status === 'en_curso' || T < x.startAt + 30*MIN)      // si no arrancó a los 30 min, se oculta
     .map(x=> prepTour({...x, ext:true, route:x.route.map(r=>r.slice()), ocup:Store.ocupados(x.id)}));
+  // tours de ejemplo: si ya tienen una copia en el panel del guía, los cupos salen de ahí
+  for(const t of TOURS){
+    if(t.ocup0 == null) t.ocup0 = t.ocup;
+    const start = state(t).start, cp = Store.salidas().find(x=>x.demoTourId === t.id && x.startAt === start);
+    t.ocup = cp ? Store.ocupados(cp.id) : t.ocup0;
+  }
 }
 const allTours = () => TOURS.concat(extTours);
 const findTour = id => allTours().find(x=>String(x.id) === String(id));
@@ -502,6 +509,19 @@ function toggleFollow(){
   renderDetail(true);
 }
 
+/* ---------- tours de ejemplo: al reservar se crea una copia de esa salida en el panel de su guía ----------
+   Así el guía ve las reservas y las cancelaciones. Los lugares que ya estaban ocupados
+   en el ejemplo se cargan como "reservas de ejemplo" para que los números coincidan. */
+function salidaDeEjemplo(t, start){
+  const ya = Store.salidas().find(x=>x.demoTourId === t.id && x.startAt === start);
+  if(ya) return ya;
+  const base = t.ocup;                         // se toma antes de guardar: guardar recalcula los cupos
+  const s = Store.guardarSalida({g:t.g, name:t.name, cat:t.cat, desc:t.desc || '', price:t.price, dur:t.dur, cupos:t.cupos, langs:[...t.langs],
+    route:t.route.map(r=>r.slice()), barrio:t.barrio, startAt:start, status:'programada', createdAt:Date.now(), demoTourId:t.id});
+  if(base > 0) Store.reservar(s.id, base, '', {demo:true});
+  return s;
+}
+
 /* ---------- reserva simulada ---------- */
 function reserve(id){
   const t = findTour(id), libres = t.cupos - t.ocup; let q = 1, nombre = '';
@@ -541,8 +561,9 @@ function reserve(id){
     if(e.target.hasAttribute('data-mis')){ ov.remove(); openMisPedidos(); return; }
     if(e.target.hasAttribute('data-yes')){
       const start = state(t).start;
-      let rid = null;
-      if(t.ext) rid = Store.reservar(t.id, q, nombre); else t.ocup += q;
+      let rid;
+      if(t.ext) rid = Store.reservar(t.id, q, nombre);
+      else rid = Store.reservar(salidaDeEjemplo(t, start).id, q, nombre);   // los cupos se recalculan solos
       guardarMiReserva({rid, tourId:t.id, ext:!!t.ext, start, dur:t.dur, qty:q, nombre:nombre.trim(),
         name:t.name, cat:t.cat, meet:t.meet.slice(), price:t.price, barrio:t.barrio, g:t.g, pagado:t.price*q});
       ov.innerHTML = `<div class="modal" style="text-align:center"><div class="big-ok">🎉</div><h3>${tn(q, '¡Listo, reservaste {n} lugar!', '¡Listo, reservaste {n} lugares!')}</h3>

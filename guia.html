@@ -174,7 +174,7 @@ function openReservas(id){
   const ov = document.createElement('div'); ov.className = 'overlay';
   ov.innerHTML = `<div class="modal"><h3>👥 ${tr('Reservas')}</h3>
     <p class="muted">${esc(nombreTour(s.name))} · ${diaLabel(s.startAt)} ${hora(s.startAt)} · ${tr('{a} de {b} lugares', {a:tot, b:s.cupos})}</p>
-    ${rs.length ? `<ul class="res-list">${rs.map(r=>`<li>${esc(r.name || tr('Sin nombre'))} <span>${tn(r.qty, '{n} persona', '{n} personas')} · ${hora(r.ts)}</span></li>`).join('')}</ul>`
+    ${rs.length ? `<ul class="res-list">${rs.map(r=>`<li>${r.demo ? `<i>${tr('Reservas anteriores (ejemplo)')}</i>` : esc(r.name || tr('Sin nombre'))} <span>${tn(r.qty, '{n} persona', '{n} personas')}${r.demo ? '' : ' · ' + hora(r.ts)}</span></li>`).join('')}</ul>`
       : `<div class="help">${tr('Todavía no hay reservas. Para probarlo, abrí <b>Ver como turista</b> en otra pestaña de este navegador, buscá esta salida y reservá.')}</div>`}
     ${(()=>{ const cs = Store.cancelacionesDe(id); if(!cs.length) return ''; const cob = cs.reduce((a,c)=>a + (c.cargo||0), 0);
       return `<h5 style="margin-top:14px">↩️ ${tr('Cancelaciones')}</h5><ul class="res-list">${cs.map(c=>`<li>${esc(c.name || tr('Sin nombre'))} <span>${tn(c.qty, '{n} persona', '{n} personas')} · ${c.cargo ? tr('cobrás {c}', {c:money(c.cargo)}) : tr('gratuita')}</span></li>`).join('')}</ul>
@@ -218,6 +218,39 @@ function vLogin(){
 /* =====================================================================
    2) MIS SALIDAS
    ===================================================================== */
+/* ---------- cupos de una salida: cuántos van y cuántos faltan ---------- */
+function barraCupos(s){
+  const ocup = Store.ocupados(s.id), falta = Math.max(0, s.cupos - ocup), pct = Math.min(100, Math.round(ocup / s.cupos * 100));
+  const canc = Store.cancelacionesDe(s.id).length;
+  return `<div class="cupos ${falta ? '' : 'full'}">
+    <div class="cupos-top"><b>👥 ${tr('{a} de {b} lugares', {a:ocup, b:s.cupos})}</b>
+      <span>${falta ? tn(falta, 'falta {n} para completar', 'faltan {n} para completar') : '🎉 ' + tr('¡Completo!')}</span></div>
+    <div class="cupos-bar"><i style="width:${pct}%"></i></div>
+    ${canc ? `<div class="cupos-canc">↩️ ${tn(canc, '{n} cancelación', '{n} cancelaciones')}</div>` : ''}
+  </div>`;
+}
+/* ---------- actividad reciente: reservas y cancelaciones de los turistas ---------- */
+const hace = ms => { const m = Math.floor((Date.now() - ms) / MIN); return m < 1 ? tr('recién') : tr('hace {t}', {t:fmtIn(m)}); };
+function actividadGuia(){
+  const mias = new Set(misSalidas().map(s=>s.id)), sal = Store.get().salidas;
+  const res = Store.get().reservas.filter(r=>mias.has(r.salidaId) && !r.demo && !sal[r.salidaId].pedidoId).map(r=>({tipo:'res', ts:r.ts, r}));
+  const cs = Store.get().cancelaciones.filter(c=>mias.has(c.salidaId) && !c.demo);
+  const can = cs.map(c=>({tipo:'can', ts:c.canceladaTs, r:c}));
+  const resCan = cs.map(c=>({tipo:'res', ts:c.ts, r:c}));               // la reserva original también queda en el historial
+  return res.concat(resCan, can).sort((a,b)=>b.ts - a.ts);
+}
+function seccionActividad(){
+  const act = actividadGuia(); if(!act.length) return '';
+  const sal = Store.get().salidas;
+  return `<section class="g-sec"><h2>🔔 ${tr('Actividad reciente')} <small>${act.length}</small></h2>
+    <div class="act-list">${act.slice(0, 6).map(({tipo, ts, r})=>{
+      const s = sal[r.salidaId], quien = esc(r.name || tr('Alguien'));
+      const tour = s ? `${esc(nombreTour(s.name))} · ${diaLabel(s.startAt)} ${hhmm(s.startAt)}` : '';
+      return tipo === 'res'
+        ? `<div class="act res"><span class="ai">🎟️</span><div><b>${tn(r.qty, '{q} reservó {n} lugar', '{q} reservó {n} lugares', {q:quien})}</b><small>${tour}</small></div><span class="at">${hace(ts)}</span></div>`
+        : `<div class="act can"><span class="ai">↩️</span><div><b>${tn(r.qty, '{q} canceló {n} lugar', '{q} canceló {n} lugares', {q:quien})}</b><small>${tour}${r.cargo ? ' · ' + tr('cobrás {c}', {c:money(r.cargo)}) : ''}</small></div><span class="at">${hace(ts)}</span></div>`;
+    }).join('')}</div></section>`;
+}
 function salCard(s){
   const T = Date.now(), m = Math.ceil((s.startAt - T)/MIN), ocup = Store.ocupados(s.id);
   const vencida = s.status !== 'en_curso' && T > s.startAt + 30*MIN;
@@ -227,11 +260,12 @@ function salCard(s){
     <div class="when"><small>${diaLabel(s.startAt)}</small><b>${hhmm(s.startAt)}</b>${cuando}</div>
     <div class="info">
       <h3>${CATS[s.cat].e} ${esc(nombreTour(s.name))}${s.pedidoId ? ` <span class="ped-tag">🙋 ${tr('a pedido de {n}', {n:esc(s.cliente)})}</span>` : ''}</h3>
-      <div class="meta"><span>📍 ${esc(verLugar(s.route[0][2]))}</span><span>⏱️ ${fmtIn(s.dur)}</span><span>👥 ${tr('{a}/{b} reservados', {a:ocup, b:s.cupos})}</span><span>${money(s.price)}</span></div>
+      <div class="meta"><span>📍 ${esc(verLugar(s.route[0][2]))}</span><span>⏱️ ${fmtIn(s.dur)}</span><span>${money(s.price)}</span></div>
+      ${s.pedidoId ? '' : barraCupos(s)}
       <div class="acts">
         ${vencida ? '' : `<button class="mini go" data-act="start" data-id="${s.id}">▶ ${tr('Empezar tour')}</button>`}
         <button class="mini" data-act="res" data-id="${s.id}">👥 ${tr('Reservas')}</button>
-        ${vencida || s.pedidoId ? '' : `<button class="mini" data-act="edit" data-id="${s.id}">✏️ ${tr('Editar')}</button>`}
+        ${vencida || s.pedidoId || s.demoTourId ? '' : `<button class="mini" data-act="edit" data-id="${s.id}">✏️ ${tr('Editar')}</button>`}
         <button class="mini danger" data-act="del" data-id="${s.id}">🗑 ${vencida?tr('Borrar'):tr('Cancelar')}</button>
       </div>
     </div></div>`;
@@ -256,6 +290,8 @@ function vDash(){
     ${live ? `<div class="livebar"><span class="onair"><span class="dot"></span> ${tr('EN VIVO')}</span>
       <div class="t"><b>${esc(nombreTour(live.name))}</b>${tr('Los turistas te están viendo en el mapa.')}</div>
       <button class="btn btn-primary btn-sm" data-act="resume" data-id="${live.id}">${tr('Volver al tour')}</button></div>` : ''}
+
+    ${seccionActividad()}
 
     ${seccionPedidos()}
 
@@ -689,7 +725,7 @@ Store.on(()=>{
     for(const r of rs){
       if(antes.has(r.id)) continue;
       const s = Store.get().salidas[r.salidaId];
-      if(s && s.g === guia && !s.pedidoId) toast({ic:'🎟️', title:tr('¡Nueva reserva!'), text:tn(r.qty, '{q} reservó {n} lugar para "{s}".', '{q} reservó {n} lugares para "{s}".', {q:r.name || tr('Alguien'), s:nombreTour(s.name)})});
+      if(s && s.g === guia && !s.pedidoId && !r.demo) toast({ic:'🎟️', title:tr('¡Nueva reserva!'), text:tn(r.qty, '{q} reservó {n} lugar para "{s}".', '{q} reservó {n} lugares para "{s}".', {q:r.name || tr('Alguien'), s:nombreTour(s.name)})});
     }
     for(const r of prevRes){                  // reservas canceladas por el turista (la salida sigue existiendo)
       if(ids.has(r.id)) continue;
