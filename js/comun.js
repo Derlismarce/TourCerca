@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.8';
+const VERSION = '3.9';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.9', f:'2026-10-05', items:[
+    'Lugares de interés en el mapa: monumentos, teatros, museos, estadios, iglesias, parques, cafés notables y tango (datos de Buenos Aires Data).',
+    'Al tocar un lugar se ve su ficha con cuántos tours pasan por ahí, "Ver tours" y "Cómo llegar".',
+    'En el editor del guía y en "Pedí tu tour", tocar un lugar lo suma como parada con su nombre.',
+    'Botón para mostrar u ocultar los lugares.',
+  ]},
   {v:'3.8', f:'2026-10-05', items:[
     'Los recorridos van por la calle: al marcar las paradas, el camino a pie se acomoda a las calles (datos de OpenStreetMap).',
     'Los kilómetros a pie y la dificultad se calculan con el camino real, no en línea recta.',

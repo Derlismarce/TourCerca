@@ -139,6 +139,8 @@ body{background:var(--pink-50)}
 <script src="js/barrios.js"></script>
 <script src="js/rutas.js"></script>
 <script src="js/comun.js"></script>
+<script src="js/lugares.js"></script>
+<script src="js/capa-lugares.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos-guia.js"></script>
 <script>
@@ -432,7 +434,7 @@ function vEditor({salidaId, tourId} = {}){
       ${esNuevo ? `<label class="check" style="margin-bottom:6px"><input type="checkbox" id="fTpl" checked> ${Lt('Guardarlo también en "Mis tours" para repetirlo')}</label>` : ''}
       <div class="ed-actions"><button class="btn btn-ghost" style="border:1.5px solid var(--line)" data-act="back">${Lt('Cancelar')}</button><button class="btn btn-primary" data-act="save">${existente ? Lt('Guardar cambios') : '📣 ' + Lt('Publicar salida')}</button></div>
     </div>
-    <div class="ed-map"><div class="mapbox" id="emap"></div><div class="map-tip" id="eTip"></div></div>
+    <div class="ed-map"><div class="mapbox" id="emap"></div><div class="map-tip" id="eTip"></div><button type="button" class="poi-btn" id="ePoi">🏛️ ${Lt('Lugares')}</button></div>
   </div>`;
 
   // ---- mapa ----
@@ -482,15 +484,19 @@ function vEditor({salidaId, tourId} = {}){
       <button type="button" class="del" data-act="delstop" data-i="${i}" title="${esc(tr('Quitar'))}">✕</button></li>`).join('')
       || `<li style="color:var(--ink-3);font-weight:700;font-size:14px">${tr('Todavía no marcaste puntos.')}</li>`;
   }
-  async function addStop(ll){
-    const entry = [ll[0], ll[1], defName(route.length)];
+  /* nombre: si se tocó un lugar de interés, ya viene con su nombre */
+  async function addStop(ll, nombre){
+    const entry = [ll[0], ll[1], nombre || defName(route.length)];
     route.push(entry); recalcular(); drawList();
+    if(nombre) return;
     const nm = await nombreDe(ll);
     if(nm && route.includes(entry) && entry[2] === defName(route.indexOf(entry))){
       entry[2] = nm; drawMap(); drawList();
     }
   }
   map.on('click', e=> addStop([e.latlng.lat, e.latlng.lng]));
+  // lugares de interés: tocar uno lo suma como parada con su nombre
+  botonLugares(document.getElementById('ePoi'), capaLugares(map, {onClick:l=> addStop(l.ll, l.n)}));
   if(route.length > 1 && !legs) recalcular(); else drawMap();      // salidas viejas sin tramos: se calculan al abrir
   drawList();
   setTimeout(()=>{

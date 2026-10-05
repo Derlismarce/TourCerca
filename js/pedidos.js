@@ -204,10 +204,12 @@ function drawPedidoList(){
       <button type="button" class="del" onclick="pedidoQuitar(${i})" title="${esc(tr('Quitar'))}">✕</button></li>`).join('')
     || `<li style="color:var(--ink-3);font-weight:700;font-size:14px">${tr('Todavía no marcaste puntos.')}</li>`;
 }
-async function addPedidoStop(ll){
-  const entry = [ll[0], ll[1], pedDefName(pedRoute.length)];
+/* nombre: si se tocó un lugar de interés, ya viene con su nombre (no hace falta buscar la calle) */
+async function addPedidoStop(ll, nombre){
+  const entry = [ll[0], ll[1], nombre || pedDefName(pedRoute.length)];
   pedRoute.push(entry); drawPedido();
   if(pedRoute.length === 1) showHint(tr('Ahora tocá los lugares que querés conocer'));
+  if(nombre) return;
   const nm = await nombreDe(ll);
   if(nm && pedRoute.includes(entry) && entry[2] === pedDefName(pedRoute.indexOf(entry))){ entry[2] = nm; drawPedido(); }
 }

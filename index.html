@@ -117,6 +117,7 @@
           <button class="mine" onclick="openMisPedidos()">🎟️ <span data-i18n="Mis tours">Mis tours</span><span class="nbadge" id="misBadge" hidden>0</span></button>
         </div>
         <div class="chips" id="chips"></div>
+        <div class="lug-filtro" id="lugarFiltro" hidden></div>
         <div class="sortbar"><span data-i18n="Ordenar">Ordenar</span>
           <span class="seg"><button data-s="near" class="on" data-i18n="Más cerca">Más cerca</button><button data-s="soon" data-i18n="Empieza antes">Empieza antes</button></span>
         </div>
@@ -132,6 +133,7 @@
       <div class="map-fab">
         <button onclick="centerMe()" data-i18n-title="Centrar en mí" title="Centrar en mí">🎯</button>
         <button id="fitBtn" onclick="fitAll()" data-i18n-title="Ver todos los tours" title="Ver todos los tours">🗺️</button>
+        <button id="poiBtn" class="poi-btn">🏛️</button>
         <button class="sos-fab" onclick="abrirEmergencia({ll:me})" data-i18n-title="Emergencia" title="Emergencia">🆘</button>
       </div>
       <div class="hint" id="hint" style="opacity:0"></div>
@@ -147,6 +149,8 @@
 <script src="js/barrios.js"></script>
 <script src="js/rutas.js"></script>
 <script src="js/comun.js"></script>
+<script src="js/lugares.js"></script>
+<script src="js/capa-lugares.js"></script>
 <script src="js/store.js"></script>
 <script src="js/pedidos.js"></script>
 <script>
@@ -285,9 +289,42 @@ function initMap(){
     document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on', x===b));
     render(true);
   };
+  // lugares de interés: ficha al tocarlos, o parada si se está armando un pedido
+  capaLug = capaLugares(map, {onClick:l=> pedidoMode ? addPedidoStop(l.ll, l.n) : fichaLugar(l)});
+  botonLugares(document.getElementById('poiBtn'), capaLug);
   setInterval(tick, 1000);
   setTimeout(()=>checkAlerts(true), 5000);
 }
+
+/* ---------- ficha de un lugar de interés ---------- */
+let capaLug = null, lugarFiltro = null;
+function fichaLugar(l){
+  const ts = allTours().filter(t=>!t.privado && pasaPor(t, l));
+  const d = me ? distM(me, l.ll) : null, c = CATS_LUGAR[l.cat];
+  const dir = [l.dir ? esc(l.dir) : '', d != null ? tn(cuadras(d), 'a {n} cuadra', 'a {n} cuadras') : ''].filter(Boolean).join(' · ');
+  const html = `<div class="lug-pop">
+    <div class="lp-top"><span class="pi">${c.e}</span><div><b>${esc(l.n)}</b><small>${tr(c.u)} · ${esc(l.barrio)}</small></div></div>
+    ${dir ? `<p class="lp-dir">${dir}</p>` : ''}
+    <div class="lp-tours ${ts.length ? '' : 'none'}">🚶 ${ts.length ? tn(ts.length, '{n} tour pasa por acá', '{n} tours pasan por acá') : tr('Por ahora ningún tour pasa por acá')}</div>
+    <div class="lp-acts">${ts.length ? `<button class="mini go" data-lp="tours">${tr('Ver tours')}</button>` : `<button class="mini go" data-lp="pedir">✨ ${tr('Pedí un tour')}</button>`}
+      <a class="mini" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${l.ll[0]},${l.ll[1]}&travelmode=walking">🧭 ${tr('Cómo llegar')}</a></div>
+    <p class="lp-src">${tr('Fuente: {f}', {f:LUGARES_FUENTE})}</p></div>`;
+  const pop = L.popup({maxWidth:290, className:'lug-popup', autoPanPaddingTopLeft:[10,70]}).setLatLng(l.ll).setContent(html).openOn(map);
+  pop.getElement().querySelector('.lp-acts').onclick = e=>{
+    const b = e.target.closest('[data-lp]'); if(!b) return;
+    map.closePopup();
+    if(b.dataset.lp === 'tours') verToursLugar(l);
+    else { openPedido(); addPedidoStop(l.ll, l.n); }
+  };
+}
+/* "Ver tours": la lista muestra solo los que pasan por ese lugar */
+function verToursLugar(l){
+  lugarFiltro = l;
+  if(selected) closeDetail(); else panelView('list');
+  if(isMobile() && document.getElementById('panel').offsetHeight < sheetH(.4)) setSheet(sheetH(.5));
+  render(true);
+}
+function quitarFiltroLugar(){ lugarFiltro = null; render(true); }
 
 /* la ubicación se guarda en español y se muestra traducida */
 function verUbicacion(l){
@@ -325,7 +362,8 @@ function visibleTours(){
     const pos = s.live ? s.ll : t.meet.slice(0,2);
     const d = me ? distM(me, pos) : 0;
     return {t, s, d};
-  }).filter(({t,s})=>{
+  }).filter(({t})=> !lugarFiltro || (!t.privado && pasaPor(t, lugarFiltro)))
+  .filter(({t,s})=>{
     if(filter==='todos') return true;
     if(filter==='vivo') return s.live;
     if(filter==='pronto') return !s.live && s.startsIn <= 60;
@@ -353,9 +391,12 @@ function render(force){
   const ids = new Set(vis.map(v=>v.t.id));
 
   // lista (solo se redibuja si cambió algo visible, para no parpadear)
-  const key = vis.map(v=>`${v.t.id}:${v.s.live?'L'+v.s.endsIn:v.s.startsIn}:${Math.round(v.d/10)}:${v.t.ocup}`).join('|') + sortBy + filter + (selected?.id||'') + LANG;
+  const key = vis.map(v=>`${v.t.id}:${v.s.live?'L'+v.s.endsIn:v.s.startsIn}:${Math.round(v.d/10)}:${v.t.ocup}`).join('|') + sortBy + filter + (selected?.id||'') + LANG + (lugarFiltro?.id ?? '');
   if(force || key !== lastListKey){
     lastListKey = key;
+    const lf = document.getElementById('lugarFiltro');
+    lf.hidden = !lugarFiltro;
+    lf.innerHTML = lugarFiltro ? `<span>${CATS_LUGAR[lugarFiltro.cat].e} ${tr('Pasan por {l}', {l:`<b>${esc(lugarFiltro.n)}</b>`})}</span><button onclick="quitarFiltroLugar()" aria-label="${esc(tr('Quitar filtro'))}">✕</button>` : '';
     document.getElementById('count').textContent = tn(vis.length, '{n} tour', '{n} tours');
     document.getElementById('list').innerHTML = vis.length ? vis.map(({t,s,d})=>{
       const c = CATS[t.cat], g = GUIDES[t.g];

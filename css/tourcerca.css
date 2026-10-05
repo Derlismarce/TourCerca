@@ -435,3 +435,27 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 /* ---------- V 3.7: 48 barrios ---------- */
 .barrio .alias{font-size:12px;font-weight:800;color:var(--ink-3);margin:-2px 0 2px}
 .barrio.mas{background:#fff;border:2px dashed var(--pink-300);box-shadow:none}
+
+/* ---------- V 3.9: lugares de interés ---------- */
+.poi{display:flex;align-items:center;gap:5px;cursor:pointer}
+.poi .pi{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #1D9E75;display:grid;place-items:center;font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.poi.dest .pi{border-width:3px}
+.poi .pn{font-size:11.5px;font-weight:800;color:#085041;background:#fff;border:1px solid #5DCAA5;border-radius:999px;padding:2px 8px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.map-fab .poi-btn.on{background:#1D9E75;color:#fff}
+.lug-popup .leaflet-popup-content{margin:12px 14px}
+.lug-pop{font-family:inherit;min-width:220px}
+.lug-pop .lp-top{display:flex;gap:10px;align-items:center}
+.lug-pop .lp-top .pi{flex:0 0 36px;width:36px;height:36px;border-radius:50%;border:2px solid #1D9E75;display:grid;place-items:center;font-size:18px}
+.lug-pop .lp-top b{display:block;font-size:15px;font-weight:900;color:var(--ink);line-height:1.2}
+.lug-pop .lp-top small{display:block;font-size:12.5px;font-weight:700;color:var(--ink-3)}
+.lug-pop .lp-dir{margin:8px 0 0 !important;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.lug-pop .lp-tours{margin-top:10px;background:var(--pink-50);color:var(--pink-700);border-radius:10px;padding:7px 10px;font-weight:800;font-size:13px}
+.lug-pop .lp-tours.none{background:#F4F1F2;color:var(--ink-3)}
+.lug-pop .lp-acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.lug-pop .lp-acts .mini{text-decoration:none}
+.lug-pop .lp-src{margin:8px 0 0 !important;font-size:11px;font-weight:700;color:var(--ink-3)}
+.lug-filtro{display:flex;align-items:center;gap:8px;margin:0 16px 8px;background:#E1F5EE;color:#085041;border-radius:12px;padding:7px 10px 7px 12px;font-size:13px;font-weight:700}
+.lug-filtro span{flex:1}
+.lug-filtro button{width:26px;height:26px;border-radius:50%;background:#fff;color:#085041;font-weight:900}
+.ed-map .poi-btn{position:absolute;left:10px;bottom:10px;z-index:600;background:#fff;border-radius:12px;padding:7px 11px;font-weight:800;font-size:13px;box-shadow:var(--shadow-sm);color:var(--ink-2)}
+.ed-map .poi-btn.on{background:#1D9E75;color:#fff}

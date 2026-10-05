@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.9**: 629 lugares de interés de Buenos Aires Data (monumentos, teatros, museos, estadios, iglesias, parques, cafés notables y tango) con ficha, "Ver tours", "Cómo llegar"; en los editores se suman como parada; botón para mostrar u ocultar.
 - **V 3.8**: recorridos por la calle con el ruteo a pie de OpenStreetMap (routing.openstreetmap.de): editor del guía, "Pedí tu tour", mapa, modo en vivo y guías simulados; km y dificultad con el camino real; tours de ejemplo precalculados en `js/rutas.js`; sin conexión, línea recta.
 - **V 3.7**: los 48 barrios oficiales de la Ciudad (`js/barrios.js`, límites del dataset de Buenos Aires Data simplificados); el barrio de salidas y pedidos sale del punto de encuentro; el editor lo muestra; portada con 7 barrios destacados y "Toda la Ciudad".
 - **V 3.6**: si el guía cancela una salida, el turista recibe el aviso con el reembolso total; el guía confirma antes con "¿Cancelar la salida?" (personas con reserva y monto a devolver).
@@ -38,6 +39,8 @@ En la V 2.0 los datos se guardan en el navegador: guía y turista se ven en tiem
 - `js/i18n-textos.js`: traducciones al inglés y al portugués
 - `js/barrios.js`: los 48 barrios oficiales de CABA y `barrioDe()` (qué barrio es un punto)
 - `js/rutas.js`: recorridos por la calle de los tours de ejemplo (precalculados)
+- `js/lugares.js`: lugares de interés (Buenos Aires Data, CC BY 2.5 AR)
+- `js/capa-lugares.js`: capa de lugares en el mapa, ficha y botón
 - `js/comun.js`: datos de ejemplo, utilidades y número de versión
 - `js/store.js`: datos compartidos entre guía y turista
 - `js/pedidos.js`: "Pedí tu tour" en la vista del turista
