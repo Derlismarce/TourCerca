@@ -459,3 +459,18 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .lug-filtro button{width:26px;height:26px;border-radius:50%;background:#fff;color:#085041;font-weight:900}
 .ed-map .poi-btn{position:absolute;left:10px;bottom:10px;z-index:600;background:#fff;border-radius:12px;padding:7px 11px;font-weight:800;font-size:13px;box-shadow:var(--shadow-sm);color:var(--ink-2)}
 .ed-map .poi-btn.on{background:#1D9E75;color:#fff}
+
+/* ---------- V 3.10: precios de referencia AGuiTBA ---------- */
+.ref-precios{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1.5px solid var(--pink-200);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.ref-precios .rp-ic{flex:0 0 56px;width:56px;height:56px;border-radius:18px;background:var(--pink-100);display:grid;place-items:center;font-size:28px}
+.ref-precios h3{font-size:20px;font-weight:900;margin-bottom:4px}
+.ref-precios p{color:var(--ink-2);font-weight:600;line-height:1.55;font-size:15px}
+.ref-precios p b{color:var(--pink-700)}
+.ref-precios .rp-link{display:inline-block;margin-top:10px;font-weight:800;color:var(--pink-700);text-decoration:none;border-bottom:1.5px solid var(--pink-300)}
+.ref-precios small{display:block;margin-top:10px;color:var(--ink-3);font-weight:700;font-size:12px}
+@media (max-width:640px){ .ref-precios{flex-direction:column;padding:18px} }
+.ref-mini{color:var(--pink-700);font-weight:800;text-decoration:none;border-bottom:1px dotted var(--pink-400)}
+.ref-ag{margin-top:6px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--pink-50);border-radius:10px;padding:7px 10px}
+.ref-ag b{color:var(--pink-700)}
+.ref-ag.bajo{background:#FFF4DE;color:#8A5A00}
+.ref-ag .link{background:none;border:0;padding:0;margin-left:4px;color:var(--pink-700);font-weight:800;text-decoration:underline;cursor:pointer;font-size:inherit}

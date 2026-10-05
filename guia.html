@@ -423,7 +423,8 @@ function vEditor({salidaId, tourId} = {}){
       </div>
       <div class="field"><label>${Lt('Precio por persona ($)')}</label>
         <input class="inp" type="number" id="fPrice" min="0" step="500" value="${d.price || ''}" ${d.price===0?'disabled':''} data-i18n-ph="Ej: 15000" placeholder="${esc(tr('Ej: 15000'))}">
-        <label class="check"><input type="checkbox" id="fGorra" ${d.price===0?'checked':''}> ${Lt('A la gorra (cada uno paga lo que quiere)')}</label></div>
+        <label class="check"><input type="checkbox" id="fGorra" ${d.price===0?'checked':''}> ${Lt('A la gorra (cada uno paga lo que quiere)')}</label>
+        <div class="ref-ag" id="fRef"></div></div>
       <div class="field"><label>${Lt('Idiomas')}</label><div class="langs" id="fLangs">${LANGS.map(l=>`<button type="button" class="chip ${d.langs.includes(l)?'on':''}" data-l="${l}">${l}</button>`).join('')}</div></div>
       <div class="field"><label>${Lt('De qué se trata')}</label><textarea class="inp" id="fDesc" maxlength="400" data-i18n-ph="Contá en dos líneas qué van a ver y por qué vale la pena." placeholder="${esc(tr('Contá en dos líneas qué van a ver y por qué vale la pena.'))}">${esc(tr(d.desc))}</textarea></div>
       <div class="field"><label>${Lt('Recorrido')}</label>
@@ -508,11 +509,33 @@ function vEditor({salidaId, tourId} = {}){
     const i = e.target.dataset.i; if(i == null) return;
     route[+i][2] = e.target.value; drawMap();
   });
-  document.getElementById('fGorra').onchange = e=>{ const p = document.getElementById('fPrice'); p.disabled = e.target.checked; if(!e.target.checked && !p.value) p.value = 15000; };
-  document.getElementById('fLangs').onclick = e=>{ const b = e.target.closest('[data-l]'); if(b) b.classList.toggle('on'); };
+  /* precio de referencia AGuiTBA: el precio la sigue hasta que el guía lo cambia a mano */
+  const leerRef = () => {
+    const langs = [...document.querySelectorAll('#fLangs .chip.on')].map(x=>x.dataset.l);
+    const cupos = Math.max(1, Math.round(+document.getElementById('fCupos').value || 1));
+    const h = honorarioAguitba({langs, dur:+document.getElementById('fDur').value || 60, personas:cupos, cat:document.getElementById('fCat').value,
+                                start:new Date(document.getElementById('fStart').value).getTime() || undefined});
+    return {h, cupos, pp:porPersonaAguitba(h, cupos)};
+  };
+  let precioTocado = !!base && d.price > 0 && d.price !== leerRef().pp;
+  function refPrecio(){
+    const {h, cupos, pp} = leerRef(), fp = document.getElementById('fPrice'), gorra = document.getElementById('fGorra').checked, box = document.getElementById('fRef');
+    if(!gorra && !precioTocado) fp.value = pp;
+    const precio = +fp.value || 0, bajo = !gorra && precio > 0 && precio < pp;
+    box.classList.toggle('bajo', bajo);
+    box.innerHTML = gorra ? `🤝 ${tr('A la gorra: sin precio fijo. Como referencia, AGuiTBA sugiere {m} por persona para esta salida.', {m:money(pp)})}`
+      : `🤝 ${tr('Referencia AGuiTBA: <b>{m}</b> por persona ({t} con los {n} lugares ocupados).', {m:money(pp), t:money(h.total), n:cupos})}`
+        + (bajo ? ' ' + tr('Tu precio está por debajo de la referencia.') : '')
+        + (precioTocado && precio !== pp ? ` <button type="button" class="link" data-act="usar-ref">${tr('Usar la referencia')}</button>` : '');
+  }
+  document.getElementById('fGorra').onchange = e=>{ const p = document.getElementById('fPrice'); p.disabled = e.target.checked; if(!e.target.checked){ precioTocado = false; } refPrecio(); };
+  document.getElementById('fLangs').onclick = e=>{ const b = e.target.closest('[data-l]'); if(b){ b.classList.toggle('on'); refPrecio(); } };
+  ['fDur','fCupos','fStart','fCat'].forEach(id=>{ const el = document.getElementById(id); el.addEventListener('input', refPrecio); el.addEventListener('change', refPrecio); });
+  document.getElementById('fPrice').addEventListener('input', ()=>{ precioTocado = true; refPrecio(); });
+  refPrecio();
   let nameShown = nombreTour(d.name), descShown = tr(d.desc);
   relabel = ()=>{
-    document.getElementById('fCat').innerHTML = catOpts(); drawMap(); drawList();
+    document.getElementById('fCat').innerHTML = catOpts(); drawMap(); drawList(); refPrecio();
     const fN = document.getElementById('fName'), fD = document.getElementById('fDesc');
     if(fN.value === nameShown){ nameShown = nombreTour(d.name); fN.value = nameShown; }
     if(fD.value === descShown){ descShown = tr(d.desc); fD.value = descShown; }
@@ -522,6 +545,7 @@ function vEditor({salidaId, tourId} = {}){
     const b = e.target.closest('[data-act]'); if(!b) return;
     switch(b.dataset.act){
       case 'back': return go(vDash);
+      case 'usar-ref': precioTocado = false; refPrecio(); return;
       case 'undo': route.pop(); recalcular(); drawList(); return;
       case 'delstop': {
         route.splice(+b.dataset.i, 1);

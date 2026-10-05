@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.9';
+const VERSION = '3.10';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.10', f:'2026-10-05', items:[
+    'Los precios toman como referencia los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026): idioma, duración con mínimo de 3 horas, tamaño del grupo y suplementos.',
+    '"Pedí tu tour": el precio mínimo por persona se calcula con esa referencia según el grupo.',
+    'El editor del guía sugiere el precio de referencia y avisa si queda por debajo.',
+    'Nueva sección "Precios justos para los guías" en la página principal.',
+  ]},
   {v:'3.9', f:'2026-10-05', items:[
     'Lugares de interés en el mapa: monumentos, teatros, museos, estadios, iglesias, parques, cafés notables y tango (datos de Buenos Aires Data).',
     'Al tocar un lugar se ve su ficha con cuántos tours pasan por ahí, "Ver tours" y "Cómo llegar".',
@@ -344,8 +350,45 @@ function verLugar(s){
 const nombreTour = n => (n || '').startsWith('Tour a pedido · ') ? tr('Tour a pedido') + ' · ' + n.slice(16) : tr(n);
 
 /* ---------- reglas de "Pedí tu tour" (las mismas para turista y guía) ---------- */
-const PEDIDO = {minPersonas:5, maxPersonas:40, minDur:60, minPrecio:15000, anticipacionH:2, maxDias:30};
+const PEDIDO = {minPersonas:5, maxPersonas:40, minDur:60, anticipacionH:2, maxDias:30};   // el precio mínimo sale de AGuiTBA
 const PEDIDO_DURACIONES = [60, 90, 120, 150, 180, 240];
+
+/* ---------- precios de referencia: honorarios sugeridos por AGuiTBA (V 3.10) ----------
+   AGuiTBA (Asociación de Guías de Turismo de Buenos Aires) publica honorarios
+   sugeridos POR HORA DE SERVICIO del guía, por grupo. TourCerca los pasa a precio
+   por persona: honorario del servicio ÷ personas (en salidas abiertas, ÷ cupos).
+   Fuente: aguitba.org.ar/honorarios-sugeridos (vigentes desde el 15/09/2026;
+   AGuiTBA aclara que pueden cambiar sin previo aviso). AGuiTBA no forma parte de TourCerca. */
+const AGUITBA = {
+  vigencia:'2026-09-15', url:'https://www.aguitba.org.ar/honorarios-sugeridos/',
+  hora:{ES:[35000,43000], PT:[40000,45000], EN:[48000,53000], DE:[48000,53000], IT:[48000,53000], FR:[48000,53000]},   // [1 a 10 personas, 11 o más]
+  grupoGrande:11, minHoras:3, especializado:.30, bilingue:.30, nocturno:22000, feriados:['12-24','12-25','12-31','01-01'],
+};
+/* tours especializados o temáticos (+30%); los históricos y en familia van con la tarifa base */
+const CATS_ESPECIALIZADAS = ['gastro','arquitectura','arte','nocturno','tematico','foto','misterio'];
+/* honorario del guía para un servicio: idioma más caro, horas (mínimo 3, de a media hora), grupo, suplementos */
+function honorarioAguitba({langs, dur, personas, cat, start}){
+  const ls = (langs && langs.length ? langs : ['ES']), grande = personas >= AGUITBA.grupoGrande ? 1 : 0;
+  const porHora = Math.max(...ls.map(l=>(AGUITBA.hora[l] || AGUITBA.hora.EN)[grande]));
+  const horas = Math.max(AGUITBA.minHoras, Math.ceil((dur || 60) / 30) / 2);
+  let total = porHora * horas; const sup = [];
+  if(ls.length > 1){ total *= 1 + AGUITBA.bilingue; sup.push('bilingue'); }
+  if(CATS_ESPECIALIZADAS.includes(cat)){ total *= 1 + AGUITBA.especializado; sup.push('especializado'); }
+  if(start){
+    const ini = new Date(start), fin = new Date(start + (dur || 60) * MIN), noct = d => d.getHours() >= 23 || d.getHours() < 6;
+    if(noct(ini) || noct(fin) || fin.getDate() !== ini.getDate()){ total += AGUITBA.nocturno; sup.push('nocturno'); }
+    if(AGUITBA.feriados.includes(`${pad(ini.getMonth()+1)}-${pad(ini.getDate())}`)){ total *= 2; sup.push('feriado'); }
+  }
+  return {total:Math.round(total), porHora, horas, grande:!!grande, sup};
+}
+/* fecha de vigencia en el idioma elegido: "15 de septiembre de 2026" */
+const fechaVigencia = () => new Date(AGUITBA.vigencia + 'T12:00:00').toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'});
+/* precio por persona de referencia (redondeado hacia arriba de a $ 500) */
+const porPersonaAguitba = (h, personas) => Math.ceil(h.total / Math.max(1, personas) / 500) * 500;
+const precioSalidaAguitba = t => porPersonaAguitba(honorarioAguitba({langs:t.langs, dur:t.dur, personas:t.cupos, cat:t.cat, start:t.startAt}), t.cupos);
+const minimoPedido = p => porPersonaAguitba(honorarioAguitba({langs:p.langs, dur:p.dur, personas:p.personas, cat:p.cat, start:p.startAt}), p.personas);
+/* los tours de ejemplo con precio fijo usan la referencia AGuiTBA (los "a la gorra" quedan a la gorra) */
+TOURS.forEach(t=>{ if(t.price > 0) t.price = precioSalidaAguitba(t); });
 
 /* ---------- política de cancelación de reservas (V 3.4) ----------
    El turista paga al reservar. Si cancela:
@@ -376,7 +419,7 @@ function reglasPedido(p, T = Date.now()){
     {k:'personas', ok: p.personas >= PEDIDO.minPersonas && p.personas <= PEDIDO.maxPersonas,
      txt:tr('Mínimo {n} personas', {n:PEDIDO.minPersonas}), err:tr('El grupo tiene que ser de {a} a {b} personas.', {a:PEDIDO.minPersonas, b:PEDIDO.maxPersonas})},
     {k:'dur', ok: p.dur >= PEDIDO.minDur, txt:tr('Mínimo 1 hora'), err:tr('El recorrido tiene que durar al menos 1 hora.')},
-    {k:'precio', ok: p.price >= PEDIDO.minPrecio, txt:tr('Mínimo {m} c/u', {m:money(PEDIDO.minPrecio)}), err:tr('El precio mínimo es {m} por persona.', {m:money(PEDIDO.minPrecio)})},
+    (()=>{ const m = minimoPedido(p); return {k:'precio', ok: p.price >= m, txt:tr('Mínimo {m} c/u (AGuiTBA)', {m:money(m)}), err:tr('Según los honorarios sugeridos por AGuiTBA, para este grupo el mínimo es {m} por persona.', {m:money(m)})}; })(),
     {k:'fecha', ok: !isNaN(p.startAt) && p.startAt >= desde && p.startAt <= hasta,
      txt:tr('De {h} h a {d} días', {h:PEDIDO.anticipacionH, d:PEDIDO.maxDias}), err:tr('Pedilo con al menos {h} horas de anticipación y hasta {d} días.', {h:PEDIDO.anticipacionH, d:PEDIDO.maxDias})},
     {k:'ruta', ok: (p.route || []).length >= 2, txt:tr('Salida + 1 lugar'), err:tr('Marcá en el mapa el punto de salida y al menos un lugar para visitar.')},

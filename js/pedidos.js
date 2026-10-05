@@ -106,7 +106,9 @@ function renderPedidoForm(src, keep = false){
   const man = new Date(T + 24*60*MIN); man.setHours(10, 0, 0, 0);          // por defecto: mañana 10:00
   const d = src ? {startAt: (pedEdit || keep) ? src.startAt : man.getTime(), personas:src.personas, dur:src.dur, price:src.price,
                    langs:[...src.langs], cat:src.cat, nombre:src.nombre, comentario:src.comentario || ''}
-                : {startAt:man.getTime(), personas:PEDIDO.minPersonas, dur:90, price:PEDIDO.minPrecio, langs:[LANG.toUpperCase()], cat:'historico', nombre:'', comentario:''};
+                : {startAt:man.getTime(), personas:PEDIDO.minPersonas, dur:90, price:0, langs:[LANG.toUpperCase()], cat:'historico', nombre:'', comentario:''};
+  if(!d.price) d.price = minimoPedido(d);
+  precioTocado = !!src && d.price !== minimoPedido(d);        // si el turista no lo cambió, sigue a la referencia AGuiTBA
   if(!d.nombre && !keep){ try { d.nombre = localStorage.getItem(NOMBRE_KEY) || ''; } catch(e){} }
   const min = toLocalInput(T + PEDIDO.anticipacionH*60*MIN), max = toLocalInput(T + PEDIDO.maxDias*24*60*MIN);
   const LANGS = ['ES','EN','PT','FR','IT','DE'];
@@ -122,8 +124,9 @@ function renderPedidoForm(src, keep = false){
         <div class="field"><label>${tr('Duración')}</label><select class="inp" id="pDur">${PEDIDO_DURACIONES.map(m=>`<option value="${m}" ${m===d.dur?'selected':''}>${fmtIn(m)}</option>`).join('')}</select></div>
       </div>
       <div class="field"><label>${tr('Precio por persona que ofrecés ($)')}</label>
-        <input class="inp" type="number" id="pPrice" min="${PEDIDO.minPrecio}" step="500" value="${d.price}">
-        <div class="total" id="pTotal"></div></div>
+        <input class="inp" type="number" id="pPrice" min="0" step="500" value="${d.price}">
+        <div class="total" id="pTotal"></div>
+        <div class="ref-ag" id="pRef"></div></div>
       <div class="field"><label>${tr('Idiomas')}</label><div class="langs" id="pLangs">${LANGS.map(l=>`<button type="button" class="chip ${d.langs.includes(l)?'on':''}" data-l="${l}">${l}</button>`).join('')}</div></div>
       <div class="field"><label>${tr('Tipo de tour')}</label><select class="inp" id="pCat">${Object.entries(CATS).map(([k,c])=>`<option value="${k}" ${k===d.cat?'selected':''}>${c.e} ${tr(c.n)}</option>`).join('')}</select></div>
       <div class="field"><label>${tr('Recorrido')}</label>
@@ -139,9 +142,10 @@ function renderPedidoForm(src, keep = false){
   const v = document.getElementById('pedidoView');
   v.oninput = v.onchange = e=>{
     if(e.target.dataset.i != null){ pedRoute[+e.target.dataset.i][2] = e.target.value; drawPedidoMap(); }
+    if(e.target.id === 'pPrice') precioTocado = true;
     reglasUI();
   };
-  document.getElementById('pLangs').onclick = e=>{ const b = e.target.closest('[data-l]'); if(b) b.classList.toggle('on'); };
+  document.getElementById('pLangs').onclick = e=>{ const b = e.target.closest('[data-l]'); if(b){ b.classList.toggle('on'); reglasUI(); } };
   drawPedidoList(); reglasUI();
 }
 
@@ -159,12 +163,19 @@ function leerPedido(){
     route: pedRoute,
   };
 }
+let precioTocado = false;
 function reglasUI(){
+  const p0 = leerPedido(), ref = minimoPedido(p0);
+  if(!precioTocado && p0.personas > 0){ document.getElementById('pPrice').value = ref; }   // sigue a la referencia AGuiTBA
   const p = leerPedido(), rs = reglasPedido(p);
   document.getElementById('pRules').innerHTML = rs.map(r=>`<span class="rule ${r.ok?'ok':''}">${r.ok?'✓':'○'} ${esc(r.txt)}</span>`).join('');
   const tot = p.personas > 0 && p.price > 0 ? tr('Total que recibe el guía: <b>{t}</b> ({n} × {p})', {t:money(p.personas * p.price), n:p.personas, p:money(p.price)}) : '';
   document.getElementById('pTotal').innerHTML = tot;
+  const h = honorarioAguitba({langs:p.langs, dur:p.dur, personas:p.personas, cat:p.cat, start:p.startAt});
+  document.getElementById('pRef').innerHTML = p.personas > 0 ? `🤝 ${tr('Referencia AGuiTBA para este grupo: <b>{t}</b> ({m} por persona).', {t:money(h.total), m:money(ref)})}`
+    + (precioTocado && p.price !== ref ? ` <button type="button" class="link" onclick="usarRefPedido()">${tr('Usar la referencia')}</button>` : '') : '';
 }
+function usarRefPedido(){ precioTocado = false; reglasUI(); }
 
 /* ---------- recorrido en el mapa ---------- */
 function drawPedido(){ drawPedidoMap(); drawPedidoList(); if(document.getElementById('pRules')) reglasUI(); }

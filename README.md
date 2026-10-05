@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.10**: precios de referencia según los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026), pasados a precio por persona; mínimo de "Pedí tu tour" calculado con esa referencia; el editor del guía la sugiere; sección "Precios justos para los guías" en la portada.
 - **V 3.9**: 629 lugares de interés de Buenos Aires Data (monumentos, teatros, museos, estadios, iglesias, parques, cafés notables y tango) con ficha, "Ver tours", "Cómo llegar"; en los editores se suman como parada; botón para mostrar u ocultar.
 - **V 3.8**: recorridos por la calle con el ruteo a pie de OpenStreetMap (routing.openstreetmap.de): editor del guía, "Pedí tu tour", mapa, modo en vivo y guías simulados; km y dificultad con el camino real; tours de ejemplo precalculados en `js/rutas.js`; sin conexión, línea recta.
 - **V 3.7**: los 48 barrios oficiales de la Ciudad (`js/barrios.js`, límites del dataset de Buenos Aires Data simplificados); el barrio de salidas y pedidos sale del punto de encuentro; el editor lo muestra; portada con 7 barrios destacados y "Toda la Ciudad".

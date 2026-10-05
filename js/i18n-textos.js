@@ -1369,3 +1369,45 @@ Object.assign(I18N.pt, {
 "Café notable": "Café notável",
 "Milonga o tanguería": "Milonga ou casa de tango"
 });
+
+/* V 3.10: precios de referencia AGuiTBA */
+Object.assign(I18N.en, {
+"\"Pedí tu tour\": el precio mínimo por persona se calcula con esa referencia según el grupo.": "\"Request a tour\": the minimum price per person is calculated from that reference according to the group.",
+"A la gorra: sin precio fijo. Como referencia, AGuiTBA sugiere {m} por persona para esta salida.": "Pay what you want: no fixed price. For reference, AGuiTBA suggests {m} per person for this departure.",
+"AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.": "AGuiTBA is not part of TourCerca. Fees may change; prices are updated with each new publication.",
+"El editor del guía sugiere el precio de referencia y avisa si queda por debajo.": "The guide editor suggests the reference price and warns if yours is below it.",
+"Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.": "TourCerca prices are based on the <b>fees suggested by AGuiTBA</b>, the Buenos Aires Tour Guides Association, in force since {f}. That way, every tour pays the guide fairly for their work.",
+"Los precios toman como referencia los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026): idioma, duración con mínimo de 3 horas, tamaño del grupo y suplementos.": "Prices are based on the fees suggested by AGuiTBA (in force since 15/09/2026): language, duration with a 3-hour minimum, group size and surcharges.",
+"Mínimo {m} c/u (AGuiTBA)": "Minimum {m} each (AGuiTBA)",
+"Nueva sección \"Precios justos para los guías\" en la página principal.": "New \"Fair prices for guides\" section on the home page.",
+"Precio de referencia según los honorarios sugeridos por AGuiTBA": "Reference price based on the fees suggested by AGuiTBA",
+"Precios justos para los guías": "Fair prices for guides",
+"Referencia AGuiTBA para este grupo: <b>{t}</b> ({m} por persona).": "AGuiTBA reference for this group: <b>{t}</b> ({m} per person).",
+"Referencia AGuiTBA: <b>{m}</b> por persona ({t} con los {n} lugares ocupados).": "AGuiTBA reference: <b>{m}</b> per person ({t} with all {n} spots taken).",
+"Según los honorarios sugeridos por AGuiTBA, para este grupo el mínimo es {m} por persona.": "Based on the fees suggested by AGuiTBA, the minimum for this group is {m} per person.",
+"Tu precio está por debajo de la referencia.": "Your price is below the reference.",
+"Usar la referencia": "Use the reference",
+"Ver los honorarios sugeridos": "See the suggested fees",
+"ref. AGuiTBA": "AGuiTBA ref.",
+"👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Precio de referencia AGuiTBA": "👥 From {p} people · ⏱️ From 1 hour · 💰 AGuiTBA reference price"
+});
+Object.assign(I18N.pt, {
+"\"Pedí tu tour\": el precio mínimo por persona se calcula con esa referencia según el grupo.": "\"Peça seu tour\": o preço mínimo por pessoa é calculado com essa referência conforme o grupo.",
+"A la gorra: sin precio fijo. Como referencia, AGuiTBA sugiere {m} por persona para esta salida.": "\"Pague quanto quiser\": sem preço fixo. Como referência, a AGuiTBA sugere {m} por pessoa para esta saída.",
+"AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.": "A AGuiTBA não faz parte da TourCerca. Os honorários podem mudar; os preços são atualizados a cada nova publicação.",
+"El editor del guía sugiere el precio de referencia y avisa si queda por debajo.": "O editor do guia sugere o preço de referência e avisa se ficar abaixo.",
+"Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.": "Os preços da TourCerca tomam como referência os <b>honorários sugeridos pela AGuiTBA</b>, a Associação de Guias de Turismo de Buenos Aires, vigentes desde {f}. Assim, cada tour paga ao guia o que corresponde ao seu trabalho.",
+"Los precios toman como referencia los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026): idioma, duración con mínimo de 3 horas, tamaño del grupo y suplementos.": "Os preços tomam como referência os honorários sugeridos pela AGuiTBA (vigentes desde 15/09/2026): idioma, duração com mínimo de 3 horas, tamanho do grupo e adicionais.",
+"Mínimo {m} c/u (AGuiTBA)": "Mínimo {m} cada (AGuiTBA)",
+"Nueva sección \"Precios justos para los guías\" en la página principal.": "Nova seção \"Preços justos para os guias\" na página inicial.",
+"Precio de referencia según los honorarios sugeridos por AGuiTBA": "Preço de referência segundo os honorários sugeridos pela AGuiTBA",
+"Precios justos para los guías": "Preços justos para os guias",
+"Referencia AGuiTBA para este grupo: <b>{t}</b> ({m} por persona).": "Referência AGuiTBA para este grupo: <b>{t}</b> ({m} por pessoa).",
+"Referencia AGuiTBA: <b>{m}</b> por persona ({t} con los {n} lugares ocupados).": "Referência AGuiTBA: <b>{m}</b> por pessoa ({t} com as {n} vagas ocupadas).",
+"Según los honorarios sugeridos por AGuiTBA, para este grupo el mínimo es {m} por persona.": "Segundo os honorários sugeridos pela AGuiTBA, para este grupo o mínimo é {m} por pessoa.",
+"Tu precio está por debajo de la referencia.": "Seu preço está abaixo da referência.",
+"Usar la referencia": "Usar a referência",
+"Ver los honorarios sugeridos": "Ver os honorários sugeridos",
+"ref. AGuiTBA": "ref. AGuiTBA",
+"👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Precio de referencia AGuiTBA": "👥 A partir de {p} pessoas · ⏱️ A partir de 1 hora · 💰 Preço de referência AGuiTBA"
+});

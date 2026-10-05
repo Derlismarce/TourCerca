@@ -91,6 +91,18 @@
     </div>
   </section>
 
+  <section class="block" id="precios">
+    <div class="ref-precios">
+      <div class="rp-ic">🤝</div>
+      <div class="rp-txt">
+        <h3 data-i18n="Precios justos para los guías">Precios justos para los guías</h3>
+        <p id="refPreciosTxt"></p>
+        <a class="rp-link" id="refPreciosLink" target="_blank" rel="noopener"></a>
+        <small id="refPreciosNota"></small>
+      </div>
+    </div>
+  </section>
+
   <div class="quote" id="guias">
     <div><p data-i18n="¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.">¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html" data-i18n="Entrar al panel del guía">Entrar al panel del guía</a></div>
   </div>
@@ -223,7 +235,10 @@ function buildLanding(){
     const c = TOURS.filter(t=>t.barrio===n).length;
     return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3>${b.alias ? `<small class="alias">${esc(tr(b.alias))}</small>` : ''}<span>${tn(c, '{n} tour de guías', '{n} tours de guías')}</span></button>`;
   }).join('') + `<button class="barrio mas" onclick="startApp('demo')"><span class="em">🗺️</span><h3>${tr('Toda la Ciudad')}</h3><span>${tr('{n} barrios', {n:BARRIOS_CABA.length})}</span></button>`;
-  document.getElementById('askRules').textContent = tr('👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Desde {m} por persona', {p:PEDIDO.minPersonas, m:money(PEDIDO.minPrecio)});
+  document.getElementById('askRules').textContent = tr('👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Precio de referencia AGuiTBA', {p:PEDIDO.minPersonas});
+  document.getElementById('refPreciosTxt').innerHTML = tr('Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.', {f:fechaVigencia()});
+  const rl = document.getElementById('refPreciosLink'); rl.href = AGUITBA.url; rl.textContent = tr('Ver los honorarios sugeridos') + ' ↗';
+  document.getElementById('refPreciosNota').textContent = tr('AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.');
   document.getElementById('copy').textContent = tr(COPYRIGHT);
   document.title = tr('TourCerca · Tours cerca tuyo, ahora');
 }
@@ -517,7 +532,7 @@ function renderDetail(force){
       <div class="fact"><small>${tr('Distancia')}</small><b>${fmtDist(d)}</b><i>${tn(cuadras(d), '{n} cuadra', '{n} cuadras')} · ${tr('{w} min a pie', {w})}</i></div>
       <div class="fact"><small>${s.live?tr('Empezó'):tr('Empieza')}</small><b>${hora(s.start)}</b><i>${s.live?tr('termina en {t}', {t:fmtIn(s.endsIn)}):s.startsIn<=0?tr('por salir'):tr('en {t}', {t:fmtIn(s.startsIn)})}</i></div>
       <div class="fact"><small>${tr('Duración')}</small><b>${fmtIn(t.dur)}</b><i>${tr('{km} km a pie', {km:dec1(t.len/1000)})}</i></div>
-      <div class="fact"><small>${tr('Precio')}</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?tr('pagás lo que quieras'):tr('por persona')}</i></div>
+      <div class="fact"><small>${tr('Precio')}</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?tr('pagás lo que quieras'):`${tr('por persona')} · <a class="ref-mini" href="${AGUITBA.url}" target="_blank" rel="noopener" title="${esc(tr('Precio de referencia según los honorarios sugeridos por AGuiTBA'))}">${tr('ref. AGuiTBA')}</a>`}</i></div>
       <div class="fact"><small>${tr('Idiomas')}</small><b>${t.langs.join(' · ')}</b></div>
       ${t.privado ? `<div class="fact"><small>${tr('Grupo')}</small><b>${tr('{n} personas', {n:t.cupos})}</b><i>${tr('tour privado a pedido')}</i></div>`
         : `<div class="fact"><small>${tr('Cupos')}</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?tr('Quedan {n}', {n:libres}):tr('Completo')}</b><i>${tr('de {n} lugares', {n:t.cupos})}</i></div>`}
