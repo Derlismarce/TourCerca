@@ -13,7 +13,7 @@
    ===================================================================== */
 const Store = (()=>{
   const KEY = 'tourcerca.datos.v2';
-  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], pedidos:{}, incidentes:[]});
+  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], cancelaciones:[], pedidos:{}, incidentes:[]});
   const subs = [];
   let cache = load();
 
@@ -78,11 +78,15 @@ const Store = (()=>{
       save();
       return r.id;
     },
-    cancelarReserva(id){
-      const n = cache.reservas.length;
-      cache.reservas = cache.reservas.filter(r=>r.id !== id);
-      if(cache.reservas.length !== n) save();
+    /* cargo: lo que se queda el guía por una cancelación tardía (V 3.4) */
+    cancelarReserva(id, cargo = 0){
+      const r = cache.reservas.find(x=>x.id === id); if(!r) return;
+      cache.reservas = cache.reservas.filter(x=>x.id !== id);
+      cache.cancelaciones.push({...r, cargo, canceladaTs:Date.now()});
+      save();
     },
+    cancelacionDe: id=>cache.cancelaciones.find(x=>x.id === id),
+    cancelacionesDe: salidaId=>cache.cancelaciones.filter(x=>x.salidaId === salidaId),
     existeReserva: id=>cache.reservas.some(r=>r.id === id),
     reservasDe: id=>cache.reservas.filter(r=>r.salidaId === id),
     ocupados: id=>cache.reservas.filter(r=>r.salidaId === id).reduce((a,r)=>a + r.qty, 0),

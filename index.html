@@ -485,6 +485,7 @@ function renderDetail(force){
         <div><b>${esc(g.n)}</b><small>⭐ ${g.r} (${tr('{n} reseñas', {n:g.rv})}) · ${tr('{n} años guiando', {n:g.y})}</small><br><span class="badge-ok">✔ ${tr('Guía verificada')}</span></div></div>
       <p style="margin-top:8px">${esc(tr(g.bio))}</p>
     </div>
+    ${!s.live && !t.privado ? `<div class="d-sec"><h4>${tr('Cancelación')}</h4>${cajaPolitica(s.start, t.price, relojDe(t.ext))}</div>` : ''}
     ${(()=>{ const mr = !s.live && !t.privado && reservaDe(t.id, s.start); return mr ? `<div class="status ok">🎟️ <span>${tn(mr.qty, 'Tenés {n} lugar reservado en esta salida.', 'Tenés {n} lugares reservados en esta salida.')}
       <button class="mini danger" style="margin-left:6px" onclick="cancelarMiReserva('${mr.id}')">${tr('Cancelar reserva')}</button></span></div>` : ''; })()}
     <div class="d-actions">
@@ -512,9 +513,9 @@ function reserve(id){
       <div class="qty"><button data-q="-1">−</button><b>${q}</b><button data-q="1">+</button></div>
       <h5>${tr('Tu nombre (para que el guía te reconozca)')}</h5>
       <input class="inp" data-name maxlength="40" placeholder="${esc(tr('Opcional'))}" value="${esc(nombre)}" style="margin-bottom:14px">
-      ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al guía', {t:money(t.price*q)})}</p>`:''}
+      ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al reservar', {t:money(t.price*q)})}</p>`:''}
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>${tr('Cancelar')}</button><button class="btn btn-primary" style="flex:1" data-ok>${tr('Confirmar')}</button></div>
-      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">${tr('Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.')}</p>
+      <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">${tr('Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.')} ${t.price ? tr('El pago es simulado.') : ''}</p>
     </div>`;
   /* segundo paso: resumen y "¿Confirmás la reserva?", para no reservar por error */
   const drawConfirm = ()=> ov.innerHTML = `<div class="modal">
@@ -525,10 +526,11 @@ function reserve(id){
         <li><span class="k">📅</span><span>${esc(fechaLarga(state(t).start))}</span></li>
         <li><span class="k">📍</span><span>${esc(verLugar(t.meet[2]))}</span></li>
         <li><span class="k">👥</span><span>${tn(q, '{n} persona', '{n} personas')}${nombre.trim() ? ' · ' + esc(nombre.trim()) : ''}</span></li>
-        <li><span class="k">💰</span><span>${t.price ? tr('{t} en total · se paga al guía', {t:money(t.price*q)}) : tr('A la gorra (cada uno paga lo que quiere)')}</span></li>
+        <li><span class="k">💳</span><span>${t.price ? tr('Pagás ahora: <b>{t}</b> (pago simulado)', {t:money(t.price*q)}) : tr('A la gorra (cada uno paga lo que quiere)')}</span></li>
       </ul>
+      ${cajaPolitica(state(t).start, t.price*q, relojDe(t.ext))}
       <p class="aviso-conf">${tr('Si después no podés ir, cancelala desde "Mis tours" así el lugar queda libre.')}</p>
-      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-back>← ${tr('Volver')}</button><button class="btn btn-primary" style="flex:1" data-yes>✓ ${tr('Sí, reservar')}</button></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-back>← ${tr('Volver')}</button><button class="btn btn-primary" style="flex:1" data-yes>✓ ${t.price ? tr('Reservar y pagar') : tr('Sí, reservar')}</button></div>
     </div>`;
   draw();
   ov.onclick = e=>{
@@ -542,9 +544,10 @@ function reserve(id){
       let rid = null;
       if(t.ext) rid = Store.reservar(t.id, q, nombre); else t.ocup += q;
       guardarMiReserva({rid, tourId:t.id, ext:!!t.ext, start, dur:t.dur, qty:q, nombre:nombre.trim(),
-        name:t.name, cat:t.cat, meet:t.meet.slice(), price:t.price, barrio:t.barrio, g:t.g});
+        name:t.name, cat:t.cat, meet:t.meet.slice(), price:t.price, barrio:t.barrio, g:t.g, pagado:t.price*q});
       ov.innerHTML = `<div class="modal" style="text-align:center"><div class="big-ok">🎉</div><h3>${tn(q, '¡Listo, reservaste {n} lugar!', '¡Listo, reservaste {n} lugares!')}</h3>
         <p class="muted">${tr('Te esperamos a las <b>{h}</b> en <b>{p}</b>. {g} va a tener un cartel rosa de TourCerca.', {h:hora(start), p:esc(verLugar(t.meet[2])), g:esc(GUIDES[t.g].n.split(' ')[0])})}</p>
+        ${t.price ? `<p class="muted">💳 ${tr('Pagaste {t} (pago simulado).', {t:money(t.price*q)})}</p>` : ''}
         <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-mis>🎟️ ${tr('Mis tours')}</button><button class="btn btn-primary" data-x style="flex:1">${tr('Genial')}</button></div></div>`;
       renderDetail(true); render(true);
     }

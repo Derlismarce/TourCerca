@@ -24,8 +24,18 @@ function guardarMiReserva(r){
   r.id = 'mr_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); r.ts = Date.now();
   setMisReservas(misReservas().concat(r)); badgeMis();
 }
-/* estado: 'prox' | 'vivo' | 'hecho' | 'cancelada' (el guía canceló la salida) */
+/* reloj: los tours de ejemplo usan el de la app (acelerable); las salidas de los guías, el real */
+const relojDe = ext => ext ? Date.now() : now();
+const pagadoDe = r => r.pagado ?? r.price * r.qty;
+/* caja de color con la política de cancelación vigente (V 3.4) */
+function cajaPolitica(start, pagado, T){
+  const tipo = pagado ? politicaCancel(start, pagado, T).tipo : 'libre';
+  const ic = {gratis:'✅', mitad:'⚠️', total:'⛔', libre:'ℹ️'}[tipo];
+  return `<div class="poli ${tipo}"><span>${ic}</span><span>${esc(textoPolitica(start, pagado, T))}</span></div>`;
+}
+/* estado: 'prox' | 'vivo' | 'hecho' | 'cancelada' (el guía canceló la salida) | 'yo' (la cancelé yo) */
 function estadoReserva(r){
+  if(r.cancelada) return 'yo';
   if(r.ext){
     const s = Store.get().salidas[r.tourId];
     if(!s || (r.rid && !Store.existeReserva(r.rid))) return s && s.status === 'finalizada' ? 'hecho' : 'cancelada';
@@ -36,8 +46,10 @@ function estadoReserva(r){
 }
 /* se muestran las vigentes y, hasta un día después, las terminadas o canceladas */
 const misReservasVisibles = () => misReservas()
-  .filter(r=> estadoReserva(r) === 'prox' || estadoReserva(r) === 'vivo' || Date.now() - (r.start + r.dur*MIN) < 864e5 || estadoReserva(r) === 'cancelada')
-  .sort((a,b)=>a.start - b.start);
+  .filter(r=> ['prox','vivo','cancelada'].includes(estadoReserva(r)) || Date.now() - (r.cancelada ? r.cancelada.ts : r.start + r.dur*MIN) < 864e5)
+  .map(r=>({r, act:['prox','vivo'].includes(estadoReserva(r))}))
+  .sort((a,b)=> (b.act - a.act) || (a.r.start - b.r.start))     // primero las vigentes
+  .map(x=>x.r);
 const misReservasActivas = () => misReservas().filter(r=>['prox','vivo'].includes(estadoReserva(r)));
 const reservaDe = (tourId, start) => misReservas().find(r=>String(r.tourId) === String(tourId) && r.start === start && estadoReserva(r) === 'prox');
 
@@ -241,46 +253,59 @@ function renderMis(){
     </div>`;
 }
 function reservaCardTurista(r){
-  const st = estadoReserva(r), g = GUIDES[r.g];
-  let estado, acciones;
+  const st = estadoReserva(r), g = GUIDES[r.g], pag = pagadoDe(r);
+  let estado, acciones, pago = '';
   if(st === 'prox'){
     estado = `<div class="pst ok">✅ <span>${tr('Reservado · te esperan en el punto de encuentro')}</span></div>`;
     acciones = `${findTour(r.tourId) ? `<button class="mini go" onclick="verTourReservado('${r.id}')">${tr('Ver detalle')}</button>` : ''}<button class="mini danger" onclick="cancelarMiReserva('${r.id}')">${tr('Cancelar reserva')}</button>`;
+    pago = cajaPolitica(r.start, pag, relojDe(r.ext));
   } else if(st === 'vivo'){
     estado = `<div class="pst live"><span class="dot"></span> ${tr('¡Tu tour está en vivo!')}</div>`;
     acciones = findTour(r.tourId) ? `<button class="mini go" onclick="verTourReservado('${r.id}')">🔴 ${tr('Ver en el mapa')}</button>` : '';
   } else if(st === 'hecho'){
     estado = `<div class="pst done">🎉 ${g ? tr('Tour realizado con {g}', {g:esc(g.n)}) : tr('Tour realizado')}</div>`;
     acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
+  } else if(st === 'yo'){
+    const c = r.cancelada;
+    estado = `<div class="pst off">↩️ ${tr('Cancelaste esta reserva')}${pag ? ` <span>· ${c.reembolso ? tr('se te devolvieron {d}', {d:money(c.reembolso)}) : tr('sin reembolso')}</span>` : ''}</div>`;
+    acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
   } else {
-    estado = `<div class="pst off">${tr('El guía canceló esta salida')}</div>`;
+    estado = `<div class="pst off">${tr('El guía canceló esta salida')}${pag ? ` <span>· ${tr('se te devuelve todo ({d})', {d:money(pag)})}</span>` : ''}</div>`;
     acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
   }
   return `<div class="pcard">
     <div class="pc-top"><span class="pc-when"><small>${diaLabel(r.start)}</small><b>${hhmm(r.start)}</b></span>
       <span class="pc-info"><b>${CATS[r.cat].e} ${esc(nombreTour(r.name))}</b>
       <span>📍 ${esc(verLugar(r.meet[2]))}${g ? ' · ' + esc(g.n) : ''}</span>
-      <span>👥 ${tn(r.qty, '{n} persona', '{n} personas')} · ⏱️ ${fmtIn(r.dur)} · 💰 ${r.price ? money(r.price * r.qty) : tr('A la gorra')}</span></span></div>
+      <span>👥 ${tn(r.qty, '{n} persona', '{n} personas')} · ⏱️ ${fmtIn(r.dur)} · 💳 ${pag ? tr('pagado {t}', {t:money(pag)}) : tr('A la gorra')}</span></span></div>
     ${estado}
+    ${pago ? `<div style="margin-top:8px">${pago}</div>` : ''}
     <div class="acts">${acciones}</div></div>`;
 }
 function verTourReservado(id){
   const r = misReservas().find(x=>x.id === id); if(!r) return;
   openDetail(r.tourId);
 }
+/* cancelar: la ventana dice cuánto se devuelve según la política (gratis / 50% / sin reembolso) */
 async function cancelarMiReserva(id){
   const r = misReservas().find(x=>x.id === id); if(!r) return;
   if(estadoReserva(r) !== 'prox') return toast({ic:'ℹ️', title:tr('Ya no se puede cancelar'), text:tr('El tour ya empezó.')});
-  const ok = await confirmBox(tr('Cancelar reserva'),
-    tn(r.qty, '¿Seguro que querés cancelar tu reserva de {n} lugar para "{t}" ({f})? El lugar queda libre para otra persona.',
+  const pag = pagadoDe(r), pol = politicaCancel(r.start, pag, relojDe(r.ext));
+  const base = tn(r.qty, '¿Seguro que querés cancelar tu reserva de {n} lugar para "{t}" ({f})? El lugar queda libre para otra persona.',
               '¿Seguro que querés cancelar tu reserva de {n} lugares para "{t}" ({f})? Los lugares quedan libres para otras personas.',
-              {t:nombreTour(r.name), f:fechaLarga(r.start)}),
-    tr('Sí, cancelar'), true);
+              {t:nombreTour(r.name), f:fechaLarga(r.start)});
+  const plata = !pag ? ''
+    : pol.tipo === 'gratis' ? tr('La cancelación es gratuita: se te devuelve todo ({d}).', {d:money(pol.reembolso)})
+    : pol.tipo === 'mitad' ? tr('Ya no es gratuita: faltan menos de 24 h. Se te devuelve el 50% ({d}) y se cobran {c}.', {d:money(pol.reembolso), c:money(pol.cargo)})
+    : tr('Ya no tiene reembolso: falta menos de 1 hora. Se cobra el total ({c}), pero igual liberás el lugar.', {c:money(pol.cargo)});
+  const ok = await confirmBox(pol.tipo === 'gratis' ? tr('Cancelar reserva') : tr('Cancelar reserva con cargo'),
+    base + (plata ? '\n\n' + plata : ''), pol.tipo === 'gratis' ? tr('Sí, cancelar') : tr('Cancelar igual'), true);
   if(!ok) return;
-  if(r.ext && r.rid) Store.cancelarReserva(r.rid);
+  if(r.ext && r.rid) Store.cancelarReserva(r.rid, pol.cargo);
   else { const t = findTour(r.tourId); if(t && !t.ext) t.ocup = Math.max(0, t.ocup - r.qty); }
-  setMisReservas(misReservas().filter(x=>x.id !== id));
-  toast({ic:'↩️', title:tr('Reserva cancelada'), text:tr('Tu lugar quedó libre. Podés reservar otro tour cuando quieras.')});
+  setMisReservas(misReservas().map(x=>x.id === id ? {...x, cancelada:{ts:Date.now(), reembolso:pol.reembolso, cargo:pol.cargo}} : x));
+  toast({ic:'↩️', title:tr('Reserva cancelada'), ttl:9000, text:!pag ? tr('Tu lugar quedó libre. Podés reservar otro tour cuando quieras.')
+    : pol.reembolso ? tr('Tu lugar quedó libre. Se te devuelven {d}.', {d:money(pol.reembolso)}) : tr('Tu lugar quedó libre. Esta cancelación no tiene reembolso.')});
   badgeMis(); renderMis();
   if(typeof render === 'function'){ render(true); if(selected) renderDetail(true); }
 }

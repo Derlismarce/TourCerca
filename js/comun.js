@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.3';
+const VERSION = '3.4';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.4', f:'2026-10-04', items:[
+    'Las reservas se pagan al reservar (pago simulado en el prototipo).',
+    'Política de cancelación: gratis hasta 24 h antes; entre 24 h y 1 h antes se devuelve el 50%; con menos de 1 h o si no vas, no hay reembolso.',
+    'La política se muestra en la ficha, antes de confirmar y en "Mis tours", y la ventana de cancelar dice cuánto se devuelve.',
+    'Si el guía cancela la salida se devuelve todo. El guía ve lo que cobra por las cancelaciones tardías.',
+  ]},
   {v:'3.3', f:'2026-10-04', items:[
     '"Mis tours": el turista ve sus reservas y sus pedidos en un solo lugar.',
     'Se puede cancelar una reserva antes de que empiece el tour; el lugar queda libre y el guía recibe el aviso.',
@@ -241,6 +247,28 @@ const nombreTour = n => (n || '').startsWith('Tour a pedido · ') ? tr('Tour a p
 const PEDIDO = {minPersonas:5, maxPersonas:40, minDur:60, minPrecio:15000, anticipacionH:2, maxDias:30};
 const PEDIDO_DURACIONES = [60, 90, 120, 150, 180, 240];
 
+/* ---------- política de cancelación de reservas (V 3.4) ----------
+   El turista paga al reservar. Si cancela:
+   - hasta 24 h antes: se le devuelve todo (cancelación gratuita)
+   - entre 24 h y 1 h antes: se le devuelve el 50%
+   - con menos de 1 h, o si no va: no hay reembolso
+   Si el guía cancela la salida, se devuelve todo. Los tours a la gorra no se pagan. */
+const CANCEL = {gratisH:24, mitadH:1, mitad:.5};
+function politicaCancel(start, pagado, T = Date.now()){
+  const gratisHasta = start - CANCEL.gratisH * 60 * MIN, mitadHasta = start - CANCEL.mitadH * 60 * MIN;
+  const tipo = !pagado || T <= gratisHasta ? 'gratis' : T <= mitadHasta ? 'mitad' : 'total';
+  const reembolso = tipo === 'gratis' ? pagado : tipo === 'mitad' ? Math.round(pagado * CANCEL.mitad) : 0;
+  return {tipo, reembolso, cargo:pagado - reembolso, gratisHasta, mitadHasta};
+}
+/* texto corto de la política según el momento: para la confirmación, la ficha y "Mis tours" */
+function textoPolitica(start, pagado, T = Date.now()){
+  if(!pagado) return tr('Reserva sin pago: si no podés ir, cancelala así el lugar queda libre.');
+  const p = politicaCancel(start, pagado, T);
+  if(p.tipo === 'gratis') return tr('Cancelación gratuita hasta {f}. Después, y hasta 1 h antes, se devuelve el 50%. Con menos de 1 h o si no vas, no hay reembolso.', {f:fechaLarga(p.gratisHasta)});
+  if(p.tipo === 'mitad') return tr('Sin cancelación gratuita (faltan menos de 24 h). Si cancelás hasta {f} se te devuelve el 50%. Después, o si no vas, no hay reembolso.', {f:fechaLarga(p.mitadHasta)});
+  return tr('Sin reembolso: el tour empieza en menos de 1 hora.');
+}
+
 /* devuelve la lista de reglas con si se cumplen o no */
 function reglasPedido(p, T = Date.now()){
   const desde = T + PEDIDO.anticipacionH * 60 * MIN, hasta = T + PEDIDO.maxDias * 24 * 60 * MIN;
@@ -351,7 +379,7 @@ function toast({ic, title, text, action, ttl=7000}){
 function confirmBox(title, text, okLabel, danger){
   return new Promise(res=>{
     const ov = document.createElement('div'); ov.className = 'overlay';
-    ov.innerHTML = `<div class="modal"><h3>${esc(title)}</h3><p class="muted">${esc(text)}</p>
+    ov.innerHTML = `<div class="modal"><h3>${esc(title)}</h3><p class="muted">${esc(text).replace(/\n/g, '<br>')}</p>
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-no>${tr('Volver')}</button>
       <button class="btn ${danger?'btn-danger':'btn-primary'}" style="flex:1" data-yes>${esc(okLabel)}</button></div></div>`;
     ov.onclick = e=>{
