@@ -5,9 +5,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.5';
+const VERSION = '3.6';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.6', f:'2026-10-04', items:[
+    'Si el guía cancela una salida, el turista recibe el aviso de que se le reembolsa el total de lo abonado.',
+    'Antes de cancelar, el guía ve "¿Cancelar la salida?" con cuántas personas tienen reserva y cuánto se les devuelve.',
+  ]},
   {v:'3.5', f:'2026-10-04', items:[
     'Las reservas de los tours de ejemplo ahora le llegan al guía: aparecen en sus próximas salidas y recibe el aviso al reservar y al cancelar.',
     'Cada salida del guía muestra cuántos lugares van reservados y cuántos faltan para completar, con una barra de avance.',

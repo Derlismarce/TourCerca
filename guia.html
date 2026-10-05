@@ -360,12 +360,20 @@ function vDash(){
       }
       case 'del': {
         const n = Store.ocupados(id), fin = s.status === 'finalizada';
-        const ok = await confirmBox(fin ? tr('Borrar del historial') : tr('Cancelar salida'),
+        const cuando = `"${nombreTour(s.name)}" (${fechaLarga(s.startAt)})`;
+        const ok = await confirmBox(fin ? tr('Borrar del historial') : tr('¿Cancelar la salida?'),
           s.pedidoId && !fin ? tr('{c} te pidió este tour. Si lo cancelás, su pedido vuelve a quedar disponible para otros guías.', {c:s.cliente})
-          : n && !fin ? tn(n, 'Esta salida tiene {n} persona con reserva. Se va a quedar sin su lugar.', 'Esta salida tiene {n} personas con reserva. Se van a quedar sin su lugar.')
-          : tr('"{n}" deja de aparecer en el mapa de los turistas.', {n:nombreTour(s.name)}),
-          fin ? tr('Borrar') : tr('Cancelar salida'), true);
-        if(ok){ Store.borrarSalida(id); toast({ic:'🗑', title:tr('Listo'), text:tr('La salida se quitó.')}); }
+          : n && !fin ? tr('¿Seguro que querés cancelar {s}?', {s:cuando}) + '\n\n'
+              + (s.price ? tn(n, 'Tiene {n} persona con reserva: va a recibir el aviso y se le devuelve el total de lo que pagó ({t}).', 'Tiene {n} personas con reserva: van a recibir el aviso y se les devuelve el total de lo que pagaron ({t}).', {t:money(s.price * n)})
+                : tn(n, 'Tiene {n} persona con reserva: va a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.', 'Tiene {n} personas con reserva: van a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.'))
+          : fin ? tr('"{n}" deja de aparecer en el mapa de los turistas.', {n:nombreTour(s.name)})
+          : tr('¿Seguro que querés cancelar {s}?', {s:cuando}) + '\n\n' + tr('"{n}" deja de aparecer en el mapa de los turistas.', {n:nombreTour(s.name)}),
+          fin ? tr('Borrar') : tr('Sí, cancelar salida'), true);
+        if(ok){
+          Store.borrarSalida(id);
+          toast({ic:'🗑', title:fin ? tr('Listo') : tr('Salida cancelada'),
+            text:fin ? tr('La salida se quitó.') : n && !s.pedidoId ? tn(n, 'Le avisamos a {n} persona y se le devuelve el total.', 'Les avisamos a las {n} personas y se les devuelve el total.') : tr('La salida se quitó.')});
+        }
         return;
       }
       case 'deltour': {

@@ -1233,3 +1233,41 @@ Object.assign(I18N.pt, {
 "{q} reservó {n} lugares": "{q} reservou {n} vagas",
 "¡Completo!": "Lotado!"
 });
+
+/* V 3.6: cancelación del guía */
+Object.assign(I18N.en, {
+"\"{t}\" ({f}) fue cancelado por el guía.": "\"{t}\" ({f}) was cancelled by the guide.",
+"Antes de cancelar, el guía ve \"¿Cancelar la salida?\" con cuántas personas tienen reserva y cuánto se les devuelve.": "Before cancelling, the guide sees \"Cancel this departure?\" with how many people have a booking and how much is refunded.",
+"Era un tour a la gorra: no tenías nada pagado.": "It was a pay-what-you-want tour: you had not paid anything.",
+"Le avisamos a {n} persona y se le devuelve el total.": "We notified {n} person and they get a full refund.",
+"Les avisamos a las {n} personas y se les devuelve el total.": "We notified the {n} people and they get a full refund.",
+"Salida cancelada": "Departure cancelled",
+"Se te reembolsa el total de lo abonado: {d}.": "You get a full refund of what you paid: {d}.",
+"Si el guía cancela una salida, el turista recibe el aviso de que se le reembolsa el total de lo abonado.": "If the guide cancels a departure, tourists are notified that they get a full refund.",
+"Sí, cancelar salida": "Yes, cancel departure",
+"Tiene {n} persona con reserva: va a recibir el aviso y se le devuelve el total de lo que pagó ({t}).": "It has {n} person booked: they will be notified and get a full refund ({t}).",
+"Tiene {n} persona con reserva: va a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.": "It has {n} person booked: they will be notified. It is a pay-what-you-want tour, so there is nothing to refund.",
+"Tiene {n} personas con reserva: van a recibir el aviso y se les devuelve el total de lo que pagaron ({t}).": "It has {n} people booked: they will be notified and get a full refund ({t}).",
+"Tiene {n} personas con reserva: van a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.": "It has {n} people booked: they will be notified. It is a pay-what-you-want tour, so there is nothing to refund.",
+"Ver mis tours": "See my tours",
+"¿Cancelar la salida?": "Cancel this departure?",
+"¿Seguro que querés cancelar {s}?": "Are you sure you want to cancel {s}?"
+});
+Object.assign(I18N.pt, {
+"\"{t}\" ({f}) fue cancelado por el guía.": "\"{t}\" ({f}) foi cancelado pelo guia.",
+"Antes de cancelar, el guía ve \"¿Cancelar la salida?\" con cuántas personas tienen reserva y cuánto se les devuelve.": "Antes de cancelar, o guia vê \"Cancelar a saída?\" com quantas pessoas têm reserva e quanto será devolvido.",
+"Era un tour a la gorra: no tenías nada pagado.": "Era um tour \"pague quanto quiser\": você não tinha pago nada.",
+"Le avisamos a {n} persona y se le devuelve el total.": "Avisamos {n} pessoa e ela recebe o reembolso total.",
+"Les avisamos a las {n} personas y se les devuelve el total.": "Avisamos as {n} pessoas e elas recebem o reembolso total.",
+"Salida cancelada": "Saída cancelada",
+"Se te reembolsa el total de lo abonado: {d}.": "Você recebe o reembolso total do valor pago: {d}.",
+"Si el guía cancela una salida, el turista recibe el aviso de que se le reembolsa el total de lo abonado.": "Se o guia cancelar uma saída, o turista recebe o aviso de que terá o reembolso total.",
+"Sí, cancelar salida": "Sim, cancelar saída",
+"Tiene {n} persona con reserva: va a recibir el aviso y se le devuelve el total de lo que pagó ({t}).": "Tem {n} pessoa com reserva: ela vai receber o aviso e o reembolso total do que pagou ({t}).",
+"Tiene {n} persona con reserva: va a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.": "Tem {n} pessoa com reserva: ela vai receber o aviso. É um tour \"pague quanto quiser\", não há nada a devolver.",
+"Tiene {n} personas con reserva: van a recibir el aviso y se les devuelve el total de lo que pagaron ({t}).": "Tem {n} pessoas com reserva: elas vão receber o aviso e o reembolso total do que pagaram ({t}).",
+"Tiene {n} personas con reserva: van a recibir el aviso. Es un tour a la gorra, no hay nada que devolver.": "Tem {n} pessoas com reserva: elas vão receber o aviso. É um tour \"pague quanto quiser\", não há nada a devolver.",
+"Ver mis tours": "Ver meus tours",
+"¿Cancelar la salida?": "Cancelar a saída?",
+"¿Seguro que querés cancelar {s}?": "Tem certeza de que quer cancelar {s}?"
+});

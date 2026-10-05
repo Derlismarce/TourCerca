@@ -23,7 +23,11 @@ function setMisReservas(a){ try { localStorage.setItem(RES_KEY, JSON.stringify(a
 function guardarMiReserva(r){
   r.id = 'mr_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); r.ts = Date.now();
   setMisReservas(misReservas().concat(r)); badgeMis();
+  if(viva(r)) resVivas.add(r.id);
 }
+/* reservas que siguen en pie en los datos compartidos: si una desaparece sin que yo la cancele, la canceló el guía */
+const viva = r => !r.cancelada && !!r.rid && Store.existeReserva(r.rid);
+let resVivas = new Set(misReservas().filter(viva).map(r=>r.id));
 /* reloj: los tours de ejemplo usan el de la app (acelerable); las salidas de los guías, el real */
 const relojDe = ext => ext ? Date.now() : now();
 const pagadoDe = r => r.pagado ?? r.price * r.qty;
@@ -302,8 +306,9 @@ async function cancelarMiReserva(id){
   const ok = await confirmBox(pol.tipo === 'gratis' ? tr('Cancelar reserva') : tr('Cancelar reserva con cargo'),
     base + (plata ? '\n\n' + plata : ''), pol.tipo === 'gratis' ? tr('Sí, cancelar') : tr('Cancelar igual'), true);
   if(!ok) return;
-  if(r.rid) Store.cancelarReserva(r.rid, pol.cargo);                       // el guía recibe el aviso; los cupos se recalculan solos
   setMisReservas(misReservas().map(x=>x.id === id ? {...x, cancelada:{ts:Date.now(), reembolso:pol.reembolso, cargo:pol.cargo}} : x));
+  resVivas.delete(id);                                                      // la cancelé yo: no es aviso del guía
+  if(r.rid) Store.cancelarReserva(r.rid, pol.cargo);                       // el guía recibe el aviso; los cupos se recalculan solos
   toast({ic:'↩️', title:tr('Reserva cancelada'), ttl:9000, text:!pag ? tr('Tu lugar quedó libre. Podés reservar otro tour cuando quieras.')
     : pol.reembolso ? tr('Tu lugar quedó libre. Se te devuelven {d}.', {d:money(pol.reembolso)}) : tr('Tu lugar quedó libre. Esta cancelación no tiene reembolso.')});
   badgeMis(); renderMis();
@@ -364,8 +369,23 @@ Store.on(()=>{
       toast({ic:'🔴', title:tr('¡Tu tour empezó!'), text:tr('Tu guía ya está en el punto de salida. Seguilo en vivo.'), action:{label:tr('Ver en el mapa'), fn:()=>openDetail(p.salidaId)}, ttl:12000});
   }
   pedAntes = ahora;
+  avisosReservas();
   badgeMis(); renderMis();
 });
+
+/* ---------- aviso cuando el guía cancela una salida que reservé ---------- */
+function avisosReservas(){
+  for(const r of misReservas()){
+    if(!resVivas.has(r.id) || viva(r)) continue;
+    resVivas.delete(r.id);
+    const pag = pagadoDe(r);
+    toast({ic:'⚠️', title:tr('El guía canceló tu tour'), ttl:20000,
+      text:tr('"{t}" ({f}) fue cancelado por el guía.', {t:nombreTour(r.name), f:fechaLarga(r.start)}) + ' '
+        + (pag ? tr('Se te reembolsa el total de lo abonado: {d}.', {d:money(pag)}) : tr('Era un tour a la gorra: no tenías nada pagado.')),
+      action:{label:tr('Ver mis tours'), fn:openMisPedidos}});
+  }
+  for(const r of misReservas()) if(viva(r)) resVivas.add(r.id);
+}
 
 /* ---------- cambio de idioma ---------- */
 onLang(()=>{
