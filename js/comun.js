@@ -5,9 +5,12 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.12';
+const VERSION = '3.13';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.13', f:'2026-10-07', items:[
+    'Al acercar el mapa, los lugares de interés se ven solo con su ícono; el nombre aparece al tocarlos, al pasar el mouse o si están a menos de 150 m de tu ubicación.',
+  ]},
   {v:'3.12', f:'2026-10-07', items:[
     'Mapa más limpio: de lejos solo se ven los lugares destacados; al acercar aparecen todos.',
     'Los tours y su recorrido siempre quedan por encima de los lugares de interés.',

@@ -306,7 +306,7 @@ function initMap(){
     render(true);
   };
   // lugares de interés: ficha al tocarlos, o parada si se está armando un pedido
-  capaLug = capaLugares(map, {onClick:l=> pedidoMode ? addPedidoStop(l.ll, l.n) : fichaLugar(l)});
+  capaLug = capaLugares(map, {onClick:l=> pedidoMode ? addPedidoStop(l.ll, l.n) : fichaLugar(l), cerca:()=>me});
   map.on('zoomend', separarPines);
   botonLugares(document.getElementById('poiBtn'), capaLug);
   setInterval(tick, 1000);

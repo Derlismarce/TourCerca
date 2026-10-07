@@ -1445,3 +1445,11 @@ Object.assign(I18N.pt, {
 "Al abrir un tour, el mapa se acerca a su recorrido, que se dibuja con una línea continua.": "Ao abrir um tour, o mapa se aproxima do roteiro, desenhado com uma linha contínua.",
 "En el celular, la ficha de un lugar se abre en el panel de abajo.": "No celular, a ficha de um lugar abre no painel de baixo."
 });
+
+/* V 3.13 */
+Object.assign(I18N.en, {
+"Al acercar el mapa, los lugares de interés se ven solo con su ícono; el nombre aparece al tocarlos, al pasar el mouse o si están a menos de 150 m de tu ubicación.": "When you zoom in, places of interest show only their icon; the name appears when you tap them, hover over them, or when they are within 150 m of your location."
+});
+Object.assign(I18N.pt, {
+"Al acercar el mapa, los lugares de interés se ven solo con su ícono; el nombre aparece al tocarlos, al pasar el mouse o si están a menos de 150 m de tu ubicación.": "Ao aproximar o mapa, os lugares de interesse aparecem só com o ícone; o nome aparece ao tocá-los, ao passar o mouse ou se estiverem a menos de 150 m da sua localização."
+});

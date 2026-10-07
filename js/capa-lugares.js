@@ -43,10 +43,13 @@ const pasaPor = (t, l) => distALinea(l.ll, lineaTour(t)) <= 80;
 
 /* V 3.12 (tanda 2): de lejos solo los destacados, para que los tours sean lo principal.
    zoom <= 15: puntitos de los ~23 destacados (suaves)
-   zoom 16:    puntitos de todos (más chicos) + íconos con nombre de los destacados
-   zoom >= 17: íconos de todos los que se ven, con nombre
+   zoom 16:    puntitos de todos (más chicos) + íconos de los destacados
+   zoom >= 17: íconos de todos los que se ven
+   V 3.13: los íconos van SIN nombre; el nombre aparece al tocar (ficha), al pasar el
+   mouse, y en los lugares a menos de 150 m de la ubicación del usuario (cerca()).
    Los lugares van en capas propias por DEBAJO de los tours y de su recorrido. */
-function capaLugares(map, {onClick} = {}){
+const RADIO_NOMBRES = 150;     // metros
+function capaLugares(map, {onClick, cerca} = {}){
   if(!map.getPane('lugares')){ map.createPane('lugares').style.zIndex = 390; }            // debajo de los recorridos (400+)
   if(!map.getPane('lugaresIconos')){ map.createPane('lugaresIconos').style.zIndex = 580; } // debajo de los pines de tours (600)
   const renderer = L.canvas({padding:.3, pane:'lugares'});
@@ -68,10 +71,14 @@ function capaLugares(map, {onClick} = {}){
     poner(iconos, z >= 16);
     iconos.clearLayers();
     if(z < 16) return;
+    const yo = cerca && cerca();
     for(const l of LUG){
       if(z === 16 && !l.dest) continue;                  // en 16, los demás quedan como puntitos
       if(!b.contains(l.ll)) continue;
-      iconos.addLayer(L.marker(l.ll, {pane:'lugaresIconos', icon:icono(l, true), keyboard:false, title:l.n}).on('click', ()=>clic(l)));
+      const conNombre = !!yo && distM(yo, l.ll) <= RADIO_NOMBRES;
+      const m = L.marker(l.ll, {pane:'lugaresIconos', icon:icono(l, conNombre), keyboard:false, title:l.n}).on('click', ()=>clic(l));
+      if(!conNombre) m.bindTooltip(esc(l.n), {direction:'top', offset:[0,-14]});   // nombre al pasar el mouse
+      iconos.addLayer(m);
     }
   }
   map.on('zoomend moveend', dibujar);
