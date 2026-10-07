@@ -1,8 +1,6 @@
 /* =====================================================================
    TourCerca · capa de puntos de interés (V 3.9)
-   - Lejos (zoom < 16): puntitos verde agua, todos los lugares.
-   - Cerca (zoom 16+): ícono según el tipo; los destacados con el nombre,
-     y desde zoom 17 todos con el nombre.
+   - Lejos: solo los destacados; al acercar, todos (ver capaLugares).
    - Tocar un lugar: ficha (turista) o agregarlo como parada (editores).
    - Botón para mostrar u ocultar la capa (se recuerda en el navegador).
    Datos: js/lugares.js (Buenos Aires Data).
@@ -43,41 +41,49 @@ function distALinea(ll, pts){
 /* ¿el recorrido del tour pasa por el lugar? (a menos de 80 m del camino) */
 const pasaPor = (t, l) => distALinea(l.ll, lineaTour(t)) <= 80;
 
-function capaLugares(map, {onClick, zoomIconos = 16} = {}){
-  const renderer = L.canvas({padding:.3});
+/* V 3.12 (tanda 2): de lejos solo los destacados, para que los tours sean lo principal.
+   zoom <= 15: puntitos de los ~23 destacados (suaves)
+   zoom 16:    puntitos de todos (más chicos) + íconos con nombre de los destacados
+   zoom >= 17: íconos de todos los que se ven, con nombre
+   Los lugares van en capas propias por DEBAJO de los tours y de su recorrido. */
+function capaLugares(map, {onClick} = {}){
+  if(!map.getPane('lugares')){ map.createPane('lugares').style.zIndex = 390; }            // debajo de los recorridos (400+)
+  if(!map.getPane('lugaresIconos')){ map.createPane('lugaresIconos').style.zIndex = 580; } // debajo de los pines de tours (600)
+  const renderer = L.canvas({padding:.3, pane:'lugares'});
   const clic = l => onClick && onClick(l);
-  const puntos = L.layerGroup(LUG.map(l=>
-    L.circleMarker(l.ll, {renderer, radius:l.dest ? 5 : 3.5, color:'#fff', weight:1.5, fillColor:'#1D9E75', fillOpacity:.95, bubblingMouseEvents:false})
-      .bindTooltip(esc(l.n), {direction:'top', offset:[0,-4]}).on('click', ()=>clic(l))));
+  const punto = (l, r, op) => L.circleMarker(l.ll, {renderer, pane:'lugares', radius:r, color:'#fff', weight:1.2, fillColor:'#1D9E75', fillOpacity:op, bubblingMouseEvents:false})
+    .bindTooltip(esc(l.n), {direction:'top', offset:[0,-4]}).on('click', ()=>clic(l));
+  const puntosDest = L.layerGroup(LUG.filter(l=>l.dest).map(l=>punto(l, 4.5, .8)));
+  const puntosTodos = L.layerGroup(LUG.filter(l=>!l.dest).map(l=>punto(l, 3, .55)));
   const iconos = L.layerGroup();
   let visible = false;
   const icono = (l, nombre) => L.divIcon({className:'', iconSize:[28,28], iconAnchor:[14,14],
     html:`<div class="poi ${l.dest ? 'dest' : ''}"><span class="pi">${CATS_LUGAR[l.cat].e}</span>${nombre ? `<span class="pn">${esc(l.n)}</span>` : ''}</div>`});
+  const poner = (capa, si) => { if(si && !map.hasLayer(capa)) capa.addTo(map); if(!si && map.hasLayer(capa)) map.removeLayer(capa); };
   function dibujar(){
     if(!visible) return;
-    if(map.getZoom() < zoomIconos){
-      if(map.hasLayer(iconos)) map.removeLayer(iconos);
-      if(!map.hasLayer(puntos)) puntos.addTo(map);
-      return;
-    }
-    if(map.hasLayer(puntos)) map.removeLayer(puntos);
-    if(!map.hasLayer(iconos)) iconos.addTo(map);
-    const b = map.getBounds().pad(.25), todos = map.getZoom() >= 17;
+    const z = map.getZoom(), b = map.getBounds().pad(.25);
+    poner(puntosDest, z <= 15);
+    poner(puntosTodos, z === 16);
+    poner(iconos, z >= 16);
     iconos.clearLayers();
+    if(z < 16) return;
     for(const l of LUG){
+      if(z === 16 && !l.dest) continue;                  // en 16, los demás quedan como puntitos
       if(!b.contains(l.ll)) continue;
-      iconos.addLayer(L.marker(l.ll, {icon:icono(l, todos || l.dest), zIndexOffset:l.dest ? -500 : -1000, keyboard:false, title:l.n})
-        .on('click', ()=>clic(l)));
+      iconos.addLayer(L.marker(l.ll, {pane:'lugaresIconos', icon:icono(l, true), keyboard:false, title:l.n}).on('click', ()=>clic(l)));
     }
   }
   map.on('zoomend moveend', dibujar);
   return {
     mostrar(v){
       visible = !!v;
-      if(visible) dibujar(); else { map.removeLayer(puntos); map.removeLayer(iconos); }
+      if(visible) dibujar(); else [puntosDest, puntosTodos, iconos].forEach(c=>poner(c, false));
     },
     get visible(){ return visible; },
     redibujar(){ if(visible){ iconos.clearLayers(); dibujar(); } },
+    /* con un tour abierto, los lugares se ven más suaves para que resalte el recorrido */
+    atenuar(si){ ['lugares','lugaresIconos'].forEach(p=> map.getPane(p).style.opacity = si ? .45 : ''); },
   };
 }
 

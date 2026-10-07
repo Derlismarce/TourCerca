@@ -5,9 +5,16 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.11';
+const VERSION = '3.12';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.12', f:'2026-10-07', items:[
+    'Mapa más limpio: de lejos solo se ven los lugares destacados; al acercar aparecen todos.',
+    'Los tours y su recorrido siempre quedan por encima de los lugares de interés.',
+    'Los pines de tours que caen en el mismo lugar se abren en abanico para que no se encimen.',
+    'Al abrir un tour, el mapa se acerca a su recorrido, que se dibuja con una línea continua.',
+    'En el celular, la ficha de un lugar se abre en el panel de abajo.',
+  ]},
   {v:'3.11', f:'2026-10-07', items:[
     'Mejor contraste: botones, textos grises, "EN VIVO" y precios a la gorra se leen mejor (cumplen el mínimo de accesibilidad).',
     'Ningún texto por debajo de 12 px.',

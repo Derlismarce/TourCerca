@@ -1429,3 +1429,19 @@ Object.assign(I18N.pt, {
 "Una persona menos": "Uma pessoa a menos",
 "Una persona más": "Uma pessoa a mais"
 });
+
+/* V 3.12: mapa más limpio */
+Object.assign(I18N.en, {
+"Mapa más limpio: de lejos solo se ven los lugares destacados; al acercar aparecen todos.": "Cleaner map: from afar only the highlighted places show; zoom in to see them all.",
+"Los tours y su recorrido siempre quedan por encima de los lugares de interés.": "Tours and their routes always stay above the places of interest.",
+"Los pines de tours que caen en el mismo lugar se abren en abanico para que no se encimen.": "Tour pins at the same spot fan out so they don't overlap.",
+"Al abrir un tour, el mapa se acerca a su recorrido, que se dibuja con una línea continua.": "Opening a tour zooms the map to its route, drawn as a solid line.",
+"En el celular, la ficha de un lugar se abre en el panel de abajo.": "On phones, a place's card opens in the bottom panel."
+});
+Object.assign(I18N.pt, {
+"Mapa más limpio: de lejos solo se ven los lugares destacados; al acercar aparecen todos.": "Mapa mais limpo: de longe só aparecem os lugares em destaque; ao aproximar aparecem todos.",
+"Los tours y su recorrido siempre quedan por encima de los lugares de interés.": "Os tours e seus roteiros sempre ficam acima dos lugares de interesse.",
+"Los pines de tours que caen en el mismo lugar se abren en abanico para que no se encimen.": "Os marcadores de tours no mesmo lugar se abrem em leque para não se sobreporem.",
+"Al abrir un tour, el mapa se acerca a su recorrido, que se dibuja con una línea continua.": "Ao abrir um tour, o mapa se aproxima do roteiro, desenhado com uma linha contínua.",
+"En el celular, la ficha de un lugar se abre en el panel de abajo.": "No celular, a ficha de um lugar abre no painel de baixo."
+});

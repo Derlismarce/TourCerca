@@ -59,8 +59,10 @@ const misReservasActivas = () => misReservas().filter(r=>['prox','vivo'].include
 const reservaDe = (tourId, start) => misReservas().find(r=>String(r.tourId) === String(tourId) && r.start === start && estadoReserva(r) === 'prox');
 
 /* ---------- vistas del panel ---------- */
-function panelView(v){                 // 'list' | 'detail' | 'pedido' | 'mis'
+function panelView(v){                 // 'list' | 'detail' | 'pedido' | 'mis' | 'lugar'
+  if(v !== 'lugar' && typeof cerrarLugarPanel === 'function') cerrarLugarPanel();
   document.getElementById('listView').style.display = v === 'list' ? 'flex' : 'none';
+  const lv = document.getElementById('lugarView'); if(lv) lv.hidden = v !== 'lugar';
   document.getElementById('detailView').hidden = v !== 'detail';
   document.getElementById('pedidoView').hidden = v !== 'pedido';
   document.getElementById('misView').hidden = v !== 'mis';

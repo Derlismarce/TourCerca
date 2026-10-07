@@ -138,6 +138,7 @@
       <div id="detailView" hidden></div>
       <div id="pedidoView" class="pview" hidden></div>
       <div id="misView" class="pview" hidden></div>
+      <div id="lugarView" class="pview" hidden></div>
     </aside>
     <div class="splitter" id="splitter" data-i18n-title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)" title="Arrastrá para agrandar o achicar la lista (doble clic: tamaño original)"><span class="grip"><i></i><i></i></span></div>
     <div class="mapwrap">
@@ -306,6 +307,7 @@ function initMap(){
   };
   // lugares de interés: ficha al tocarlos, o parada si se está armando un pedido
   capaLug = capaLugares(map, {onClick:l=> pedidoMode ? addPedidoStop(l.ll, l.n) : fichaLugar(l)});
+  map.on('zoomend', separarPines);
   botonLugares(document.getElementById('poiBtn'), capaLug);
   setInterval(tick, 1000);
   setTimeout(()=>checkAlerts(true), 5000);
@@ -324,14 +326,35 @@ function fichaLugar(l){
     <div class="lp-acts">${ts.length ? `<button class="mini go" data-lp="tours">${tr('Ver tours')}</button>` : `<button class="mini go" data-lp="pedir">✨ ${tr('Pedí un tour')}</button>`}
       <a class="mini" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${l.ll[0]},${l.ll[1]}&travelmode=walking">🧭 ${tr('Cómo llegar')}</a></div>
     <p class="lp-src">${tr('Fuente: {f}', {f:LUGARES_FUENTE})}</p></div>`;
-  const pop = L.popup({maxWidth:290, className:'lug-popup', autoPanPaddingTopLeft:[10,70]}).setLatLng(l.ll).setContent(html).openOn(map);
-  pop.getElement().querySelector('.lp-acts').onclick = e=>{
+  const acciones = e=>{
     const b = e.target.closest('[data-lp]'); if(!b) return;
     map.closePopup();
     if(b.dataset.lp === 'tours') verToursLugar(l);
     else { openPedido(); addPedidoStop(l.ll, l.n); }
   };
+  /* celular: la ficha va dentro del panel de abajo (como globo quedaba cortada) */
+  if(isMobile()){
+    if(selected){ selected = null; follow = false; if(routeLayer){ map.removeLayer(routeLayer); routeLayer = null; } if(capaLug) capaLug.atenuar(false); }
+    const v = document.getElementById('lugarView');
+    v.innerHTML = `<div class="d-top"><button class="icon-btn" onclick="panelView('list')" aria-label="${esc(tr('Volver'))}">←</button><span class="t">${esc(l.n)}</span></div><div class="pv">${html}</div>`;
+    v.querySelector('.lp-acts').onclick = acciones;
+    panelView('lugar');
+    if(document.getElementById('panel').offsetHeight < sheetH(.4)) setSheet(sheetH(.46));
+    marcarLugar(l);
+    encuadrar([l.ll]);
+    return;
+  }
+  const pop = L.popup({maxWidth:290, className:'lug-popup', autoPanPaddingTopLeft:[10,80], autoPanPaddingBottomRight:[70,20]}).setLatLng(l.ll).setContent(html).openOn(map);
+  pop.getElement().querySelector('.lp-acts').onclick = acciones;
 }
+/* aro que marca en el mapa el lugar abierto en el panel */
+let aroLugar = null;
+function marcarLugar(l){
+  cerrarLugarPanel();
+  if(!map.getPane('ruta')) map.createPane('ruta').style.zIndex = 450;
+  aroLugar = L.circleMarker(l.ll, {pane:'ruta', radius:20, color:'#1D9E75', weight:3, fillColor:'#1D9E75', fillOpacity:.12, interactive:false}).addTo(map);
+}
+function cerrarLugarPanel(){ if(aroLugar){ map.removeLayer(aroLugar); aroLugar = null; } }
 /* "Ver tours": la lista muestra solo los que pasan por ese lugar */
 function verToursLugar(l){
   lugarFiltro = l;
@@ -457,6 +480,29 @@ function render(force){
       if(sel && follow) map.panTo(s.ll, {animate:true, duration:1});
     } else if(guideMarkers[t.id]){ map.removeLayer(guideMarkers[t.id]); delete guideMarkers[t.id]; }
   });
+  separarPines();
+}
+
+/* ---------- pines que caen casi en el mismo lugar: se abren en abanico (V 3.12) ---------- */
+function separarPines(){
+  const ms = Object.values(pinMarkers).filter(m=>m.getElement());
+  const pts = ms.map(m=>map.latLngToLayerPoint(m.getLatLng()));
+  const grupo = new Array(ms.length).fill(-1); let g = 0;
+  for(let i = 0; i < ms.length; i++){
+    if(grupo[i] >= 0) continue;
+    grupo[i] = g;
+    for(let j = i + 1; j < ms.length; j++) if(grupo[j] < 0 && pts[i].distanceTo(pts[j]) < 46) grupo[j] = g;
+    g++;
+  }
+  for(let k = 0; k < g; k++){
+    const idx = ms.map((m,i)=>i).filter(i=>grupo[i] === k).sort((a,b)=>pts[a].x - pts[b].x || pts[a].y - pts[b].y);
+    idx.forEach((i,n)=>{
+      const pin = ms[i].getElement().querySelector('.pin'); if(!pin) return;
+      const dx = idx.length > 1 ? Math.round((n - (idx.length - 1) / 2) * 46) : 0;
+      pin.style.transform = dx ? `translateX(${dx}px)` : '';
+      pin.classList.toggle('abanico', idx.length > 1);
+    });
+  }
 }
 
 /* ---------- detalle ---------- */
@@ -466,14 +512,22 @@ function openDetail(id){
   selected = t; follow = false;
   panelView('detail');
   drawRoute(t);
-  map.flyToBounds(L.latLngBounds(t.route.map(r=>[r[0],r[1]]).concat(me?[me]:[])).pad(.2), {duration:.7});
   const panel = document.getElementById('panel');
   if(isMobile() && panel.offsetHeight < sheetH(.4)) setSheet(sheetH(.46));
+  encuadrar(lineaTour(t));
+  if(capaLug) capaLug.atenuar(true);
   renderDetail(true);
   render(true);
 }
+/* encuadra puntos en la parte visible del mapa (en el celular, arriba del panel) */
+function encuadrar(pts){
+  if(!pts.length) return;
+  const abajo = isMobile() ? document.getElementById('panel').offsetHeight + 16 : 24;
+  map.flyToBounds(L.latLngBounds(pts), {paddingTopLeft:[24, 70], paddingBottomRight:[isMobile() ? 24 : 70, abajo], maxZoom:17, duration:.7});
+}
 function closeDetail(){
   selected = null; follow = false;
+  if(capaLug) capaLug.atenuar(false);
   if(routeLayer){ map.removeLayer(routeLayer); routeLayer = null; }
   panelView('list');
   render(true);
@@ -481,10 +535,11 @@ function closeDetail(){
 function drawRoute(t){
   if(routeLayer) map.removeLayer(routeLayer);
   const ll = lineaTour(t);                    // por la calle si el recorrido tiene tramos
+  if(!map.getPane('ruta')) map.createPane('ruta').style.zIndex = 450;     // arriba de los lugares, abajo de los pines
   routeLayer = L.layerGroup([
-    L.polyline(ll,{color:'#fff',weight:9,opacity:.9}),
-    L.polyline(ll,{color:'#E07FA3',weight:5,dashArray:'2 10',lineCap:'round'}),
-    ...t.route.slice(1).map(r=>L.circleMarker([r[0],r[1]],{radius:5,color:'#E07FA3',weight:3,fillColor:'#fff',fillOpacity:1}).bindTooltip(esc(verLugar(r[2])))),
+    L.polyline(ll,{pane:'ruta', color:'#fff', weight:10, opacity:1, lineJoin:'round'}),
+    L.polyline(ll,{pane:'ruta', color:'#C9628A', weight:5, opacity:1, lineCap:'round', lineJoin:'round'}),
+    ...t.route.slice(1).map(r=>L.circleMarker([r[0],r[1]],{pane:'ruta', radius:6, color:'#C9628A', weight:3, fillColor:'#fff', fillOpacity:1}).bindTooltip(esc(verLugar(r[2])))),
   ]).addTo(map);
 }
 
