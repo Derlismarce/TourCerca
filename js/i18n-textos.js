@@ -1411,3 +1411,21 @@ Object.assign(I18N.pt, {
 "ref. AGuiTBA": "ref. AGuiTBA",
 "👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Precio de referencia AGuiTBA": "👥 A partir de {p} pessoas · ⏱️ A partir de 1 hora · 💰 Preço de referência AGuiTBA"
 });
+
+/* V 3.11: accesibilidad */
+Object.assign(I18N.en, {
+"En el celular, los créditos del mapa, los avisos y el cartel de ayuda ya no tapan botones.": "On phones, the map credits, notifications and help hint no longer cover buttons.",
+"Mejor contraste: botones, textos grises, \"EN VIVO\" y precios a la gorra se leen mejor (cumplen el mínimo de accesibilidad).": "Better contrast: buttons, grey text, \"LIVE\" and pay-what-you-want prices are easier to read (they meet the accessibility minimum).",
+"Navegación con teclado con foco visible, nombres para los botones de solo ícono y respeto por la opción de reducir movimiento.": "Keyboard navigation with visible focus, names for icon-only buttons and support for the reduce-motion setting.",
+"Ningún texto por debajo de 12 px.": "No text below 12 px.",
+"Una persona menos": "One person less",
+"Una persona más": "One more person"
+});
+Object.assign(I18N.pt, {
+"En el celular, los créditos del mapa, los avisos y el cartel de ayuda ya no tapan botones.": "No celular, os créditos do mapa, os avisos e a dica de ajuda não cobrem mais os botões.",
+"Mejor contraste: botones, textos grises, \"EN VIVO\" y precios a la gorra se leen mejor (cumplen el mínimo de accesibilidad).": "Melhor contraste: botões, textos cinza, \"AO VIVO\" e preços \"pague quanto quiser\" ficam mais legíveis (cumprem o mínimo de acessibilidade).",
+"Navegación con teclado con foco visible, nombres para los botones de solo ícono y respeto por la opción de reducir movimiento.": "Navegação por teclado com foco visível, nomes para os botões só com ícone e respeito à opção de reduzir movimento.",
+"Ningún texto por debajo de 12 px.": "Nenhum texto abaixo de 12 px.",
+"Una persona menos": "Uma pessoa a menos",
+"Una persona más": "Uma pessoa a mais"
+});

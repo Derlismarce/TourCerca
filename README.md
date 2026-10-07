@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.11**: accesibilidad (tanda 1 de la revisión crítica): contraste AA en botones y textos, mínimo 12 px, créditos del mapa, avisos y cartel que no tapan en el celular, foco visible, nombres accesibles y movimiento reducido.
 - **V 3.10**: precios de referencia según los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026), pasados a precio por persona; mínimo de "Pedí tu tour" calculado con esa referencia; el editor del guía la sugiere; sección "Precios justos para los guías" en la portada.
 - **V 3.9**: 629 lugares de interés de Buenos Aires Data (monumentos, teatros, museos, estadios, iglesias, parques, cafés notables y tango) con ficha, "Ver tours", "Cómo llegar"; en los editores se suman como parada; botón para mostrar u ocultar.
 - **V 3.8**: recorridos por la calle con el ruteo a pie de OpenStreetMap (routing.openstreetmap.de): editor del guía, "Pedí tu tour", mapa, modo en vivo y guías simulados; km y dificultad con el camino real; tours de ejemplo precalculados en `js/rutas.js`; sin conexión, línea recta.

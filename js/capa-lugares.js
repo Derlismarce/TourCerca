@@ -83,7 +83,7 @@ function capaLugares(map, {onClick, zoomIconos = 16} = {}){
 
 /* botón "mostrar u ocultar lugares" (mismo estado en todas las pantallas) */
 function botonLugares(btn, capa, alCambiar){
-  const pintar = () => { btn.classList.toggle('on', capa.visible); btn.title = btn.ariaLabel = capa.visible ? tr('Ocultar lugares de interés') : tr('Mostrar lugares de interés'); };
+  const pintar = () => { btn.classList.toggle('on', capa.visible); btn.title = capa.visible ? tr('Ocultar lugares de interés') : tr('Mostrar lugares de interés'); btn.setAttribute('aria-label', btn.title); btn.setAttribute('aria-pressed', capa.visible); };
   btn.onclick = e=>{
     e.stopPropagation();
     capa.mostrar(!capa.visible); setLugaresVisibles(capa.visible); pintar();

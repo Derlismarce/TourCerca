@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.10';
+const VERSION = '3.11';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.11', f:'2026-10-07', items:[
+    'Mejor contraste: botones, textos grises, "EN VIVO" y precios a la gorra se leen mejor (cumplen el mínimo de accesibilidad).',
+    'Ningún texto por debajo de 12 px.',
+    'En el celular, los créditos del mapa, los avisos y el cartel de ayuda ya no tapan botones.',
+    'Navegación con teclado con foco visible, nombres para los botones de solo ícono y respeto por la opción de reducir movimiento.',
+  ]},
   {v:'3.10', f:'2026-10-05', items:[
     'Los precios toman como referencia los honorarios sugeridos por AGuiTBA (vigentes desde el 15/09/2026): idioma, duración con mínimo de 3 horas, tamaño del grupo y suplementos.',
     '"Pedí tu tour": el precio mínimo por persona se calcula con esa referencia según el grupo.',
@@ -306,6 +312,16 @@ const money = n => n===0 ? tr('A la gorra') : (LANG === 'es' ? '$ ' : 'ARS ') + 
 const initials = n => n.split(' ').map(w=>w[0]).slice(0,2).join('');
 const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* ---------- movimiento reducido (V 3.11): si el sistema lo pide, el mapa salta en vez de "volar" ---------- */
+const MENOS_MOVIMIENTO = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(MENOS_MOVIMIENTO && typeof L === 'object'){
+  L.Map.mergeOptions({zoomAnimation:false, fadeAnimation:false, markerZoomAnimation:false});
+  L.Map.include({
+    flyTo(c, z, o){ return this.setView(c, z, {...(o||{}), animate:false}); },
+    flyToBounds(b, o){ return this.fitBounds(b, {...(o||{}), animate:false}); },
+  });
+}
+
 /* ---------- mapa base ---------- */
 function baseTiles(){
   const k = atob('Y2IxXzI3dWlfMV9jOTg4MDc2YjUxYTY0MmRlMDRkODAwYzU=');
@@ -490,7 +506,7 @@ function abrirEmergencia({ll = null, extra = ''} = {}){
     ${extra}
     <h5>${tr('Primeros pasos')}</h5>
     ${PRIMEROS_AUXILIOS.map(x=>`<details class="aux"><summary>${esc(tr(x.t))}</summary><p>${esc(tr(x.d))}</p></details>`).join('')}
-    <p class="muted" style="font-size:11.5px;margin-top:10px">${tr('Orientación general. No reemplaza la atención médica ni las indicaciones del 107.')}</p>
+    <p class="muted" style="font-size:12px;margin-top:10px">${tr('Orientación general. No reemplaza la atención médica ni las indicaciones del 107.')}</p>
     <div style="margin-top:12px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Cerrar')}</button></div>
   </div>`;
   ov.onclick = async e=>{

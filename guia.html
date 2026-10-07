@@ -37,9 +37,9 @@ body{background:var(--pink-50)}
 
 .sal{display:flex;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:12px;margin-bottom:10px;align-items:flex-start}
 .sal .when{flex:0 0 76px;text-align:center;background:var(--pink-100);border-radius:14px;padding:9px 4px}
-.sal .when small{display:block;font-size:11.5px;font-weight:900;color:var(--pink-700);text-transform:uppercase;letter-spacing:.3px}
+.sal .when small{display:block;font-size:12px;font-weight:900;color:var(--pink-700);text-transform:uppercase;letter-spacing:.3px}
 .sal .when b{display:block;font-size:21px;font-weight:900;color:var(--ink)}
-.sal .when i{display:block;font-style:normal;font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.sal .when i{display:block;font-style:normal;font-size:12px;font-weight:800;color:var(--ink-2)}
 .sal.old{opacity:.65}
 .sal .info{flex:1;min-width:0}
 .sal h3{font-size:16px;font-weight:900;line-height:1.2}
@@ -60,7 +60,7 @@ body{background:var(--pink-50)}
 .tcard.new span{font-size:34px}
 .foot-tools{margin-top:34px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .g-copy{margin-top:18px;text-align:center;color:var(--ink-3);font-size:12.5px;font-weight:700}
-.g-copy a{color:var(--pink-600)}
+.g-copy a{color:var(--pink-700)}
 
 /* login */
 .login-hero{text-align:center;padding:36px 16px 10px}
@@ -94,7 +94,7 @@ body{background:var(--pink-50)}
 .timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:22px}
 .lv-name{font-weight:900;font-size:16px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .next{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;background:var(--pink-50);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
-.next small{display:block;font-size:11.5px;font-weight:900;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px}
+.next small{display:block;font-size:12px;font-weight:900;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px}
 .next b{font-weight:900;font-size:15px}
 .gps{font-size:13px;font-weight:800;color:var(--ink-2);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .lv-bot .opts{margin-top:10px}
@@ -125,7 +125,7 @@ body{background:var(--pink-50)}
   <a class="logo" href="index.html" data-i18n-title="Ir a la vista del turista" title="Ir a la vista del turista"><span class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="brand"><span class="txt">Tour<b>Cerca</b></span></span></a>
   <span class="pill">🧭 <span class="lbl-long" data-i18n="Panel del guía">Panel del guía</span><span class="lbl-short" data-i18n="Guía">Guía</span></span>
   <span class="spacer"></span>
-  <a class="btn btn-line btn-sm" href="index.html#mapa" target="_blank" rel="noopener" data-i18n-title="Abrir la vista del turista en otra pestaña" title="Abrir la vista del turista en otra pestaña">👀 <span class="lbl-long" data-i18n="Ver como turista">Ver como turista</span></a>
+  <a class="btn btn-line btn-sm" href="index.html#mapa" target="_blank" rel="noopener" data-i18n-title="Abrir la vista del turista en otra pestaña" title="Abrir la vista del turista en otra pestaña" data-i18n-aria="Ver como turista" aria-label="Ver como turista">👀 <span class="lbl-long" data-i18n="Ver como turista">Ver como turista</span></a>
   <span class="lang-slot"></span>
   <span id="who"></span>
 </header>
@@ -315,7 +315,7 @@ function vDash(){
           <div class="acts">
             <button class="mini go" data-act="prog" data-id="${t.id}">📅 ${tr('Programar')}</button>
             <button class="mini" data-act="now" data-id="${t.id}">▶ ${tr('Salir ahora')}</button>
-            ${t.demo ? '' : `<button class="mini danger" data-act="deltour" data-id="${t.id}" title="${esc(tr('Borrar tour'))}">🗑</button>`}
+            ${t.demo ? '' : `<button class="mini danger" data-act="deltour" data-id="${t.id}" title="${esc(tr('Borrar tour'))}" aria-label="${esc(tr('Borrar tour'))}">🗑</button>`}
           </div></div>`).join('')}
         <button class="tcard new" data-act="new"><span>＋</span>${tr('Crear un tour nuevo')}</button>
       </div>
@@ -482,7 +482,7 @@ function vEditor({salidaId, tourId} = {}){
     document.getElementById('fStops').innerHTML = route.map((r,i)=>`<li>
       <span class="n ${i===0?'meet':''}">${i===0?'★':i}</span>
       <input class="inp" data-i="${i}" maxlength="60" value="${esc(verLugar(r[2]))}">
-      <button type="button" class="del" data-act="delstop" data-i="${i}" title="${esc(tr('Quitar'))}">✕</button></li>`).join('')
+      <button type="button" class="del" data-act="delstop" data-i="${i}" title="${esc(tr('Quitar'))}" aria-label="${esc(tr('Quitar'))}">✕</button></li>`).join('')
       || `<li style="color:var(--ink-3);font-weight:700;font-size:14px">${tr('Todavía no marcaste puntos.')}</li>`;
   }
   /* nombre: si se tocó un lugar de interés, ya viene con su nombre */
@@ -650,7 +650,7 @@ function vLive(id){
     <div class="lv-card lv-bot">
       <div class="gps"><span id="lGps">📡 ${tr('Buscando GPS…')}</span><span id="lRes"></span></div>
       <div class="opts" id="lModes"></div>
-      <div class="row"><button class="btn btn-line" data-act="back">← ${Lt('Mis salidas')}</button><button class="btn btn-sos" data-act="sos">🆘</button><button class="btn btn-danger" data-act="end">■ ${Lt('Finalizar tour')}</button></div>
+      <div class="row"><button class="btn btn-line" data-act="back">← ${Lt('Mis salidas')}</button><button class="btn btn-sos" data-act="sos" title="${esc(tr('Emergencia'))}" aria-label="${esc(tr('Emergencia'))}">🆘</button><button class="btn btn-danger" data-act="end">■ ${Lt('Finalizar tour')}</button></div>
     </div>
   </div>`;
 

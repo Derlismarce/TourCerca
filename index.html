@@ -117,7 +117,7 @@
     <span class="pill" id="locPill">📍 …</span>
     <span class="pill clock" id="clockPill">🕐 --:--</span>
     <span class="lang-slot"></span>
-    <button class="icon-btn" onclick="openDemo()" data-i18n-title="Modo presentación" title="Modo presentación">⚙️</button>
+    <button class="icon-btn" onclick="openDemo()" data-i18n-title="Modo presentación" title="Modo presentación" data-i18n-aria="Modo presentación" aria-label="Modo presentación">⚙️</button>
   </div>
   <div class="layout">
     <aside id="panel">
@@ -143,10 +143,10 @@
     <div class="mapwrap">
       <div id="map"></div>
       <div class="map-fab">
-        <button onclick="centerMe()" data-i18n-title="Centrar en mí" title="Centrar en mí">🎯</button>
-        <button id="fitBtn" onclick="fitAll()" data-i18n-title="Ver todos los tours" title="Ver todos los tours">🗺️</button>
+        <button onclick="centerMe()" data-i18n-title="Centrar en mí" title="Centrar en mí" data-i18n-aria="Centrar en mí" aria-label="Centrar en mí">🎯</button>
+        <button id="fitBtn" onclick="fitAll()" data-i18n-title="Ver todos los tours" title="Ver todos los tours" data-i18n-aria="Ver todos los tours" aria-label="Ver todos los tours">🗺️</button>
         <button id="poiBtn" class="poi-btn">🏛️</button>
-        <button class="sos-fab" onclick="abrirEmergencia({ll:me})" data-i18n-title="Emergencia" title="Emergencia">🆘</button>
+        <button class="sos-fab" onclick="abrirEmergencia({ll:me})" data-i18n-title="Emergencia" title="Emergencia" data-i18n-aria="Emergencia" aria-label="Emergencia">🆘</button>
       </div>
       <div class="hint" id="hint" style="opacity:0"></div>
     </div>
@@ -420,7 +420,7 @@ function render(force){
         <span class="body">
           <h3>${esc(nombreTour(t.name))}</h3>
           <span class="meta"><span>📍 ${fmtDist(d)} · ${tn(cuadras(d), '{n} cuadra', '{n} cuadras')}</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
-          <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${g.r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-600)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
+          <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${g.r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-700)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
           <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${money(t.price)}</span></span>
         </span></button>`;
     }).join('') : `<div class="empty">${tr('No hay tours con este filtro ahora.<br>Probá con "Todos".')}</div>`;
@@ -588,7 +588,7 @@ function reserve(id){
       <h3>${tr('Reservar: {n}', {n:esc(nombreTour(t.name))})}</h3>
       <p class="muted">${tr('Salida de las {h}', {h:hora(state(t).start)})} · ${esc(verLugar(t.meet[2]))} · ${money(t.price)}${t.price?' '+tr('c/u'):''}</p>
       <h5>${tr('¿Cuántas personas?')}</h5>
-      <div class="qty"><button data-q="-1">−</button><b>${q}</b><button data-q="1">+</button></div>
+      <div class="qty"><button data-q="-1" aria-label="${esc(tr('Una persona menos'))}">−</button><b aria-live="polite">${q}</b><button data-q="1" aria-label="${esc(tr('Una persona más'))}">+</button></div>
       <h5>${tr('Tu nombre (para que el guía te reconozca)')}</h5>
       <input class="inp" data-name maxlength="40" placeholder="${esc(tr('Opcional'))}" value="${esc(nombre)}" style="margin-bottom:14px">
       ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al reservar', {t:money(t.price*q)})}</p>`:''}
