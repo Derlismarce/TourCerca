@@ -586,7 +586,7 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .hero .skyline{position:absolute;left:50%;bottom:0;transform:translateX(-50%);margin:0;opacity:.45}
 @media (max-width:800px){
   .hero{padding-top:76px}
-  .hero .features{grid-template-columns:repeat(3,1fr);row-gap:14px;padding:18px 0}
+  .hero .features{grid-template-columns:repeat(3,1fr);row-gap:14px;padding:18px 0 64px}   /* V 3.20: más arriba, sobre la silueta */
   .hero .feature{font-size:13px;gap:6px}
   .hero .feature .ic{width:50px;height:50px;font-size:22px}
   .hero .skyline{height:96px}

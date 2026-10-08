@@ -1540,3 +1540,11 @@ Object.assign(I18N.en, {
 Object.assign(I18N.pt, {
 "Portada más ágil: la primera frase se va antes y todo aparece en unos 3 segundos.": "Página inicial mais ágil: a primeira frase sai antes e tudo aparece em cerca de 3 segundos."
 });
+
+/* V 3.20 */
+Object.assign(I18N.en, {
+"En el celular, los íconos de la portada quedan más arriba.": "On phones, the home page icons sit higher."
+});
+Object.assign(I18N.pt, {
+"En el celular, los íconos de la portada quedan más arriba.": "No celular, os ícones da página inicial ficam mais acima."
+});

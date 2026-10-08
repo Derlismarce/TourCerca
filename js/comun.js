@@ -6,10 +6,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.19';
+const VERSION = '3.20';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.20', f:'2026-10-08', items:[
+    'En el celular, los íconos de la portada quedan más arriba.',
+  ]},
   {v:'3.19', f:'2026-10-08', items:[
     'Portada más ágil: la primera frase se va antes y todo aparece en unos 3 segundos.',
   ]},
