@@ -31,11 +31,22 @@
     <span class="pin-float" style="right:9%;top:28%;animation-delay:.8s">🗺️</span>
     <span class="pin-float" style="left:15%;top:62%;animation-delay:1.4s">🎭</span>
     <span class="pin-float" style="right:15%;top:60%;animation-delay:2s">🥟</span>
-    <h1 data-i18n="No busques qué hacer en Buenos Aires.<br><em>Descubrí qué podés hacer cerca tuyo, ahora.</em>">No busques qué hacer en Buenos Aires.<br><em>Descubrí qué podés hacer cerca tuyo, ahora.</em></h1>
+    <div class="hero-centro">
+    <!-- V 3.18: la primera frase se desvanece y en su lugar aparece la segunda -->
+    <h1 class="frases"><span class="f1" data-i18n="No busques qué hacer en Buenos Aires.">No busques qué hacer en Buenos Aires.</span> <em class="f2" data-i18n="Descubrí qué podés hacer cerca tuyo, ahora.">Descubrí qué podés hacer cerca tuyo, ahora.</em></h1>
     <p class="sub" data-i18n="Tours de guías locales que empiezan en minutos, a pocas cuadras. Miralos en el mapa en tiempo real y sumate.">Tours de guías locales que empiezan en minutos, a pocas cuadras. Miralos en el mapa en tiempo real y sumate.</p>
     <div class="hero-cta">
       <button class="btn btn-primary" onclick="startApp('gps')" data-i18n="📍 Ver tours cerca mío">📍 Ver tours cerca mío</button>
       <button class="btn btn-ghost" onclick="startApp('demo')" data-i18n="Probar desde la 9 de Julio">Probar desde la 9 de Julio</button>
+    </div>
+    </div>
+    <div class="features">
+      <div class="feature"><span class="ic">📍</span><span data-i18n="A pocas cuadras">A pocas cuadras</span></div>
+      <div class="feature"><span class="ic">🔴</span><span data-i18n="Guías en vivo">Guías en vivo</span></div>
+      <div class="feature"><span class="ic">⏱️</span><span data-i18n="Empiezan ya">Empiezan ya</span></div>
+      <div class="feature"><span class="ic">🗣️</span><span data-i18n="Varios idiomas">Varios idiomas</span></div>
+      <div class="feature"><span class="ic">🆓</span><span data-i18n="Pagos y a la gorra">Pagos y a la gorra</span></div>
+      <div class="feature"><span class="ic">🔔</span><span data-i18n="Alertas cercanas">Alertas cercanas</span></div>
     </div>
     <div class="skyline" aria-hidden="true">
       <svg viewBox="0 0 1100 170" preserveAspectRatio="xMidYMax slice">
@@ -59,14 +70,6 @@
     </div>
   </header>
 
-  <div class="features">
-    <div class="feature"><span class="ic">📍</span><span data-i18n="A pocas cuadras">A pocas cuadras</span></div>
-    <div class="feature"><span class="ic">🔴</span><span data-i18n="Guías en vivo">Guías en vivo</span></div>
-    <div class="feature"><span class="ic">⏱️</span><span data-i18n="Empiezan ya">Empiezan ya</span></div>
-    <div class="feature"><span class="ic">🗣️</span><span data-i18n="Varios idiomas">Varios idiomas</span></div>
-    <div class="feature"><span class="ic">🆓</span><span data-i18n="Pagos y a la gorra">Pagos y a la gorra</span></div>
-    <div class="feature"><span class="ic">🔔</span><span data-i18n="Alertas cercanas">Alertas cercanas</span></div>
-  </div>
 
   <section class="block" id="barrios">
     <h2 data-i18n="Barrios para recorrer">Barrios para recorrer</h2>

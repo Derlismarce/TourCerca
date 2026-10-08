@@ -1518,3 +1518,17 @@ Object.assign(I18N.pt, {
 "Al alejar el mapa, los tours cercanos entre sí se juntan en una burbuja con la cantidad; al tocarla, el mapa se acerca.": "Ao afastar o mapa, os tours próximos entre si se juntam em uma bolha com a quantidade; ao tocá-la, o mapa se aproxima.",
 "El mapa no se aleja más allá del AMBA.": "O mapa não se afasta além da Grande Buenos Aires."
 });
+
+/* V 3.18 */
+Object.assign(I18N.en, {
+"No busques qué hacer en Buenos Aires.": "Stop searching for things to do in Buenos Aires.",
+"Descubrí qué podés hacer cerca tuyo, ahora.": "Discover what you can do near you, right now.",
+"Portada nueva: ocupa toda la pantalla, aparece \"No busques qué hacer en Buenos Aires.\", se desvanece y llega \"Descubrí qué podés hacer cerca tuyo, ahora.\", después los botones.": "New home page: full screen, \"Stop searching for things to do in Buenos Aires.\" appears, fades out and \"Discover what you can do near you, right now.\" arrives, then the buttons.",
+"Los íconos de la portada (\"A pocas cuadras\", \"Guías en vivo\"…) pasan al fondo rosa, sobre la silueta de la ciudad.": "The home page icons (\"Just a few blocks away\", \"Live guides\"…) move onto the pink background, over the city skyline."
+});
+Object.assign(I18N.pt, {
+"No busques qué hacer en Buenos Aires.": "Não procure o que fazer em Buenos Aires.",
+"Descubrí qué podés hacer cerca tuyo, ahora.": "Descubra o que você pode fazer perto de você, agora.",
+"Portada nueva: ocupa toda la pantalla, aparece \"No busques qué hacer en Buenos Aires.\", se desvanece y llega \"Descubrí qué podés hacer cerca tuyo, ahora.\", después los botones.": "Nova página inicial: tela cheia, aparece \"Não procure o que fazer em Buenos Aires.\", some e chega \"Descubra o que você pode fazer perto de você, agora.\", depois os botões.",
+"Los íconos de la portada (\"A pocas cuadras\", \"Guías en vivo\"…) pasan al fondo rosa, sobre la silueta de la ciudad.": "Os ícones da página inicial (\"A poucos quarteirões\", \"Guias ao vivo\"…) passam para o fundo rosa, sobre a silhueta da cidade."
+});
