@@ -6,10 +6,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.16';
+const VERSION = '3.17';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.17', f:'2026-10-08', items:[
+    'Al alejar el mapa, los tours cercanos entre sí se juntan en una burbuja con la cantidad; al tocarla, el mapa se acerca.',
+    'El mapa no se aleja más allá del AMBA.',
+  ]},
   {v:'3.16', f:'2026-10-08', items:[
     'Términos y condiciones v1.2: política de cancelación y precios de referencia AGuiTBA.',
     'Firma de autoría en todos los archivos y en las páginas.',

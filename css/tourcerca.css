@@ -551,3 +551,11 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 .pill.clock.acelerado{display:inline-flex}
 @media (max-width:800px){ .pill.clock.acelerado{display:none} }
 .demo-ver{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:10px 12px;border-radius:14px;background:var(--pink-50);font-weight:800;font-size:13px;color:var(--ink-2)}
+
+/* ===== V 3.17 · burbuja que junta tours al alejar el mapa ===== */
+.grupo-pin{width:64px;height:64px;border-radius:50%;background:var(--accent);color:#fff;border:4px solid #fff;box-shadow:0 4px 16px rgba(158,68,104,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;cursor:pointer;position:relative;transition:transform .2s}
+.grupo-pin:hover{transform:scale(1.06)}
+.grupo-pin b{font-size:22px;font-weight:900}
+.grupo-pin span{font-size:12px;font-weight:800}
+.grupo-pin i{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:var(--live);color:#fff;font-style:normal;font-size:12px;font-weight:900;border-radius:999px;padding:1px 7px;border:2px solid #fff;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){ .grupo-pin{transition:none} .grupo-pin:hover{transform:none} }

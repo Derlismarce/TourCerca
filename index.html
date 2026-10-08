@@ -295,7 +295,9 @@ function bordeChips(){
   c.classList.toggle('mas-der', c.scrollLeft + c.clientWidth < c.scrollWidth - 4);
 }
 function initMap(){
-  map = L.map('map', {zoomControl:false, attributionControl:true}).setView(DEMO_SPOTS['9 de Julio'], 15);
+  // la app es de CABA: no se aleja más allá del AMBA (V 3.17)
+  map = L.map('map', {zoomControl:false, attributionControl:true, minZoom:11,
+    maxBounds:[[-35.05,-59.05],[-34.2,-57.9]], maxBoundsViscosity:.9}).setView(DEMO_SPOTS['9 de Julio'], 15);
   L.control.zoom({position:'bottomright'}).addTo(map);
   baseTiles().addTo(map);
   map.on('dragstart', ()=>{ if(follow){ follow=false; } });
@@ -495,26 +497,57 @@ function render(force){
   separarPines();
 }
 
-/* ---------- pines que caen casi en el mismo lugar: se abren en abanico (V 3.12) ---------- */
+/* ---------- pines que caen casi en el mismo lugar ----------
+   de cerca, hasta 3 se abren en abanico (V 3.12); si son más, o el mapa está lejos, se juntan en una burbuja
+   "N tours" que acerca el mapa al tocarla (V 3.17). Incluye a los guías en vivo. */
+const ABANICO_MAX = 3;
+let grupoMarkers = {};
 function separarPines(){
-  const ms = Object.values(pinMarkers).filter(m=>m.getElement());
+  const ms = [...Object.values(pinMarkers), ...Object.values(guideMarkers)].filter(m=>m.getElement());
   const pts = ms.map(m=>map.latLngToLayerPoint(m.getLatLng()));
   const grupo = new Array(ms.length).fill(-1); let g = 0;
+  const cerca = map.getZoom() >= 15;
+  const radio = cerca ? 46 : 72;                        // de lejos se junta con más margen, así la burbuja no tapa vecinos
+  const maxAbanico = cerca ? ABANICO_MAX : 1;           // de lejos no hay abanico: si se tocan, burbuja
   for(let i = 0; i < ms.length; i++){
     if(grupo[i] >= 0) continue;
     grupo[i] = g;
-    for(let j = i + 1; j < ms.length; j++) if(grupo[j] < 0 && pts[i].distanceTo(pts[j]) < 46) grupo[j] = g;
+    // se encadena: si j toca a cualquiera del grupo, entra
+    for(let q = [i]; q.length;){
+      const a = q.pop();
+      for(let j = 0; j < ms.length; j++) if(grupo[j] < 0 && pts[a].distanceTo(pts[j]) < radio){ grupo[j] = g; q.push(j); }
+    }
     g++;
   }
+  const usados = new Set();
   for(let k = 0; k < g; k++){
     const idx = ms.map((m,i)=>i).filter(i=>grupo[i] === k).sort((a,b)=>pts[a].x - pts[b].x || pts[a].y - pts[b].y);
+    const junto = idx.length > maxAbanico;
     idx.forEach((i,n)=>{
-      const pin = ms[i].getElement().querySelector('.pin'); if(!pin) return;
-      const dx = idx.length > 1 ? Math.round((n - (idx.length - 1) / 2) * 46) : 0;
+      const el = ms[i].getElement(), pin = el.querySelector('.pin, .gmk');
+      el.style.visibility = junto ? 'hidden' : '';
+      if(!pin) return;
+      const dx = !junto && idx.length > 1 ? Math.round((n - (idx.length - 1) / 2) * 46) : 0;
       pin.style.transform = dx ? `translateX(${dx}px)` : '';
-      pin.classList.toggle('abanico', idx.length > 1);
+      pin.classList.toggle('abanico', !junto && idx.length > 1);
     });
+    if(!junto) continue;
+    const lls = idx.map(i=>ms[i].getLatLng()), b = L.latLngBounds(lls);
+    const vivos = idx.filter(i=>Object.values(guideMarkers).includes(ms[i])).length;
+    const clave = idx.length + ':' + vivos + ':' + LANG;
+    const html = `<div class="grupo-pin"><b>${idx.length}</b><span>${tr('tours')}</span>${vivos ? `<i>● ${tr('{n} en vivo', {n:vivos})}</i>` : ''}</div>`;
+    let gm = grupoMarkers[k];
+    if(gm && gm._clave !== clave){ map.removeLayer(gm); gm = null; }
+    if(!gm){
+      gm = L.marker(b.getCenter(), {icon:L.divIcon({className:'', html, iconSize:[64,64], iconAnchor:[32,32]}), zIndexOffset:800,
+        keyboard:true, title:tn(idx.length, '{n} tour', '{n} tours')}).addTo(map);
+      gm._clave = clave;
+    } else gm.setLatLng(b.getCenter());
+    // al tocarla se acerca al menos 2 niveles, así se separa de verdad
+    gm.off('click').on('click', ()=>map.flyTo(b.getCenter(), Math.min(17, Math.max(map.getBoundsZoom(b.pad(.3)), map.getZoom() + 2)), {duration:MENOS_MOVIMIENTO ? 0 : .6}));
+    grupoMarkers[k] = gm; usados.add(String(k));
   }
+  for(const k of Object.keys(grupoMarkers)) if(!usados.has(k)){ map.removeLayer(grupoMarkers[k]); delete grupoMarkers[k]; }
 }
 
 /* ---------- detalle ---------- */

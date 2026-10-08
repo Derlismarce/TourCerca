@@ -1504,3 +1504,17 @@ Object.assign(I18N.pt, {
 "Términos y condiciones v1.2: política de cancelación y precios de referencia AGuiTBA.": "Termos e condições v1.2: política de cancelamento e preços de referência AGuiTBA.",
 "Firma de autoría en todos los archivos y en las páginas.": "Assinatura de autoria em todos os arquivos e páginas."
 });
+
+/* V 3.17 */
+Object.assign(I18N.en, {
+"tours": "tours",
+"{n} en vivo": "{n} live",
+"Al alejar el mapa, los tours cercanos entre sí se juntan en una burbuja con la cantidad; al tocarla, el mapa se acerca.": "When you zoom out, tours close to each other merge into a bubble with the count; tap it to zoom in.",
+"El mapa no se aleja más allá del AMBA.": "The map doesn't zoom out beyond Greater Buenos Aires."
+});
+Object.assign(I18N.pt, {
+"tours": "tours",
+"{n} en vivo": "{n} ao vivo",
+"Al alejar el mapa, los tours cercanos entre sí se juntan en una burbuja con la cantidad; al tocarla, el mapa se acerca.": "Ao afastar o mapa, os tours próximos entre si se juntam em uma bolha com a quantidade; ao tocá-la, o mapa se aproxima.",
+"El mapa no se aleja más allá del AMBA.": "O mapa não se afasta além da Grande Buenos Aires."
+});
