@@ -729,12 +729,14 @@ function openDemo(){
     <p class="muted" style="font-size:12.5px;margin-top:8px">${tr('Acelerá el tiempo para ver a los guías caminar y las cuentas regresivas.')}</p>
     <h5>${tr('Alertas')}</h5>
     <div class="opts"><button class="chip" data-alert>🔔 ${tr('Probar alerta de proximidad')}</button></div>
-    <div style="margin-top:18px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Listo')}</button></div>
+    <div class="demo-ver"><span id="demoReloj">🕐 ${hhmm(now())}${speed > 1 ? ` ×${speed}` : ''}</span><button class="mini" data-novedades>✨ V ${VERSION} · ${tr('Novedades')}</button></div>
+    <div style="margin-top:14px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Listo')}</button></div>
   </div>`;
   ov.onclick = e=>{
     const b = e.target.closest('button');
     if(e.target===ov || (b && b.hasAttribute('data-x'))) return ov.remove();
     if(!b) return;
+    if(b.hasAttribute('data-novedades')){ ov.remove(); openChangelog(); return; }
     if(b.dataset.spot){ setMe(DEMO_SPOTS[b.dataset.spot], b.dataset.spot + ' (demo)'); ov.remove(); }
     else if(b.hasAttribute('data-gps')){ useGPS(); ov.remove(); }
     else if(b.dataset.speed){ setSpeed(+b.dataset.speed); ov.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('on',x===b)); }
@@ -831,7 +833,10 @@ document.getElementById('list').addEventListener('click', e=>{
 });
 let alertTick = 0;
 function tick(){
-  document.getElementById('clockPill').textContent = '🕐 ' + hhmm(now()) + (speed>1?` ×${speed}`:'');
+  // el reloj de la barra solo se muestra con el tiempo acelerado (modo presentación); la versión está en ⚙️
+  const cp = document.getElementById('clockPill');
+  cp.textContent = '🕐 ' + hhmm(now()) + (speed>1?` ×${speed}`:''); cp.classList.toggle('acelerado', speed > 1);
+  const dr = document.getElementById('demoReloj'); if(dr) dr.textContent = cp.textContent;
   render(false);
   if(selected) renderDetail(false);
   if(++alertTick % 20 === 0) checkAlerts();
@@ -852,7 +857,6 @@ onLang(()=>{
 });
 
 iniciarIdioma();
-mountVersion();
 badgeMis();
 // index.html#mapa abre directo el mapa (lo usa el panel del guía)
 if(location.hash === '#mapa') startApp('demo');

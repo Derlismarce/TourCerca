@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.15**: pulido (tanda 4): beneficios sin mayúsculas, tarjeta "Toda la Ciudad" con fondo, panel del guía con las próximas salidas primero y números compactos, botón "Turista" con texto en el celular, versión y reloj en el panel ⚙️.
 - **V 3.14**: celular (tanda 3): ficha del tour compacta con cuándo y precio arriba, barra de botones con fondo, "Pedí tu tour" en dos pasos, difuminado en los filtros, portada más corta en el celular.
 - **V 3.13**: lugares de interés sin nombre al acercar; el nombre aparece al tocar, al pasar el mouse o a menos de 150 m de tu ubicación.
 - **V 3.12**: mapa más limpio (tanda 2): de lejos solo lugares destacados, lugares por debajo de tours y recorridos, pines encimados en abanico, el tour abierto se encuadra con línea continua, ficha del lugar en el panel en el celular.

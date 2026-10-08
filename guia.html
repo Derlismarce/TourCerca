@@ -28,7 +28,10 @@ body{background:var(--pink-50)}
 .g-hello .avatar{width:64px;height:64px;font-size:22px}
 .g-hello h1{font-size:clamp(22px,3vw,28px);font-weight:900;letter-spacing:-.5px}
 .g-hello p{color:var(--ink-2);font-weight:700;font-size:14px}
-.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.stats{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:800px){ .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px} .stat{font-size:12.5px;padding:6px 9px;text-align:center} }
+.g-top .logo .ver{white-space:nowrap}
+@media (max-width:480px){ .g-top > .pill{display:none} }   /* en pantallas angostas, el saludo ya dice que es el panel del guía */
 .stat{background:rgba(255,255,255,.75);border-radius:12px;padding:6px 11px;font-weight:800;font-size:13px}
 .g-sec{margin-top:26px}
 .g-sec>h2{font-size:19px;font-weight:900;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -125,7 +128,7 @@ body{background:var(--pink-50)}
   <a class="logo" href="index.html" data-i18n-title="Ir a la vista del turista" title="Ir a la vista del turista"><span class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="brand"><span class="txt">Tour<b>Cerca</b></span></span></a>
   <span class="pill">🧭 <span class="lbl-long" data-i18n="Panel del guía">Panel del guía</span><span class="lbl-short" data-i18n="Guía">Guía</span></span>
   <span class="spacer"></span>
-  <a class="btn btn-line btn-sm" href="index.html#mapa" target="_blank" rel="noopener" data-i18n-title="Abrir la vista del turista en otra pestaña" title="Abrir la vista del turista en otra pestaña" data-i18n-aria="Ver como turista" aria-label="Ver como turista">👀 <span class="lbl-long" data-i18n="Ver como turista">Ver como turista</span></a>
+  <a class="btn btn-line btn-sm" href="index.html#mapa" target="_blank" rel="noopener" data-i18n-title="Abrir la vista del turista en otra pestaña" title="Abrir la vista del turista en otra pestaña" data-i18n-aria="Ver como turista" aria-label="Ver como turista">👀 <span class="lbl-long" data-i18n="Ver como turista">Ver como turista</span><span class="lbl-short" data-i18n="Turista">Turista</span></a>
   <span class="lang-slot"></span>
   <span id="who"></span>
 </header>
@@ -295,14 +298,14 @@ function vDash(){
       <div class="t"><b>${esc(nombreTour(live.name))}</b>${tr('Los turistas te están viendo en el mapa.')}</div>
       <button class="btn btn-primary btn-sm" data-act="resume" data-id="${live.id}">${tr('Volver al tour')}</button></div>` : ''}
 
-    ${seccionActividad()}
-
-    ${seccionPedidos()}
-
     <section class="g-sec">
       <h2>${tr('Próximas salidas')} <button class="mini go" data-act="new">＋ ${tr('Programar salida')}</button></h2>
       ${prox.length ? prox.map(salCard).join('') : `<div class="empty-box">${tr('Todavía no programaste salidas.<br>Elegí uno de tus tours de abajo y tocá <b>Programar</b>, o <b>▶ Salir ahora</b> para probar el modo en vivo.')}</div>`}
     </section>
+
+    ${seccionActividad()}
+
+    ${seccionPedidos()}
 
     <section class="g-sec">
       <h2>${tr('Mis tours')} <small>${tours.length}</small></h2>

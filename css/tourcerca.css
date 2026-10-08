@@ -540,3 +540,13 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
   .hero{min-height:0;padding-top:96px}
   .skyline{height:96px;margin-top:22px}
 }
+
+/* ---------- V 3.15: tanda 4 · pulido ---------- */
+.feature{text-transform:none;letter-spacing:0;font-size:14.5px;color:var(--ink)}
+.barrio.mas{background:linear-gradient(150deg,#F4FBF8,#E1F5EE);border:0;box-shadow:var(--shadow-sm)}
+.barrio.mas span{color:#0F6E56}
+/* 4.5 el reloj del turista solo aparece con el tiempo acelerado (modo presentación) */
+.pill.clock{display:none}
+.pill.clock.acelerado{display:inline-flex}
+@media (max-width:800px){ .pill.clock.acelerado{display:none} }
+.demo-ver{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:10px 12px;border-radius:14px;background:var(--pink-50);font-weight:800;font-size:13px;color:var(--ink-2)}

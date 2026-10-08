@@ -5,9 +5,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.14';
+const VERSION = '3.15';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.15', f:'2026-10-08', items:[
+    'Portada: los beneficios sin mayúsculas forzadas y la tarjeta "Toda la Ciudad" con fondo propio.',
+    'Panel del guía: primero las próximas salidas, después la actividad y los pedidos; los números del encabezado más compactos.',
+    'El botón para ver la app como turista tiene texto también en el celular.',
+    'La versión y el reloj pasan al panel ⚙️ de presentación; el reloj de la barra aparece solo con el tiempo acelerado.',
+  ]},
   {v:'3.14', f:'2026-10-08', items:[
     'Ficha del tour más compacta: arriba se ve cuándo empieza y el precio.',
     'La barra de botones de la ficha tiene fondo propio.',

@@ -1477,3 +1477,19 @@ Object.assign(I18N.pt, {
 "Siguiente": "Próximo",
 "Tocá el mapa para marcar el <b>punto de salida</b> y después los <b>lugares que querés conocer</b>. También podés tocar un lugar de interés.": "Toque o mapa para marcar o <b>ponto de saída</b> e depois os <b>lugares que quer conhecer</b>. Também pode tocar um lugar de interesse."
 });
+
+/* V 3.15: pulido */
+Object.assign(I18N.en, {
+"Portada: los beneficios sin mayúsculas forzadas y la tarjeta \"Toda la Ciudad\" con fondo propio.": "Home page: benefits without forced capitals and the \"Whole City\" card with its own background.",
+"Panel del guía: primero las próximas salidas, después la actividad y los pedidos; los números del encabezado más compactos.": "Guide panel: upcoming departures first, then activity and requests; more compact header numbers.",
+"El botón para ver la app como turista tiene texto también en el celular.": "The \"view as tourist\" button has a label on phones too.",
+"La versión y el reloj pasan al panel ⚙️ de presentación; el reloj de la barra aparece solo con el tiempo acelerado.": "The version and clock move to the ⚙️ presentation panel; the bar clock only appears when time is sped up.",
+"Turista": "Tourist"
+});
+Object.assign(I18N.pt, {
+"Portada: los beneficios sin mayúsculas forzadas y la tarjeta \"Toda la Ciudad\" con fondo propio.": "Página inicial: benefícios sem maiúsculas forçadas e o cartão \"Toda a Cidade\" com fundo próprio.",
+"Panel del guía: primero las próximas salidas, después la actividad y los pedidos; los números del encabezado más compactos.": "Painel do guia: primeiro as próximas saídas, depois a atividade e os pedidos; números do cabeçalho mais compactos.",
+"El botón para ver la app como turista tiene texto también en el celular.": "O botão para ver o app como turista tem texto também no celular.",
+"La versión y el reloj pasan al panel ⚙️ de presentación; el reloj de la barra aparece solo con el tiempo acelerado.": "A versão e o relógio vão para o painel ⚙️ de apresentação; o relógio da barra só aparece com o tempo acelerado.",
+"Turista": "Turista"
+});
