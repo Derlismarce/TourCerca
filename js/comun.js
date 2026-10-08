@@ -6,10 +6,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.18';
+const VERSION = '3.19';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.19', f:'2026-10-08', items:[
+    'Portada más ágil: la primera frase se va antes y todo aparece en unos 3 segundos.',
+  ]},
   {v:'3.18', f:'2026-10-08', items:[
     'Portada nueva: ocupa toda la pantalla, aparece "No busques qué hacer en Buenos Aires.", se desvanece y llega "Descubrí qué podés hacer cerca tuyo, ahora.", después los botones.',
     'Los íconos de la portada ("A pocas cuadras", "Guías en vivo"…) pasan al fondo rosa, sobre la silueta de la ciudad.',

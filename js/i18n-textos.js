@@ -1532,3 +1532,11 @@ Object.assign(I18N.pt, {
 "Portada nueva: ocupa toda la pantalla, aparece \"No busques qué hacer en Buenos Aires.\", se desvanece y llega \"Descubrí qué podés hacer cerca tuyo, ahora.\", después los botones.": "Nova página inicial: tela cheia, aparece \"Não procure o que fazer em Buenos Aires.\", some e chega \"Descubra o que você pode fazer perto de você, agora.\", depois os botões.",
 "Los íconos de la portada (\"A pocas cuadras\", \"Guías en vivo\"…) pasan al fondo rosa, sobre la silueta de la ciudad.": "Os ícones da página inicial (\"A poucos quarteirões\", \"Guias ao vivo\"…) passam para o fundo rosa, sobre a silhueta da cidade."
 });
+
+/* V 3.19 */
+Object.assign(I18N.en, {
+"Portada más ágil: la primera frase se va antes y todo aparece en unos 3 segundos.": "Snappier home page: the first sentence leaves sooner and everything appears in about 3 seconds."
+});
+Object.assign(I18N.pt, {
+"Portada más ágil: la primera frase se va antes y todo aparece en unos 3 segundos.": "Página inicial mais ágil: a primeira frase sai antes e tudo aparece em cerca de 3 segundos."
+});

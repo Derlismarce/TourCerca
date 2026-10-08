@@ -566,22 +566,22 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 /* las dos frases ocupan el mismo lugar: la primera se va y aparece la segunda */
 .hero h1.frases{display:grid;place-items:center;max-width:900px;line-height:1.06}
 .hero h1.frases > *{grid-area:1/1}
-.hero h1 .f1{animation:frase1 2.3s ease forwards}
-.hero h1 .f2{opacity:0;animation:entra .7s ease 2.2s forwards}
-.hero p.sub{opacity:0;animation:entra .6s ease 2.8s forwards}
-.hero-cta .btn{opacity:0;animation:entraBoton .7s cubic-bezier(.2,.9,.3,1.3) 3.2s forwards}
-.hero-cta .btn + .btn{animation-delay:3.4s}
-@keyframes frase1{0%{opacity:0;transform:translateY(18px)}22%{opacity:1;transform:none}75%{opacity:1;transform:none;filter:none}100%{opacity:0;transform:translateY(-14px);filter:blur(3px);visibility:hidden}}
+.hero h1 .f1{animation:frase1 1.5s ease forwards}
+.hero h1 .f2{opacity:0;animation:entra .7s ease 1.4s forwards}
+.hero p.sub{opacity:0;animation:entra .6s ease 2s forwards}
+.hero-cta .btn{opacity:0;animation:entraBoton .7s cubic-bezier(.2,.9,.3,1.3) 2.4s forwards}
+.hero-cta .btn + .btn{animation-delay:2.6s}
+@keyframes frase1{0%{opacity:0;transform:translateY(18px)}25%{opacity:1;transform:none}60%{opacity:1;transform:none;filter:none}100%{opacity:0;transform:translateY(-14px);filter:blur(3px);visibility:hidden}}
 @keyframes entra{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes entraBoton{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
 /* los íconos van dentro del rosa, sobre la silueta de la ciudad */
 .hero .features{position:relative;z-index:1;margin:0;padding:24px 0 26px;width:100%;max-width:1000px}
-.hero .feature{opacity:0;animation:entra .6s ease 3.8s forwards}
-.hero .feature:nth-child(2){animation-delay:3.88s}
-.hero .feature:nth-child(3){animation-delay:3.96s}
-.hero .feature:nth-child(4){animation-delay:4.04s}
-.hero .feature:nth-child(5){animation-delay:4.12s}
-.hero .feature:nth-child(6){animation-delay:4.2s}
+.hero .feature{opacity:0;animation:entra .6s ease 3s forwards}
+.hero .feature:nth-child(2){animation-delay:3.08s}
+.hero .feature:nth-child(3){animation-delay:3.16s}
+.hero .feature:nth-child(4){animation-delay:3.24s}
+.hero .feature:nth-child(5){animation-delay:3.32s}
+.hero .feature:nth-child(6){animation-delay:3.4s}
 .hero .feature .ic{width:58px;height:58px;font-size:26px;background:rgba(255,255,255,.8);border-color:#fff;box-shadow:0 4px 14px rgba(158,68,104,.15)}
 .hero .skyline{position:absolute;left:50%;bottom:0;transform:translateX(-50%);margin:0;opacity:.45}
 @media (max-width:800px){
