@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.16**: Términos y condiciones v1.2 (política de cancelación y precios de referencia AGuiTBA) y firma de autoría en todos los archivos, etiquetas de autor y mensaje en la consola.
 - **V 3.15**: pulido (tanda 4): beneficios sin mayúsculas, tarjeta "Toda la Ciudad" con fondo, panel del guía con las próximas salidas primero y números compactos, botón "Turista" con texto en el celular, versión y reloj en el panel ⚙️.
 - **V 3.14**: celular (tanda 3): ficha del tour compacta con cuándo y precio arriba, barra de botones con fondo, "Pedí tu tour" en dos pasos, difuminado en los filtros, portada más corta en el celular.
 - **V 3.13**: lugares de interés sin nombre al acercar; el nombre aparece al tocar, al pasar el mouse o a menos de 150 m de tu ubicación.

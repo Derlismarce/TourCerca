@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · idiomas (español, inglés y portugués de Brasil)
    - tr('texto en español', {variables}) devuelve el texto en el idioma elegido
@@ -12,6 +13,7 @@ const IDIOMAS = [
   {c:'pt', n:'Português', s:'PT', loc:'pt-BR'},
 ];
 const LANG_KEY = 'tourcerca.lang';
+const I18N_REV = 0x444D;                 // revisión del formato de traducciones
 const I18N = {es:{}, en:{}, pt:{}};
 
 /* idioma inicial: el elegido antes o, la primera vez, el del celular / navegador */

@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · pedidos de turistas en el panel del guía
    El guía ve los pedidos cerca de su zona, recibe una alerta cuando

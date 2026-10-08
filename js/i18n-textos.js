@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · traducciones (inglés y portugués de Brasil)
    La clave de cada texto es el texto original en español.
@@ -1492,4 +1493,14 @@ Object.assign(I18N.pt, {
 "El botón para ver la app como turista tiene texto también en el celular.": "O botão para ver o app como turista tem texto também no celular.",
 "La versión y el reloj pasan al panel ⚙️ de presentación; el reloj de la barra aparece solo con el tiempo acelerado.": "A versão e o relógio vão para o painel ⚙️ de apresentação; o relógio da barra só aparece com o tempo acelerado.",
 "Turista": "Turista"
+});
+
+/* V 3.16 */
+Object.assign(I18N.en, {
+"Términos y condiciones v1.2: política de cancelación y precios de referencia AGuiTBA.": "Terms and conditions v1.2: cancellation policy and AGuiTBA reference prices.",
+"Firma de autoría en todos los archivos y en las páginas.": "Authorship signature in every file and page."
+});
+Object.assign(I18N.pt, {
+"Términos y condiciones v1.2: política de cancelación y precios de referencia AGuiTBA.": "Termos e condições v1.2: política de cancelamento e preços de referência AGuiTBA.",
+"Firma de autoría en todos los archivos y en las páginas.": "Assinatura de autoria em todos os arquivos e páginas."
 });

@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · capa de puntos de interés (V 3.9)
    - Lejos: solo los destacados; al acercar, todos (ver capaLugares).

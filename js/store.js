@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · almacén de datos compartido entre guía y turista
    © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE.
@@ -13,6 +14,7 @@
    ===================================================================== */
 const Store = (()=>{
   const KEY = 'tourcerca.datos.v2';
+  const DATA_REV = ((I18N_REV << 16) | GEO_REV) >>> 0;     // revisión de datos (traducciones + límites)
   const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], cancelaciones:[], pedidos:{}, incidentes:[]});
   const subs = [];
   let cache = load();
@@ -22,6 +24,7 @@ const Store = (()=>{
     catch(e){ return empty(); }
   }
   function save(){
+    cache.rev = DATA_REV;
     try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch(e){}
     subs.forEach(f=>f());
   }
@@ -29,7 +32,7 @@ const Store = (()=>{
   window.addEventListener('storage', e=>{
     if(e.key === KEY){ cache = load(); subs.forEach(f=>f()); }
   });
-  const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6) + (DATA_REV % 36).toString(36);
 
   return {
     get: ()=>cache,

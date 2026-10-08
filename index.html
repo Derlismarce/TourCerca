@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+<!-- TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. -->
 <!-- TourCerca · vista del turista · © 2026 Derlis Marcelo Fernandez Rivas. Todos los derechos reservados. Ver LICENSE. -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Derlis Marcelo Fernández Rivas">
+<meta name="copyright" content="© 2026 Derlis Marcelo Fernández Rivas. Todos los derechos reservados.">
 <title>TourCerca · Tours cerca tuyo, ahora</title>
 <meta name="description" content="Descubrí qué tours de guías de Buenos Aires están cerca tuyo y empiezan ahora.">
 <meta name="theme-color" content="#F6C9D8">
@@ -240,7 +243,7 @@ function buildLanding(){
   document.getElementById('refPreciosTxt').innerHTML = tr('Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.', {f:fechaVigencia()});
   const rl = document.getElementById('refPreciosLink'); rl.href = AGUITBA.url; rl.textContent = tr('Ver los honorarios sugeridos') + ' ↗';
   document.getElementById('refPreciosNota').textContent = tr('AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.');
-  document.getElementById('copy').textContent = tr(COPYRIGHT);
+  document.getElementById('copy').textContent = tr(COPYRIGHT) + SEP_FINO;
   document.title = tr('TourCerca · Tours cerca tuyo, ahora');
 }
 buildLanding();

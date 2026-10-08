@@ -1,3 +1,4 @@
+/*! TourCerca · Proyecto final de la Licenciatura en Turismo · Desarrollado por Derlis Marcelo Fernández Rivas, 2026 · Todos los derechos reservados. Ver LICENSE. */
 /* =====================================================================
    TourCerca · código compartido entre la vista cliente (index.html)
    y el panel del guía (guia.html)
@@ -5,9 +6,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.15';
+const VERSION = '3.16';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
+const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.16', f:'2026-10-08', items:[
+    'Términos y condiciones v1.2: política de cancelación y precios de referencia AGuiTBA.',
+    'Firma de autoría en todos los archivos y en las páginas.',
+  ]},
   {v:'3.15', f:'2026-10-08', items:[
     'Portada: los beneficios sin mayúsculas forzadas y la tarjeta "Toda la Ciudad" con fondo propio.',
     'Panel del guía: primero las próximas salidas, después la actividad y los pedidos; los números del encabezado más compactos.',
@@ -586,8 +592,18 @@ function openChangelog(){
   const ov = document.createElement('div'); ov.className = 'overlay';
   ov.innerHTML = `<div class="modal"><h3>${tr('Novedades')}</h3><p class="muted">${tr('TourCerca · prototipo')}</p>
     ${CHANGELOG.map(c=>`<h5>V ${c.v}${c.v===VERSION?' · '+tr('actual'):''}</h5><ul class="clog">${c.items.map(i=>`<li>${esc(tr(i))}</li>`).join('')}</ul>`).join('')}
-    <p class="muted" style="font-size:12px;margin:16px 0 0;text-align:center">${esc(tr(COPYRIGHT))}</p>
+    <p class="muted" style="font-size:12px;margin:16px 0 0;text-align:center">${esc(tr(COPYRIGHT))}${SEP_FINO}</p>
     <div style="margin-top:14px"><button class="btn btn-primary" style="width:100%" data-x>${tr('Cerrar')}</button></div></div>`;
   ov.onclick = e=>{ if(e.target===ov || e.target.hasAttribute('data-x')) ov.remove(); };
   document.body.appendChild(ov);
+}
+
+/* ---------- autoría ---------- */
+if(typeof window !== 'undefined' && !window.__tourcercaFirma){
+  window.__tourcercaFirma = true;
+  console.log('%cTourCerca%c  V ' + VERSION +
+    '\n© 2026 Derlis Marcelo Fernández Rivas · Todos los derechos reservados.' +
+    '\nProyecto final de la Licenciatura en Turismo · Ciudad de Buenos Aires.' +
+    '\nEl software está protegido por la Ley 11.723 de Propiedad Intelectual. Ver LICENSE.',
+    'font:900 22px Nunito,system-ui,sans-serif;color:#B5466F', 'font:700 12px Nunito,system-ui,sans-serif;color:#7D6874');
 }
