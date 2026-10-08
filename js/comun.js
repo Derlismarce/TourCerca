@@ -5,9 +5,16 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.13';
+const VERSION = '3.14';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const CHANGELOG = [
+  {v:'3.14', f:'2026-10-08', items:[
+    'Ficha del tour más compacta: arriba se ve cuándo empieza y el precio.',
+    'La barra de botones de la ficha tiene fondo propio.',
+    '"Pedí tu tour" en dos pasos: primero el recorrido en el mapa, después los datos.',
+    'Los filtros muestran un difuminado cuando hay más para deslizar.',
+    'En el celular, la portada muestra los barrios antes.',
+  ]},
   {v:'3.13', f:'2026-10-07', items:[
     'Al acercar el mapa, los lugares de interés se ven solo con su ícono; el nombre aparece al tocarlos, al pasar el mouse o si están a menos de 150 m de tu ubicación.',
   ]},

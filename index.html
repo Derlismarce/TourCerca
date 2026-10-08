@@ -283,6 +283,13 @@ function buildChips(){
   const chips = [['todos',tr('Todos')],['vivo','<span class="dot" style="display:inline-block;margin-right:2px"></span> ' + tr('En vivo')],['pronto','⏱️ ' + tr('Próxima hora')],['gratis','🆓 ' + tr('A la gorra')],
     ...Object.entries(CATS).filter(([k])=>TOURS.some(t=>t.cat===k)).map(([k,c])=>[k, c.e+' '+tr(c.n)])];
   document.getElementById('chips').innerHTML = chips.map(([k,n])=>`<button class="chip ${k==='vivo'?'live-chip':''} ${k===filter?'on':''}" data-f="${k}">${n}</button>`).join('');
+  requestAnimationFrame(bordeChips);
+}
+/* difuminado en los bordes de los filtros solo si hay más para deslizar (V 3.14) */
+function bordeChips(){
+  const c = document.getElementById('chips'); if(!c) return;
+  c.classList.toggle('mas-izq', c.scrollLeft > 4);
+  c.classList.toggle('mas-der', c.scrollLeft + c.clientWidth < c.scrollWidth - 4);
 }
 function initMap(){
   map = L.map('map', {zoomControl:false, attributionControl:true}).setView(DEMO_SPOTS['9 de Julio'], 15);
@@ -293,6 +300,8 @@ function initMap(){
     if(meLabel.includes('demo') || meLabel==='Punto elegido'){ setMe([e.latlng.lat,e.latlng.lng],'Punto elegido'); } });
 
   buildChips();
+  document.getElementById('chips').addEventListener('scroll', bordeChips, {passive:true});
+  window.addEventListener('resize', bordeChips);
   document.getElementById('chips').onclick = e=>{
     const b = e.target.closest('.chip'); if(!b) return;
     filter = b.dataset.f;
@@ -578,9 +587,12 @@ function renderDetail(force){
   document.getElementById('detailView').innerHTML = `
     <div class="d-top"><button class="icon-btn" onclick="closeDetail()" aria-label="${tr('Volver')}">←</button><span class="t">${esc(nombreTour(t.name))}</span></div>
     <div class="d-hero" style="background:${bgBarrio(t.barrio)}">
-      <div class="big">${c.e}</div>
-      <h2>${esc(nombreTour(t.name))}</h2>
-      <div class="sub">${tr(c.n)} · ${esc(t.barrio)}</div>
+      <div class="big" aria-hidden="true">${c.e}</div>
+      <div class="dh-txt">
+        <h2>${esc(nombreTour(t.name))}</h2>
+        <div class="sub">${tr(c.n)} · ${esc(t.barrio)}</div>
+        <div class="d-res"><span>🕐 ${s.live ? tr('En vivo · termina en {t}', {t:fmtIn(s.endsIn)}) : `${hora(s.start)} · ${s.startsIn <= 0 ? tr('por salir') : tr('en {t}', {t:fmtIn(s.startsIn)})}`}</span><span>💰 ${money(t.price)}</span></div>
+      </div>
     </div>
     ${status}
     <div class="facts">

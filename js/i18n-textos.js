@@ -1453,3 +1453,27 @@ Object.assign(I18N.en, {
 Object.assign(I18N.pt, {
 "Al acercar el mapa, los lugares de interés se ven solo con su ícono; el nombre aparece al tocarlos, al pasar el mouse o si están a menos de 150 m de tu ubicación.": "Ao aproximar o mapa, os lugares de interesse aparecem só com o ícone; o nome aparece ao tocá-los, ao passar o mouse ou se estiverem a menos de 150 m da sua localização."
 });
+
+/* V 3.14: celular */
+Object.assign(I18N.en, {
+"\"Pedí tu tour\" en dos pasos: primero el recorrido en el mapa, después los datos.": "\"Request a tour\" in two steps: first the route on the map, then the details.",
+"Datos del tour": "Tour details",
+"En el celular, la portada muestra los barrios antes.": "On phones, the home page shows the barrios sooner.",
+"Falta el recorrido": "The route is missing",
+"Ficha del tour más compacta: arriba se ve cuándo empieza y el precio.": "More compact tour card: start time and price at the top.",
+"La barra de botones de la ficha tiene fondo propio.": "The card's button bar has its own background.",
+"Los filtros muestran un difuminado cuando hay más para deslizar.": "Filters fade at the edge when there are more to swipe.",
+"Siguiente": "Next",
+"Tocá el mapa para marcar el <b>punto de salida</b> y después los <b>lugares que querés conocer</b>. También podés tocar un lugar de interés.": "Tap the map to mark the <b>starting point</b> and then the <b>places you want to visit</b>. You can also tap a place of interest."
+});
+Object.assign(I18N.pt, {
+"\"Pedí tu tour\" en dos pasos: primero el recorrido en el mapa, después los datos.": "\"Peça seu tour\" em dois passos: primeiro o roteiro no mapa, depois os dados.",
+"Datos del tour": "Dados do tour",
+"En el celular, la portada muestra los barrios antes.": "No celular, a página inicial mostra os bairros antes.",
+"Falta el recorrido": "Falta o roteiro",
+"Ficha del tour más compacta: arriba se ve cuándo empieza y el precio.": "Ficha do tour mais compacta: no topo aparecem o horário e o preço.",
+"La barra de botones de la ficha tiene fondo propio.": "A barra de botões da ficha tem fundo próprio.",
+"Los filtros muestran un difuminado cuando hay más para deslizar.": "Os filtros mostram um esmaecido quando há mais para deslizar.",
+"Siguiente": "Próximo",
+"Tocá el mapa para marcar el <b>punto de salida</b> y después los <b>lugares que querés conocer</b>. También podés tocar un lugar de interés.": "Toque o mapa para marcar o <b>ponto de saída</b> e depois os <b>lugares que quer conhecer</b>. Também pode tocar um lugar de interesse."
+});

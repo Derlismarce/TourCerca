@@ -89,12 +89,12 @@ function openPedido(editId, base){
   pedRoute = src ? src.route.map(r=>r.slice()) : [];
   pedidoMode = true;
   panelView('pedido');
-  if(isMobile()) setSheet(sheetH(.6));
+  pedPaso = pedRoute.length >= 2 ? 2 : 1;                 // si ya tiene recorrido (editar, pedir otro igual) va directo a los datos
   renderPedidoForm(src);
   if(!pedLayer) pedLayer = L.layerGroup().addTo(map);
   drawPedido();
+  irPaso(pedPaso);
   if(pedRoute.length) map.flyToBounds(L.latLngBounds(pedRoute.map(r=>[r[0],r[1]])).pad(.3), {duration:.6});
-  showHint(pedRoute.length ? tr('Tocá el mapa para sumar lugares') : tr('Tocá el mapa para marcar el punto de salida'));
 }
 function salirPedido(){
   pedidoMode = false; pedEdit = null;
@@ -115,9 +115,17 @@ function renderPedidoForm(src, keep = false){
   const min = toLocalInput(T + PEDIDO.anticipacionH*60*MIN), max = toLocalInput(T + PEDIDO.maxDias*24*60*MIN);
   const LANGS = ['ES','EN','PT','FR','IT','DE'];
 
+  /* V 3.14: en dos pasos. 1) marcar el recorrido en el mapa (panel bajo); 2) los datos del tour */
   document.getElementById('pedidoView').innerHTML = `
     <div class="d-top"><button class="icon-btn" onclick="salirPedido()" aria-label="${tr('Volver')}">←</button><span class="t">✨ ${pedEdit ? tr('Editar pedido') : tr('Pedí tu tour')}</span></div>
-    <div class="pv">
+    <div class="pasos" role="tablist"><button type="button" class="paso" data-paso="1" onclick="irPaso(1)">1 · ${tr('Recorrido')}</button><button type="button" class="paso" data-paso="2" onclick="pasoSiguiente()">2 · ${tr('Datos del tour')}</button></div>
+    <div class="pv" id="pPaso1">
+      <p class="pv-lead">${tr('Tocá el mapa para marcar el <b>punto de salida</b> y después los <b>lugares que querés conocer</b>. También podés tocar un lugar de interés.')}</p>
+      <ul class="stops" id="pStops"></ul>
+      <div class="stop-tools"><button type="button" class="mini" onclick="pedidoDesdeMi()">📍 ${tr('Salir desde donde estoy')}</button><button type="button" class="mini" onclick="pedidoDeshacer()">↶ ${tr('Deshacer')}</button></div>
+      <div class="pv-actions"><button class="btn btn-ghost" style="border:1.5px solid var(--line)" onclick="salirPedido()">${tr('Cancelar')}</button><button class="btn btn-primary" onclick="pasoSiguiente()">${tr('Siguiente')} →</button></div>
+    </div>
+    <div class="pv" id="pPaso2" hidden>
       <p class="pv-lead">${tr('Elegí cuándo, desde dónde y qué querés conocer. Un guía cercano toma tu pedido.')}</p>
       <div class="rules" id="pRules"></div>
       <div class="field"><label>${tr('Día y hora de salida')}</label><input class="inp" type="datetime-local" id="pStart" min="${min}" max="${max}" value="${isNaN(d.startAt) ? '' : toLocalInput(d.startAt)}"></div>
@@ -131,14 +139,9 @@ function renderPedidoForm(src, keep = false){
         <div class="ref-ag" id="pRef"></div></div>
       <div class="field"><label>${tr('Idiomas')}</label><div class="langs" id="pLangs">${LANGS.map(l=>`<button type="button" class="chip ${d.langs.includes(l)?'on':''}" data-l="${l}">${l}</button>`).join('')}</div></div>
       <div class="field"><label>${tr('Tipo de tour')}</label><select class="inp" id="pCat">${Object.entries(CATS).map(([k,c])=>`<option value="${k}" ${k===d.cat?'selected':''}>${c.e} ${tr(c.n)}</option>`).join('')}</select></div>
-      <div class="field"><label>${tr('Recorrido')}</label>
-        <div class="help">${tr('👆 Tocá el mapa para marcar el <b>punto de salida</b> y después los <b>lugares que querés conocer</b>. Podés arrastrarlos y cambiarles el nombre.')}</div>
-        <ul class="stops" id="pStops"></ul>
-        <div class="stop-tools"><button type="button" class="mini" onclick="pedidoDesdeMi()">📍 ${tr('Salir desde donde estoy')}</button><button type="button" class="mini" onclick="pedidoDeshacer()">↶ ${tr('Deshacer')}</button></div>
-      </div>
       <div class="field"><label>${tr('Tu nombre')}</label><input class="inp" id="pNombre" maxlength="40" placeholder="${esc(tr('Para que el guía te reconozca'))}" value="${esc(d.nombre)}"></div>
       <div class="field"><label>${tr('Comentario para el guía (opcional)')}</label><textarea class="inp" id="pCom" maxlength="300" placeholder="${esc(tr('Ej: somos una familia con chicos, nos interesa la historia del tango…'))}">${esc(d.comentario)}</textarea></div>
-      <div class="pv-actions"><button class="btn btn-ghost" style="border:1.5px solid var(--line)" onclick="salirPedido()">${tr('Cancelar')}</button><button class="btn btn-primary" onclick="publicarPedido()">${pedEdit ? tr('Guardar cambios') : '📣 ' + tr('Publicar pedido')}</button></div>
+      <div class="pv-actions"><button class="btn btn-ghost" style="border:1.5px solid var(--line)" onclick="irPaso(1)">← ${tr('Recorrido')}</button><button class="btn btn-primary" onclick="publicarPedido()">${pedEdit ? tr('Guardar cambios') : '📣 ' + tr('Publicar pedido')}</button></div>
       <p class="muted" style="font-size:12px;text-align:center;margin-top:8px">${tr('Pagás directamente al guía. Al publicar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.')}</p>
     </div>`;
   const v = document.getElementById('pedidoView');
@@ -149,6 +152,24 @@ function renderPedidoForm(src, keep = false){
   };
   document.getElementById('pLangs').onclick = e=>{ const b = e.target.closest('[data-l]'); if(b){ b.classList.toggle('on'); reglasUI(); } };
   drawPedidoList(); reglasUI();
+  if(keep) irPaso(pedPaso);
+}
+
+/* ---------- pasos del pedido (V 3.14) ---------- */
+let pedPaso = 1;
+function irPaso(n){
+  pedPaso = n;
+  const p1 = document.getElementById('pPaso1'), p2 = document.getElementById('pPaso2'); if(!p1) return;
+  p1.hidden = n !== 1; p2.hidden = n !== 2;
+  document.querySelectorAll('#pedidoView .paso').forEach(b=>{ const on = +b.dataset.paso === n; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  document.getElementById('pedidoView').scrollTop = 0;
+  if(isMobile()) setSheet(sheetH(n === 1 ? .44 : .78));   // paso 1: el mapa a la vista para marcar
+  if(n === 1) showHint(pedRoute.length ? tr('Tocá el mapa para sumar lugares') : tr('Tocá el mapa para marcar el punto de salida'));
+}
+function pasoSiguiente(){
+  const r = reglasPedido({...leerPedido(), route:pedRoute}).find(x=>x.k === 'ruta');
+  if(r && !r.ok){ irPaso(1); return toast({ic:'🗺️', title:tr('Falta el recorrido'), text:r.err}); }
+  irPaso(2);
 }
 
 function leerPedido(){
@@ -245,7 +266,7 @@ async function publicarPedido(){
   if(pedTrazo) await pedTrazo;                       // esperar el recorrido por la calle
   const p = leerPedido();
   const falla = reglasPedido(p).find(r=>!r.ok);
-  if(falla) return toast({ic:'✋', title:tr('Falta algo'), text:falla.err});
+  if(falla){ if(falla.k === 'ruta') irPaso(1); return toast({ic:'✋', title:tr('Falta algo'), text:falla.err}); }
   if(!p.langs.length) return toast({ic:'✋', title:tr('Falta algo'), text:tr('Elegí al menos un idioma.')});
   pedRoute.forEach((r,i)=>{ if(!String(r[2]).trim()) r[2] = pedDefName(i); });
   const datos = {...p, route:pedRoute.map(r=>[+r[0].toFixed(6), +r[1].toFixed(6), String(r[2]).trim()]), barrio:nearestBarrio(pedRoute[0])};

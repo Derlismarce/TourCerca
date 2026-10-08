@@ -511,3 +511,32 @@ textarea.inp{resize:vertical;min-height:70px;font-weight:600}
 #lugarView .lug-pop{min-width:0}
 #lugarView .lp-top b{font-size:17px}
 #lugarView .lp-acts .mini{padding:9px 14px;font-size:13.5px}
+
+/* ---------- V 3.14: tanda 3 · celular ---------- */
+/* 3.1 ficha compacta: emoji al costado del nombre y resumen (cuándo y precio) arriba */
+.d-hero{display:flex;align-items:center;gap:14px;padding:16px}
+.d-hero .big{font-size:40px;flex:0 0 auto}
+.d-hero .dh-txt{min-width:0}
+.d-hero h2{margin-top:0;font-size:21px}
+.d-res{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.d-res span{background:rgba(255,255,255,.75);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800;color:var(--ink)}
+@media (max-width:800px){
+  .d-hero{padding:12px 14px;gap:12px;border-radius:18px}
+  .d-hero .big{font-size:30px}
+  .d-hero h2{font-size:18px}
+}
+/* 3.2 barra de botones de la ficha con fondo propio (no se ve el texto de atrás) */
+.d-actions{background:#fff;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 16px rgba(158,68,104,.08)}
+/* 3.3 pasos de "Pedí tu tour" */
+.pasos{display:flex;gap:6px;padding:8px 16px 0}
+.paso{flex:1;border-radius:999px;padding:7px 10px;font-weight:800;font-size:13px;background:var(--pink-50);color:var(--ink-3);border:1.5px solid var(--line)}
+.paso.on{background:var(--pink-100);color:var(--pink-700);border-color:var(--pink-300)}
+/* 3.4 filtros: difuminado en el borde cuando hay más para deslizar */
+.chips.mas-der{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+.chips.mas-izq{-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%);mask-image:linear-gradient(90deg,transparent,#000 18%)}
+.chips.mas-izq.mas-der{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+/* 3.5 portada en el celular: skyline más bajo para que los barrios aparezcan antes */
+@media (max-width:640px){
+  .hero{min-height:0;padding-top:96px}
+  .skyline{height:96px;margin-top:22px}
+}
