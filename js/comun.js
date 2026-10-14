@@ -6,10 +6,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.24';
+const VERSION = '3.25';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.25', f:'2026-10-14', items:[
+    'Mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte.',
+  ]},
   {v:'3.24', f:'2026-10-14', items:[
     'Reseñas: después del tour, el turista lo califica desde "Mis tours" con 1 a 5 estrellas, un comentario breve y una foto opcional.',
     'La ficha de cada tour muestra sus opiniones, y el puntaje del guía suma las reseñas nuevas.',

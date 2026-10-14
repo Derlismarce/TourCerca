@@ -1702,3 +1702,11 @@ Object.assign(I18N.pt, {
 "La ficha de cada tour muestra sus opiniones, y el puntaje del guía suma las reseñas nuevas.": "A ficha de cada tour mostra suas avaliações, e a nota do guia inclui as novas avaliações.",
 "Cada reseña se puede denunciar; queda oculta hasta revisarla.": "Cada avaliação pode ser denunciada; fica oculta até ser revisada."
 });
+
+/* V 3.25 */
+Object.assign(I18N.en, {
+"Mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte.": "Cleaner map: places of interest are hidden when the map is zoomed out; they appear when you zoom in."
+});
+Object.assign(I18N.pt, {
+"Mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte.": "Mapa mais limpo: com o mapa afastado, os lugares de interesse não aparecem; eles surgem ao aproximar."
+});

@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.25**: mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte (en el editor del guía siguen los destacados).
 - **V 3.24**: reseñas de los turistas (1 a 5 estrellas, comentario y foto opcional desde "Mis tours"); opiniones en la ficha del tour; puntaje del guía con las reseñas nuevas; denuncia de reseñas; Términos v1.4 y Política de privacidad v1.2.
 - **V 3.23**: portada: la frase "No busques qué hacer en Buenos Aires." se ve completa 1,5 s para que se pueda leer.
 - **V 3.22**: lugares de interés en rosa suave; selector $ ARS / US$ (dólar oficial del Banco Nación vía DolarApi, solo de referencia: el cobro es en pesos); Términos v1.3 y Política de privacidad v1.1.

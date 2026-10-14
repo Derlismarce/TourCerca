@@ -517,7 +517,7 @@ function vEditor({salidaId, tourId} = {}){
   }
   map.on('click', e=> addStop([e.latlng.lat, e.latlng.lng]));
   // lugares de interés: tocar uno lo suma como parada con su nombre
-  botonLugares(document.getElementById('ePoi'), capaLugares(map, {onClick:l=> addStop(l.ll, l.n)}));
+  botonLugares(document.getElementById('ePoi'), capaLugares(map, {onClick:l=> addStop(l.ll, l.n), lejos:true}));
   if(route.length > 1 && !legs) recalcular(); else drawMap();      // salidas viejas sin tramos: se calculan al abrir
   drawList();
   setTimeout(()=>{

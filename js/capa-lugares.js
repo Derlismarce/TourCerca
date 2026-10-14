@@ -50,7 +50,9 @@ const pasaPor = (t, l) => distALinea(l.ll, lineaTour(t)) <= 80;
    mouse, y en los lugares a menos de 150 m de la ubicación del usuario (cerca()).
    Los lugares van en capas propias por DEBAJO de los tours y de su recorrido. */
 const RADIO_NOMBRES = 150;     // metros
-function capaLugares(map, {onClick, cerca} = {}){
+/* V 3.25: con el mapa alejado (zoom 15 o menos) el turista no ve lugares; aparecen al acercar.
+   lejos:true (editor del guía) mantiene los destacados también de lejos. */
+function capaLugares(map, {onClick, cerca, lejos = false} = {}){
   if(!map.getPane('lugares')){ map.createPane('lugares').style.zIndex = 390; }            // debajo de los recorridos (400+)
   if(!map.getPane('lugaresIconos')){ map.createPane('lugaresIconos').style.zIndex = 580; } // debajo de los pines de tours (600)
   const renderer = L.canvas({padding:.3, pane:'lugares'});
@@ -67,7 +69,7 @@ function capaLugares(map, {onClick, cerca} = {}){
   function dibujar(){
     if(!visible) return;
     const z = map.getZoom(), b = map.getBounds().pad(.25);
-    poner(puntosDest, z <= 15);
+    poner(puntosDest, lejos && z <= 15);
     poner(puntosTodos, z === 16);
     poner(iconos, z >= 16);
     iconos.clearLayers();
