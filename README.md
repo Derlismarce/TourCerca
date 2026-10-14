@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.23**: portada: la frase "No busques qué hacer en Buenos Aires." se ve completa 1,5 s para que se pueda leer.
 - **V 3.22**: lugares de interés en rosa suave; selector $ ARS / US$ (dólar oficial del Banco Nación vía DolarApi, solo de referencia: el cobro es en pesos); Términos v1.3 y Política de privacidad v1.1.
 - **V 3.21**: tres guías nuevas (Rocío Carisimo en Caballito, Deisy Morales en Belgrano y Florencia Enrique en el Abasto), cada una con un tour; el cuadro "Precios justos para los guías" pasa de la portada al panel del guía.
 - **V 3.20**: en el celular, los íconos de la portada quedan más arriba.

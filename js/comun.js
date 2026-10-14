@@ -6,10 +6,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.22';
+const VERSION = '3.23';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.23', f:'2026-10-14', items:[
+    'Portada: la primera frase queda más tiempo en pantalla para que se pueda leer.',
+  ]},
   {v:'3.22', f:'2026-10-14', items:[
     'Los lugares de interés pasan a rosa suave.',
     'Precios en pesos o en dólares: selector $ ARS / US$ con el dólar oficial del Banco Nación, que se actualiza solo. El cobro sigue siendo en pesos.',

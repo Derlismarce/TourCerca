@@ -1596,3 +1596,11 @@ Object.assign(I18N.pt, {
 "Precios en pesos o en dólares: selector $ ARS / US$ con el dólar oficial del Banco Nación, que se actualiza solo. El cobro sigue siendo en pesos.": "Preços em pesos ou em dólares: seletor $ ARS / US$ com o dólar oficial do Banco Nación, atualizado automaticamente. A cobrança continua em pesos.",
 "Términos y condiciones v1.3 y Política de privacidad v1.1: precios en dólares solo de referencia, y los servicios de cotización y de recorridos a pie.": "Termos e condições v1.3 e Política de privacidade v1.1: preços em dólares apenas como referência, e os serviços de cotação e de roteiros a pé."
 });
+
+/* V 3.23 */
+Object.assign(I18N.en, {
+"Portada: la primera frase queda más tiempo en pantalla para que se pueda leer.": "Home page: the first sentence stays on screen longer so it can be read."
+});
+Object.assign(I18N.pt, {
+"Portada: la primera frase queda más tiempo en pantalla para que se pueda leer.": "Página inicial: a primeira frase fica mais tempo na tela para poder ser lida."
+});
