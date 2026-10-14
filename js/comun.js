@@ -6,10 +6,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.21';
+const VERSION = '3.22';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.22', f:'2026-10-14', items:[
+    'Los lugares de interés pasan a rosa suave.',
+    'Precios en pesos o en dólares: selector $ ARS / US$ con el dólar oficial del Banco Nación, que se actualiza solo. El cobro sigue siendo en pesos.',
+    'Términos y condiciones v1.3 y Política de privacidad v1.1: precios en dólares solo de referencia, y los servicios de cotización y de recorridos a pie.',
+  ]},
   {v:'3.21', f:'2026-10-14', items:[
     'Tres guías nuevas: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) y Florencia Enrique (Abasto), cada una con un tour.',
     'El cuadro "Precios justos para los guías" pasa de la portada al panel del guía.',
@@ -368,6 +373,44 @@ const fmtDist = d => d < 1000 ? `${Math.round(d/10)*10} m` : `${dec1(d/1000)} km
 const cuadras = d => Math.max(1,Math.round(d/100));
 const walkMin = d => Math.max(1,Math.round(d/75));   // ~4,5 km/h
 const money = n => n===0 ? tr('A la gorra') : (LANG === 'es' ? '$ ' : 'ARS ') + n.toLocaleString(LOC());
+
+/* ---------- moneda (V 3.22) ----------
+   Los precios son en pesos (referencia AGuiTBA) y se cobran en pesos. El turista
+   puede verlos en dólares, convertidos con el dólar oficial del Banco Nación
+   (venta), que se consulta en DolarApi al abrir la app. Si no responde, se usa
+   la última cotización guardada. */
+const MONEDA_KEY = 'tourcerca.moneda', COTIZ_KEY = 'tourcerca.cotizacion';
+const COTIZ_API = 'https://dolarapi.com/v1/dolares/oficial';
+let COTIZ = (()=>{
+  try { const c = JSON.parse(localStorage.getItem(COTIZ_KEY) || 'null'); if(c && c.venta > 0) return c; } catch(e){}
+  return {venta:1535, fecha:'2026-10-14T10:00:00.000Z'};
+})();
+const monedaSubs = [];
+const onMoneda = f => monedaSubs.push(f);
+function monedaElegida(){ try { return localStorage.getItem(MONEDA_KEY); } catch(e){ return null; } }
+/* si la persona no eligió: en español se ve en pesos; en inglés y portugués, en dólares */
+const MONEDA = () => monedaElegida() || (LANG === 'es' ? 'ARS' : 'USD');
+function setMoneda(m){ try { localStorage.setItem(MONEDA_KEY, m); } catch(e){} monedaSubs.forEach(f=>f()); }
+const usd = n => 'US$ ' + Math.max(1, Math.round(n / COTIZ.venta)).toLocaleString(LOC());
+/* precio para mostrar al turista, en la moneda elegida */
+const precio = n => n > 0 && MONEDA() === 'USD' ? usd(n) : money(n);
+/* aclaración chica en pesos cuando se ve en dólares */
+const enPesos = n => n > 0 && MONEDA() === 'USD' ? '≈ ' + money(n) : '';
+/* lo que se cobra va siempre en pesos; en dólares se agrega la referencia */
+const conUsd = n => money(n) + (n > 0 && MONEDA() === 'USD' ? ` (≈ ${usd(n)})` : '');
+const notaCotiz = () => tr('dólar oficial BNA {v} ({f})', {v:money(Math.round(COTIZ.venta)), f:new Date(COTIZ.fecha).toLocaleDateString(LOC(), {day:'numeric', month:'numeric'})});
+async function actualizarCotizacion(){
+  try {
+    const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 6000);
+    const d = await (await fetch(COTIZ_API, {signal:ctl.signal})).json();
+    clearTimeout(to);
+    if(d && d.venta > 0){
+      COTIZ = {venta:d.venta, fecha:d.fechaActualizacion || new Date().toISOString()};
+      try { localStorage.setItem(COTIZ_KEY, JSON.stringify(COTIZ)); } catch(e){}
+      monedaSubs.forEach(f=>f());
+    }
+  } catch(e){}   // sin conexión: queda la última cotización guardada
+}
 const initials = n => n.split(' ').map(w=>w[0]).slice(0,2).join('');
 const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 

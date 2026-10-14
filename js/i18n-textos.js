@@ -1576,3 +1576,23 @@ Object.assign(I18N.pt, {
 "Tres guías nuevas: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) y Florencia Enrique (Abasto), cada una con un tour.": "Três novas guias: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) e Florencia Enrique (Abasto), cada uma com um tour.",
 "El cuadro \"Precios justos para los guías\" pasa de la portada al panel del guía.": "O quadro \"Preços justos para os guias\" sai da página inicial e vai para o painel do guia."
 });
+
+/* V 3.22 */
+Object.assign(I18N.en, {
+"Moneda": "Currency",
+"Ver precios en dólares (referencia)": "Show prices in US dollars (reference)",
+"Ver precios en pesos": "Show prices in Argentine pesos",
+"dólar oficial BNA {v} ({f})": "official BNA dollar rate {v} ({f})",
+"Los lugares de interés pasan a rosa suave.": "Places of interest are now soft pink.",
+"Precios en pesos o en dólares: selector $ ARS / US$ con el dólar oficial del Banco Nación, que se actualiza solo. El cobro sigue siendo en pesos.": "Prices in pesos or dollars: $ ARS / US$ selector using the official Banco Nación rate, updated automatically. Payment is still in pesos.",
+"Términos y condiciones v1.3 y Política de privacidad v1.1: precios en dólares solo de referencia, y los servicios de cotización y de recorridos a pie.": "Terms and conditions v1.3 and Privacy policy v1.1: dollar prices are for reference only, plus the exchange-rate and walking-route services."
+});
+Object.assign(I18N.pt, {
+"Moneda": "Moeda",
+"Ver precios en dólares (referencia)": "Ver preços em dólares (referência)",
+"Ver precios en pesos": "Ver preços em pesos",
+"dólar oficial BNA {v} ({f})": "dólar oficial BNA {v} ({f})",
+"Los lugares de interés pasan a rosa suave.": "Os lugares de interesse passam a rosa suave.",
+"Precios en pesos o en dólares: selector $ ARS / US$ con el dólar oficial del Banco Nación, que se actualiza solo. El cobro sigue siendo en pesos.": "Preços em pesos ou em dólares: seletor $ ARS / US$ com o dólar oficial do Banco Nación, atualizado automaticamente. A cobrança continua em pesos.",
+"Términos y condiciones v1.3 y Política de privacidad v1.1: precios en dólares solo de referencia, y los servicios de cotización y de recorridos a pie.": "Termos e condições v1.3 e Política de privacidade v1.1: preços em dólares apenas como referência, e os serviços de cotação e de roteiros a pé."
+});

@@ -110,6 +110,7 @@
     <span class="spacer"></span>
     <span class="pill" id="locPill">📍 …</span>
     <span class="pill clock" id="clockPill">🕐 --:--</span>
+    <span class="mon" id="monSel" role="group"></span>
     <span class="lang-slot"></span>
     <button class="icon-btn" onclick="openDemo()" data-i18n-title="Modo presentación" title="Modo presentación" data-i18n-aria="Modo presentación" aria-label="Modo presentación">⚙️</button>
   </div>
@@ -354,7 +355,7 @@ let aroLugar = null;
 function marcarLugar(l){
   cerrarLugarPanel();
   if(!map.getPane('ruta')) map.createPane('ruta').style.zIndex = 450;
-  aroLugar = L.circleMarker(l.ll, {pane:'ruta', radius:20, color:'#1D9E75', weight:3, fillColor:'#1D9E75', fillOpacity:.12, interactive:false}).addTo(map);
+  aroLugar = L.circleMarker(l.ll, {pane:'ruta', radius:20, color:'#E38AAB', weight:3, fillColor:'#F4B8CC', fillOpacity:.12, interactive:false}).addTo(map);
 }
 function cerrarLugarPanel(){ if(aroLugar){ map.removeLayer(aroLugar); aroLugar = null; } }
 /* "Ver tours": la lista muestra solo los que pasan por ese lugar */
@@ -446,7 +447,7 @@ function render(force){
           <h3>${esc(nombreTour(t.name))}</h3>
           <span class="meta"><span>📍 ${fmtDist(d)} · ${tn(cuadras(d), '{n} cuadra', '{n} cuadras')}</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
           <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${g.r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-700)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
-          <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${money(t.price)}</span></span>
+          <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${precio(t.price)}${enPesos(t.price) ? `<span class="ars">${enPesos(t.price)}</span>` : ''}</span></span>
         </span></button>`;
     }).join('') : `<div class="empty">${tr('No hay tours con este filtro ahora.<br>Probá con "Todos".')}</div>`;
   }
@@ -615,7 +616,7 @@ function renderDetail(force){
       <div class="dh-txt">
         <h2>${esc(nombreTour(t.name))}</h2>
         <div class="sub">${tr(c.n)} · ${esc(t.barrio)}</div>
-        <div class="d-res"><span>🕐 ${s.live ? tr('En vivo · termina en {t}', {t:fmtIn(s.endsIn)}) : `${hora(s.start)} · ${s.startsIn <= 0 ? tr('por salir') : tr('en {t}', {t:fmtIn(s.startsIn)})}`}</span><span>💰 ${money(t.price)}</span></div>
+        <div class="d-res"><span>🕐 ${s.live ? tr('En vivo · termina en {t}', {t:fmtIn(s.endsIn)}) : `${hora(s.start)} · ${s.startsIn <= 0 ? tr('por salir') : tr('en {t}', {t:fmtIn(s.startsIn)})}`}</span><span>💰 ${precio(t.price)}</span></div>
       </div>
     </div>
     ${status}
@@ -623,7 +624,7 @@ function renderDetail(force){
       <div class="fact"><small>${tr('Distancia')}</small><b>${fmtDist(d)}</b><i>${tn(cuadras(d), '{n} cuadra', '{n} cuadras')} · ${tr('{w} min a pie', {w})}</i></div>
       <div class="fact"><small>${s.live?tr('Empezó'):tr('Empieza')}</small><b>${hora(s.start)}</b><i>${s.live?tr('termina en {t}', {t:fmtIn(s.endsIn)}):s.startsIn<=0?tr('por salir'):tr('en {t}', {t:fmtIn(s.startsIn)})}</i></div>
       <div class="fact"><small>${tr('Duración')}</small><b>${fmtIn(t.dur)}</b><i>${tr('{km} km a pie', {km:dec1(t.len/1000)})}</i></div>
-      <div class="fact"><small>${tr('Precio')}</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${money(t.price)}</b><i>${t.price===0?tr('pagás lo que quieras'):`${tr('por persona')} · <a class="ref-mini" href="${AGUITBA.url}" target="_blank" rel="noopener" title="${esc(tr('Precio de referencia según los honorarios sugeridos por AGuiTBA'))}">${tr('ref. AGuiTBA')}</a>`}</i></div>
+      <div class="fact"><small>${tr('Precio')}</small><b style="color:${t.price===0?'var(--ok)':'inherit'}">${precio(t.price)}</b><i>${t.price===0?tr('pagás lo que quieras'):`${tr('por persona')} · <a class="ref-mini" href="${AGUITBA.url}" target="_blank" rel="noopener" title="${esc(tr('Precio de referencia según los honorarios sugeridos por AGuiTBA'))}">${tr('ref. AGuiTBA')}</a>${enPesos(t.price) ? `<span class="usd-nota">${enPesos(t.price)} · ${notaCotiz()}</span>` : ''}`}</i></div>
       <div class="fact"><small>${tr('Idiomas')}</small><b>${t.langs.join(' · ')}</b></div>
       ${t.privado ? `<div class="fact"><small>${tr('Grupo')}</small><b>${tr('{n} personas', {n:t.cupos})}</b><i>${tr('tour privado a pedido')}</i></div>`
         : `<div class="fact"><small>${tr('Cupos')}</small><b style="color:${libres<=3?'var(--live)':'inherit'}">${libres>0?tr('Quedan {n}', {n:libres}):tr('Completo')}</b><i>${tr('de {n} lugares', {n:t.cupos})}</i></div>`}
@@ -677,12 +678,12 @@ function reserve(id){
   const ov = document.createElement('div'); ov.className = 'overlay';
   const draw = ()=> ov.innerHTML = `<div class="modal">
       <h3>${tr('Reservar: {n}', {n:esc(nombreTour(t.name))})}</h3>
-      <p class="muted">${tr('Salida de las {h}', {h:hora(state(t).start)})} · ${esc(verLugar(t.meet[2]))} · ${money(t.price)}${t.price?' '+tr('c/u'):''}</p>
+      <p class="muted">${tr('Salida de las {h}', {h:hora(state(t).start)})} · ${esc(verLugar(t.meet[2]))} · ${precio(t.price)}${t.price?' '+tr('c/u'):''}</p>
       <h5>${tr('¿Cuántas personas?')}</h5>
       <div class="qty"><button data-q="-1" aria-label="${esc(tr('Una persona menos'))}">−</button><b aria-live="polite">${q}</b><button data-q="1" aria-label="${esc(tr('Una persona más'))}">+</button></div>
       <h5>${tr('Tu nombre (para que el guía te reconozca)')}</h5>
       <input class="inp" data-name maxlength="40" placeholder="${esc(tr('Opcional'))}" value="${esc(nombre)}" style="margin-bottom:14px">
-      ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al reservar', {t:money(t.price*q)})}</p>`:''}
+      ${t.price?`<p class="muted" style="text-align:center">${tr('Total: <b style="color:var(--ink)">{t}</b> · se paga al reservar', {t:conUsd(t.price*q)})}</p>`:''}
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>${tr('Cancelar')}</button><button class="btn btn-primary" style="flex:1" data-ok>${tr('Confirmar')}</button></div>
       <p class="muted" style="font-size:12px;margin:12px 0 0;text-align:center">${tr('Al confirmar aceptás los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.<br>Prototipo: la reserva queda guardada solo en este navegador.')} ${t.price ? tr('El pago es simulado.') : ''}</p>
     </div>`;
@@ -695,7 +696,7 @@ function reserve(id){
         <li><span class="k">📅</span><span>${esc(fechaLarga(state(t).start))}</span></li>
         <li><span class="k">📍</span><span>${esc(verLugar(t.meet[2]))}</span></li>
         <li><span class="k">👥</span><span>${tn(q, '{n} persona', '{n} personas')}${nombre.trim() ? ' · ' + esc(nombre.trim()) : ''}</span></li>
-        <li><span class="k">💳</span><span>${t.price ? tr('Pagás ahora: <b>{t}</b> (pago simulado)', {t:money(t.price*q)}) : tr('A la gorra (cada uno paga lo que quiere)')}</span></li>
+        <li><span class="k">💳</span><span>${t.price ? tr('Pagás ahora: <b>{t}</b> (pago simulado)', {t:conUsd(t.price*q)}) : tr('A la gorra (cada uno paga lo que quiere)')}</span></li>
       </ul>
       ${cajaPolitica(state(t).start, t.price*q, relojDe(t.ext))}
       <p class="aviso-conf">${tr('Si después no podés ir, cancelala desde "Mis tours" así el lugar queda libre.')}</p>
@@ -736,7 +737,7 @@ function checkAlerts(first){
   const c = cands[0]; if(!c) return;
   alerted.add(c.t.id + '@' + c.s.start);
   toast({ic:CATS[c.t.cat].e, title:tr('En {n} minutos empieza un tour cerca tuyo', {n:c.s.startsIn}),
-    text:tr('{tour}, a {c} ({d}). {p}.', {tour:nombreTour(c.t.name), c:tn(cuadras(c.d), '{n} cuadra', '{n} cuadras'), d:fmtDist(c.d), p:money(c.t.price)}),
+    text:tr('{tour}, a {c} ({d}). {p}.', {tour:nombreTour(c.t.name), c:tn(cuadras(c.d), '{n} cuadra', '{n} cuadras'), d:fmtDist(c.d), p:precio(c.t.price)}),
     action:{label:tr('Ver tour'), fn:()=>openDetail(c.t.id)}, ttl:12000});
 }
 
@@ -878,7 +879,29 @@ onLang(()=>{
   if(routeLayer && selected) drawRoute(selected);
   render(true);
   if(selected) renderDetail(true);
+  pintarMoneda();
 });
+
+/* ---------- selector de moneda: $ ARS / US$ (V 3.22) ---------- */
+function pintarMoneda(){
+  const m = MONEDA(), el = document.getElementById('monSel');
+  el.setAttribute('aria-label', tr('Moneda'));
+  el.innerHTML = [['ARS', '$ ARS'], ['USD', 'US$']].map(([c, t])=>
+    `<button class="${m === c ? 'on' : ''}" data-m="${c}" aria-pressed="${m === c}" title="${esc(c === 'USD' ? tr('Ver precios en dólares (referencia)') : tr('Ver precios en pesos'))}">${t}</button>`).join('');
+}
+document.getElementById('monSel').onclick = e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  // tocar la moneda que ya está elegida la cambia (en el celular se ve un solo botón)
+  setMoneda(b.classList.contains('on') ? (b.dataset.m === 'USD' ? 'ARS' : 'USD') : b.dataset.m);
+};
+onMoneda(()=>{
+  pintarMoneda();
+  if(!map) return;
+  render(true);
+  if(selected) renderDetail(true);
+});
+pintarMoneda();
+actualizarCotizacion();
 
 iniciarIdioma();
 badgeMis();

@@ -55,7 +55,7 @@ function capaLugares(map, {onClick, cerca} = {}){
   if(!map.getPane('lugaresIconos')){ map.createPane('lugaresIconos').style.zIndex = 580; } // debajo de los pines de tours (600)
   const renderer = L.canvas({padding:.3, pane:'lugares'});
   const clic = l => onClick && onClick(l);
-  const punto = (l, r, op) => L.circleMarker(l.ll, {renderer, pane:'lugares', radius:r, color:'#fff', weight:1.2, fillColor:'#1D9E75', fillOpacity:op, bubblingMouseEvents:false})
+  const punto = (l, r, op) => L.circleMarker(l.ll, {renderer, pane:'lugares', radius:r, color:'#fff', weight:1.2, fillColor:'#F4B8CC', fillOpacity:op, bubblingMouseEvents:false})
     .bindTooltip(esc(l.n), {direction:'top', offset:[0,-4]}).on('click', ()=>clic(l));
   const puntosDest = L.layerGroup(LUG.filter(l=>l.dest).map(l=>punto(l, 4.5, .8)));
   const puntosTodos = L.layerGroup(LUG.filter(l=>!l.dest).map(l=>punto(l, 3, .55)));
