@@ -6,10 +6,13 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.25';
+const VERSION = '3.26';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.26', f:'2026-10-14', items:[
+    'Más lugares de interés en todos los barrios: se suman todas las plazas, los centros culturales y las ferias de la Ciudad (Buenos Aires Data).',
+  ]},
   {v:'3.25', f:'2026-10-14', items:[
     'Mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte.',
   ]},

@@ -1710,3 +1710,19 @@ Object.assign(I18N.en, {
 Object.assign(I18N.pt, {
 "Mapa más limpio: con el mapa alejado no se muestran los lugares de interés; aparecen al acercarte.": "Mapa mais limpo: com o mapa afastado, os lugares de interesse não aparecem; eles surgem ao aproximar."
 });
+
+/* V 3.26 */
+Object.assign(I18N.en, {
+"Centros culturales": "Cultural centers",
+"Centro cultural": "Cultural center",
+"Ferias": "Fairs and markets",
+"Feria": "Fair or market",
+"Más lugares de interés en todos los barrios: se suman todas las plazas, los centros culturales y las ferias de la Ciudad (Buenos Aires Data).": "More places of interest in every neighborhood: all of the City's squares, cultural centers and fairs are added (Buenos Aires Data)."
+});
+Object.assign(I18N.pt, {
+"Centros culturales": "Centros culturais",
+"Centro cultural": "Centro cultural",
+"Ferias": "Feiras",
+"Feria": "Feira",
+"Más lugares de interés en todos los barrios: se suman todas las plazas, los centros culturales y las ferias de la Ciudad (Buenos Aires Data).": "Mais lugares de interesse em todos os bairros: foram adicionadas todas as praças, centros culturais e feiras da Cidade (Buenos Aires Data)."
+});

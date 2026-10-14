@@ -16,6 +16,8 @@ const CATS_LUGAR = {
   parque: {n:'Parques y plazas',       u:'Parque o plaza',              e:'🌳'},
   cafe:   {n:'Cafés notables',         u:'Café notable',                e:'☕'},
   tango:  {n:'Tango',                  u:'Milonga o tanguería',         e:'💃'},
+  cultura:{n:'Centros culturales',     u:'Centro cultural',             e:'🎨'},   // V 3.26
+  feria:  {n:'Ferias',                 u:'Feria',                       e:'🛍️'},   // V 3.26
 };
 const LUG = (typeof LUGARES === 'object' ? LUGARES : [])
   .map((a,i)=>({id:i, ll:[a[0], a[1]], n:a[2], cat:a[3], barrio:a[4], dir:a[5], dest:!!a[6]}));
