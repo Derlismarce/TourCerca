@@ -50,9 +50,12 @@ function estadoReserva(r){
   const T = now();                                  // tours de ejemplo: reloj de la app (acelerable)
   return T < r.start ? 'prox' : T < r.start + r.dur*MIN ? 'vivo' : 'hecho';
 }
-/* se muestran las vigentes y, hasta un día después, las terminadas o canceladas */
+/* se muestran las vigentes y, hasta un día después, las terminadas o canceladas
+   (las terminadas sin calificar quedan los 14 días que hay para dejar la reseña) */
+const DIAS_RESENA = 14;
+const puedeCalificar = r => estadoReserva(r) === 'hecho' && !Store.resenaDeReserva(r.id) && relojDe(r.ext) - (r.start + r.dur*MIN) < DIAS_RESENA * 864e5;
 const misReservasVisibles = () => misReservas()
-  .filter(r=> ['prox','vivo','cancelada'].includes(estadoReserva(r)) || Date.now() - (r.cancelada ? r.cancelada.ts : r.start + r.dur*MIN) < 864e5)
+  .filter(r=> ['prox','vivo','cancelada'].includes(estadoReserva(r)) || puedeCalificar(r) || Date.now() - (r.cancelada ? r.cancelada.ts : r.start + r.dur*MIN) < 864e5)
   .map(r=>({r, act:['prox','vivo'].includes(estadoReserva(r))}))
   .sort((a,b)=> (b.act - a.act) || (a.r.start - b.r.start))     // primero las vigentes
   .map(x=>x.r);
@@ -322,8 +325,11 @@ function reservaCardTurista(r){
     estado = `<div class="pst live"><span class="dot"></span> ${tr('¡Tu tour está en vivo!')}</div>`;
     acciones = findTour(r.tourId) ? `<button class="mini go" onclick="verTourReservado('${r.id}')">🔴 ${tr('Ver en el mapa')}</button>` : '';
   } else if(st === 'hecho'){
-    estado = `<div class="pst done">🎉 ${g ? tr('Tour realizado con {g}', {g:esc(g.n)}) : tr('Tour realizado')}</div>`;
-    acciones = `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
+    const v = Store.resenaDeReserva(r.id);
+    estado = `<div class="pst done">🎉 ${g ? tr('Tour realizado con {g}', {g:esc(g.n)}) : tr('Tour realizado')}</div>`
+      + (v ? `<div class="mi-resena">${estrellas(v.estrellas)} <span>${tr('Tu opinión. ¡Gracias!')}</span></div>` : '');
+    acciones = (puedeCalificar(r) ? `<button class="mini go" onclick="abrirResena('${r.id}')">⭐ ${tr('Calificar el tour')}</button>` : '')
+      + `<button class="mini danger" onclick="borrarMiReserva('${r.id}')">${tr('Borrar')}</button>`;
   } else if(st === 'yo'){
     const c = r.cancelada;
     estado = `<div class="pst off">↩️ ${tr('Cancelaste esta reserva')}${pag ? ` <span>· ${c.reembolso ? tr('se te devolvieron {d}', {d:money(c.reembolso)}) : tr('sin reembolso')}</span>` : ''}</div>`;
@@ -340,6 +346,92 @@ function reservaCardTurista(r){
     ${estado}
     ${pago ? `<div style="margin-top:8px">${pago}</div>` : ''}
     <div class="acts">${acciones}</div></div>`;
+}
+/* ---------- calificar un tour (V 3.24): estrellas, comentario y una foto opcional ---------- */
+function achicarFoto(file, max = 800){
+  return new Promise((res, rej)=>{
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', .7));          // ~100 KB: entra en el navegador
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); rej(); };
+    img.src = url;
+  });
+}
+function abrirResena(id){
+  const r = misReservas().find(x=>x.id === id); if(!r || !puedeCalificar(r)) return;
+  const g = GUIDES[r.g];
+  let n = 0, texto = '', foto = null;
+  const ov = document.createElement('div'); ov.className = 'overlay';
+  const draw = ()=>{
+    ov.innerHTML = `<div class="modal resena">
+      <h3>${tr('¿Cómo estuvo el tour?')}</h3>
+      <p class="muted">${CATS[r.cat].e} <b>${esc(nombreTour(r.name))}</b>${g ? ' · ' + tr('con {g}', {g:esc(g.n)}) : ''}</p>
+      <div class="rs-stars" role="radiogroup" aria-label="${esc(tr('Calificación'))}">
+        ${[1,2,3,4,5].map(i=>`<button role="radio" aria-checked="${i === n}" aria-label="${esc(tr(ESTRELLAS_TXT[i]))} (${i})" class="${i <= n ? 'on' : ''}" data-n="${i}">★</button>`).join('')}</div>
+      <p class="rs-lbl">${n ? tr(ESTRELLAS_TXT[n]) : tr('Tocá las estrellas')}</p>
+      <h5>${tr('Contanos en pocas palabras')} <small>${tr('(opcional)')}</small></h5>
+      <textarea class="inp" data-texto maxlength="300" rows="3" placeholder="${esc(tr('¿Qué te gustó? ¿Qué mejorarías?'))}">${esc(texto)}</textarea>
+      <div class="rs-cont"><span data-cont>${texto.length}</span>/300</div>
+      <div class="rs-foto">
+        ${foto ? `<span class="rs-ph"><img src="${foto}" alt="${esc(tr('Tu foto'))}"><button data-sinfoto aria-label="${esc(tr('Quitar foto'))}">✕</button></span>`
+               : `<label class="rs-add">📷<span>${tr('Sumar una foto')}</span><input type="file" accept="image/*" data-foto hidden></label>`}
+        <p>${tr('Opcional, 1 foto. No subas fotos donde se reconozca a otras personas sin su permiso.')}</p>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-ghost" style="flex:1;border:1.5px solid var(--line)" data-x>${tr('Ahora no')}</button>
+        <button class="btn btn-primary" style="flex:1" data-enviar ${n ? '' : 'disabled'}>${tr('Enviar reseña')}</button></div>
+      <p class="muted" style="font-size:12px;margin:10px 0 0;text-align:center">${tr('Tu reseña se publica con el nombre que diste al reservar. Prototipo: queda guardada solo en este navegador.')}</p>
+    </div>`;
+    const ta = ov.querySelector('[data-texto]');
+    ta.oninput = ()=>{ texto = ta.value; ov.querySelector('[data-cont]').textContent = texto.length; };
+    const fi = ov.querySelector('[data-foto]');
+    if(fi) fi.onchange = async ()=>{
+      const f = fi.files[0]; if(!f) return;
+      try { foto = await achicarFoto(f); } catch(e){ toast({ic:'⚠️', title:tr('No se pudo usar esa foto'), text:tr('Probá con otra imagen.')}); }
+      draw();
+    };
+  };
+  draw();
+  ov.onclick = e=>{
+    if(e.target === ov || e.target.hasAttribute('data-x')) return ov.remove();
+    const b = e.target.closest('[data-n]'); if(b){ n = +b.dataset.n; draw(); return; }
+    if(e.target.closest('[data-sinfoto]')){ foto = null; draw(); return; }
+    if(e.target.hasAttribute('data-enviar') && n){
+      const v = {resId:r.id, rid:r.rid, tourId:r.tourId, ext:!!r.ext, g:r.g, tour:r.name, salida:r.start,
+                 autor:(r.nombre || '').trim(), estrellas:n, texto:texto.trim().slice(0, 300), foto, lang:LANG};
+      let ok = Store.guardarResena(v);
+      if(!ok && foto){                                   // sin lugar para la foto: va sin foto
+        v.foto = null; ok = Store.guardarResena(v);
+        if(ok) toast({ic:'📷', title:tr('La foto no entró'), text:tr('Tu reseña se guardó sin la foto: el navegador no tiene más lugar.')});
+      }
+      ov.remove();
+      if(!ok) return toast({ic:'⚠️', title:tr('No se pudo guardar'), text:tr('Probá de nuevo más tarde.')});
+      toast({ic:'⭐', title:tr('¡Gracias por tu reseña!'), text:tr('Ayuda a otros turistas a elegir y a {g} a mejorar.', {g:g ? g.n.split(' ')[0] : tr('el guía')})});
+      badgeMis(); renderMis();
+      if(typeof render === 'function'){ render(true); if(selected) renderDetail(true); }
+    }
+  };
+  document.body.appendChild(ov);
+}
+/* tarjeta de una reseña en la ficha del tour */
+function cardResena(v){
+  return `<div class="rv">
+    <div class="rv-h"><b>${esc(v.autor || tr('Turista'))}</b>${estrellas(v.estrellas)}</div>
+    <small class="rv-f">${esc(diaLabel(v.ts))}</small>
+    ${v.texto ? `<p>${esc(v.texto)}</p>` : ''}
+    ${v.foto ? `<button class="rv-ph" onclick="this.classList.toggle('grande')" aria-label="${esc(tr('Agrandar foto'))}"><img src="${v.foto}" alt="${esc(tr('Foto de {a}', {a:v.autor || tr('un turista')}))}" loading="lazy"></button>` : ''}
+    <button class="rv-den" onclick="denunciarResena('${v.id}')">⚑ ${tr('Denunciar')}</button></div>`;
+}
+async function denunciarResena(id){
+  const ok = await confirmBox(tr('Denunciar reseña'), tr('¿Esta reseña es falsa, ofensiva o muestra datos o fotos de otras personas? La ocultamos para revisarla.'), tr('Denunciar'), true);
+  if(!ok) return;
+  Store.denunciarResena(id);
+  toast({ic:'⚑', title:tr('Gracias por avisar'), text:tr('La reseña quedó oculta hasta que la revisemos.')});
+  if(selected) renderDetail(true);
 }
 function verTourReservado(id){
   const r = misReservas().find(x=>x.id === id); if(!r) return;
@@ -383,7 +475,7 @@ function pedidoCardTurista(p){
       estado = `<div class="pst done">🎉 ${tr('Tour realizado con {g}', {g:esc(g.n)})}</div>`;
       acciones = `<button class="mini" onclick="openPedido(null, Store.get().pedidos['${p.id}'])">🔁 ${tr('Pedir otro igual')}</button>`;
     } else {
-      estado = `<div class="pst ok"><span class="avatar" style="background:${g.c}">${initials(g.n)}</span><span><b>${tr('{g} tomó tu tour', {g:esc(g.n)})}</b><br>⭐ ${g.r} · ${tr('te espera en el punto de salida')}</span></div>`;
+      estado = `<div class="pst ok"><span class="avatar" style="background:${g.c}">${initials(g.n)}</span><span><b>${tr('{g} tomó tu tour', {g:esc(g.n)})}</b><br>⭐ ${puntajeGuia(p.g).r} · ${tr('te espera en el punto de salida')}</span></div>`;
       acciones = `<button class="mini go" onclick="openDetail('${s.id}')">${tr('Ver detalle')}</button>`;
     }
   } else if(st === 'vencido'){

@@ -446,7 +446,7 @@ function render(force){
         <span class="body">
           <h3>${esc(nombreTour(t.name))}</h3>
           <span class="meta"><span>📍 ${fmtDist(d)} · ${tn(cuadras(d), '{n} cuadra', '{n} cuadras')}</span><span>⏱️ ${fmtIn(t.dur)}</span><span>🗣️ ${t.langs.join(' · ')}</span></span>
-          <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${g.r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-700)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
+          <span class="meta" style="margin-top:2px;color:var(--ink-3)">${tr('con {g}', {g:esc(g.n)})} · ⭐ ${puntajeGuia(t.g).r}${t.privado?` · <b style="color:var(--pink-700)">🙋 ${tr('tu tour a pedido')}</b>`:t.ext?` · <b style="color:var(--pink-700)">✨ ${tr('publicada por el guía')}</b>`:''}</span>
           <span class="row2">${whenTag(s)}<span class="price ${t.price===0?'free':''}">${precio(t.price)}${enPesos(t.price) ? `<span class="ars">${enPesos(t.price)}</span>` : ''}</span></span>
         </span></button>`;
     }).join('') : `<div class="empty">${tr('No hay tours con este filtro ahora.<br>Probá con "Todos".')}</div>`;
@@ -639,9 +639,10 @@ function renderDetail(force){
     <div class="d-sec"><h4>${tr('Recorrido')}</h4><ul class="timeline">${stops}</ul></div>
     <div class="d-sec"><h4>${tr('Tu guía')}</h4>
       <div class="guide"><span class="avatar" style="background:${g.c}">${initials(g.n)}</span>
-        <div><b>${esc(g.n)}</b><small>⭐ ${g.r} (${tr('{n} reseñas', {n:g.rv})}) · ${tr('{n} años guiando', {n:g.y})}</small><br><span class="badge-ok">✔ ${tr('Guía verificada')}</span></div></div>
+        <div><b>${esc(g.n)}</b><small>⭐ ${puntajeGuia(t.g).r} (${tr('{n} reseñas', {n:puntajeGuia(t.g).n})}) · ${tr('{n} años guiando', {n:g.y})}</small><br><span class="badge-ok">✔ ${tr('Guía verificada')}</span></div></div>
       <p style="margin-top:8px">${esc(tr(g.bio))}</p>
     </div>
+    ${seccionResenas(t)}
     ${!s.live && !t.privado ? `<div class="d-sec"><h4>${tr('Cancelación')}</h4>${cajaPolitica(s.start, t.price, relojDe(t.ext))}</div>` : ''}
     ${(()=>{ const mr = !s.live && !t.privado && reservaDe(t.id, s.start); return mr ? `<div class="status ok">🎟️ <span>${tn(mr.qty, 'Tenés {n} lugar reservado en esta salida.', 'Tenés {n} lugares reservados en esta salida.')}
       <button class="mini danger" style="margin-left:6px" onclick="cancelarMiReserva('${mr.id}')">${tr('Cancelar reserva')}</button></span></div>` : ''; })()}
@@ -652,6 +653,16 @@ function renderDetail(force){
         : t.privado ? `<button class="btn btn-primary" onclick="openMisPedidos()">🙋 ${tr('Ver mi pedido')}</button>`
         : `<button class="btn btn-primary" ${libres<=0?'disabled style="opacity:.5"':''} onclick="reserve('${t.id}')">${libres>0?tr('Reservar lugar'):tr('Completo')}</button>`}
     </div>`;
+}
+/* opiniones de los turistas sobre este tour (V 3.24) */
+function seccionResenas(t){
+  if(t.privado) return '';
+  const rs = Store.resenasDe(t.id);
+  if(!rs.length) return `<div class="d-sec"><h4>${tr('Opiniones')}</h4><p class="muted" style="margin:0">${tr('Todavía no hay opiniones de este tour. Si lo hacés, lo podés calificar desde "Mis tours".')}</p></div>`;
+  const prom = rs.reduce((a,v)=>a + v.estrellas, 0) / rs.length;
+  return `<div class="d-sec"><h4>${tr('Opiniones')}</h4>
+    <div class="rv-prom"><b>${(Math.round(prom * 10) / 10).toLocaleString(LOC(), {minimumFractionDigits:1})}</b>${estrellas(prom)}<span>${tn(rs.length, '{n} opinión de este tour', '{n} opiniones de este tour')}</span></div>
+    ${rs.slice(0, 5).map(cardResena).join('')}</div>`;
 }
 function toggleFollow(){
   follow = !follow;

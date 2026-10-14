@@ -6,10 +6,15 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.23';
+const VERSION = '3.24';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.24', f:'2026-10-14', items:[
+    'Reseñas: después del tour, el turista lo califica desde "Mis tours" con 1 a 5 estrellas, un comentario breve y una foto opcional.',
+    'La ficha de cada tour muestra sus opiniones, y el puntaje del guía suma las reseñas nuevas.',
+    'Cada reseña se puede denunciar; queda oculta hasta revisarla.',
+  ]},
   {v:'3.23', f:'2026-10-14', items:[
     'Portada: la primera frase queda más tiempo en pantalla para que se pueda leer.',
   ]},
@@ -652,6 +657,17 @@ function confirmBox(title, text, okLabel, danger){
     };
     document.body.appendChild(ov);
   });
+}
+
+/* ---------- reseñas (V 3.24) ---------- */
+const ESTRELLAS_TXT = ['', 'Malo', 'Regular', 'Bueno', 'Muy bueno', 'Excelente'];
+const estrellas = n => `<span class="estrellas" role="img" aria-label="${esc(tr('{n} de 5 estrellas', {n}))}">${'★'.repeat(Math.round(n))}<span class="off">${'★'.repeat(5 - Math.round(n))}</span></span>`;
+/* puntaje del guía: el de ejemplo más las reseñas que se dejaron en la app */
+function puntajeGuia(id){
+  const g = GUIDES[id], rs = typeof Store === 'object' ? Store.resenasGuia(id) : [];
+  const n = g.rv + rs.length;
+  const r = n ? (g.r * g.rv + rs.reduce((a,v)=>a + v.estrellas, 0)) / n : g.r;
+  return {r:(Math.round(r * 10) / 10).toLocaleString(LOC(), {minimumFractionDigits:1}), n};
 }
 
 /* ---------- versión debajo del logo + novedades ---------- */

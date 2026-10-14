@@ -215,7 +215,7 @@ function vLogin(){
     </div>
     <div class="help" style="text-align:center;margin-top:18px">${tr('Prototipo: elegí con qué guía de ejemplo querés entrar. En la versión final cada guía va a tener su propia cuenta.')}</div>
     <div class="gcards">${Object.entries(GUIDES).map(([id,g])=>`
-      <button class="gcard" data-g="${id}">${avatar(g)}<span><b>${esc(g.n)}</b><small>⭐ ${g.r} · ${tn(TOURS.filter(t=>t.g===id).length, '{n} tour', '{n} tours')}</small></span></button>`).join('')}
+      <button class="gcard" data-g="${id}">${avatar(g)}<span><b>${esc(g.n)}</b><small>⭐ ${puntajeGuia(id).r} · ${tn(TOURS.filter(t=>t.g===id).length, '{n} tour', '{n} tours')}</small></span></button>`).join('')}
     </div></div>`;
   view.onclick = e=>{
     const b = e.target.closest('[data-g]'); if(!b) return;
@@ -306,7 +306,7 @@ function vDash(){
     <div class="g-hello">${avatar(g)}<div>
       <h1>${tr('Hola, {n}', {n:esc(g.n.split(' ')[0])})} 👋</h1>
       <p>${esc(tr(g.bio))}</p>
-      <div class="stats"><span class="stat">📅 ${tn(prox.length, '{n} salida programada', '{n} salidas programadas')}</span><span class="stat">👥 ${tn(reservas, '{n} reserva', '{n} reservas')}</span><span class="stat">🙋 ${tn(nPed, '{n} pedido cerca', '{n} pedidos cerca')}</span><span class="stat">⭐ ${g.r} (${g.rv})</span></div>
+      <div class="stats"><span class="stat">📅 ${tn(prox.length, '{n} salida programada', '{n} salidas programadas')}</span><span class="stat">👥 ${tn(reservas, '{n} reserva', '{n} reservas')}</span><span class="stat">🙋 ${tn(nPed, '{n} pedido cerca', '{n} pedidos cerca')}</span><span class="stat">⭐ ${puntajeGuia(guia).r} (${puntajeGuia(guia).n})</span></div>
     </div></div>
 
     ${live ? `<div class="livebar"><span class="onair"><span class="dot"></span> ${tr('EN VIVO')}</span>

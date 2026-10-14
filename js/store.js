@@ -15,7 +15,7 @@
 const Store = (()=>{
   const KEY = 'tourcerca.datos.v2';
   const DATA_REV = ((I18N_REV << 16) | GEO_REV) >>> 0;     // revisión de datos (traducciones + límites)
-  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], cancelaciones:[], pedidos:{}, incidentes:[]});
+  const empty = ()=>({tours:{}, salidas:{}, live:{}, reservas:[], cancelaciones:[], pedidos:{}, incidentes:[], resenas:[]});
   const subs = [];
   let cache = load();
 
@@ -25,8 +25,10 @@ const Store = (()=>{
   }
   function save(){
     cache.rev = DATA_REV;
-    try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch(e){}
+    let ok = true;
+    try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch(e){ ok = false; }   // false: el navegador se quedó sin lugar
     subs.forEach(f=>f());
+    return ok;
   }
   // cambios hechos en otra pestaña
   window.addEventListener('storage', e=>{
@@ -128,6 +130,19 @@ const Store = (()=>{
     /* incidentes que registra el guía durante un tour */
     registrarIncidente(i){ i.id = uid('i_'); i.ts = Date.now(); cache.incidentes.push(i); save(); return i; },
     incidentesDe: g=>cache.incidentes.filter(i=>i.g === g).sort((a,b)=>b.ts - a.ts),
+
+    /* reseñas de los turistas (V 3.24): una por reserva, después de hecho el tour */
+    guardarResena(v){
+      v.id = uid('v_'); v.ts = Date.now();
+      cache.resenas.push(v);
+      if(save()) return v;
+      cache.resenas.pop(); save();                      // no entró (por ejemplo, la foto): se deshace
+      return null;
+    },
+    resenaDeReserva: resId=>cache.resenas.find(v=>v.resId === resId),
+    resenasDe: tourId=>cache.resenas.filter(v=>String(v.tourId) === String(tourId) && !v.oculta).sort((a,b)=>b.ts - a.ts),
+    resenasGuia: g=>cache.resenas.filter(v=>v.g === g && !v.oculta),
+    denunciarResena(id){ const v = cache.resenas.find(x=>x.id === id); if(v){ v.oculta = true; v.denunciadaTs = Date.now(); save(); } },
 
     borrarTodo(){ cache = empty(); save(); },
   };
