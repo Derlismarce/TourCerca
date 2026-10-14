@@ -1548,3 +1548,31 @@ Object.assign(I18N.en, {
 Object.assign(I18N.pt, {
 "En el celular, los íconos de la portada quedan más arriba.": "No celular, os ícones da página inicial ficam mais acima."
 });
+
+/* V 3.21 */
+Object.assign(I18N.en, {
+"Caballito: del Parque Centenario al Parque Rivadavia": "Caballito: from Parque Centenario to Parque Rivadavia",
+"Barrancas y casonas de Belgrano": "Belgrano's Barrancas and mansions",
+"El Abasto de Gardel": "Gardel's Abasto",
+"El corazón de la ciudad: el Parque Centenario, el Hospital Durand, un café notable y la feria de libros del Parque Rivadavia.": "The heart of the city: Parque Centenario, Durand Hospital, a historic café and the book fair at Parque Rivadavia.",
+"Las Barrancas de Belgrano, la casa de Sarmiento, el Museo Larreta y sus jardines, y un té en Casa Watson.": "The Barrancas de Belgrano, Sarmiento's house, the Larreta Museum and its gardens, and tea at Casa Watson.",
+"El viejo Mercado del Abasto, la esquina y la casa de Carlos Gardel, y una escuela de tango para dar los primeros pasos.": "The old Abasto Market, Carlos Gardel's corner and house, and a tango school to take your first steps.",
+"Vecina de Caballito y guía matriculada. Parques, cafés y la historia del centro geográfico de la ciudad.": "Caballito local and licensed guide. Parks, cafés and the history of the city's geographic center.",
+"Guía de Belgrano. Barrancas, casonas y museos del barrio que fue capital por unos días.": "Belgrano guide. Barrancas, mansions and museums of the neighborhood that was the capital for a few days.",
+"Guía y milonguera. El Abasto, Gardel y el tango que nació en sus calles.": "Guide and milonga dancer. The Abasto, Gardel and the tango born in its streets.",
+"Tres guías nuevas: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) y Florencia Enrique (Abasto), cada una con un tour.": "Three new guides: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) and Florencia Enrique (Abasto), each with a tour.",
+"El cuadro \"Precios justos para los guías\" pasa de la portada al panel del guía.": "The \"Fair prices for guides\" box moves from the home page to the guide panel."
+});
+Object.assign(I18N.pt, {
+"Caballito: del Parque Centenario al Parque Rivadavia": "Caballito: do Parque Centenario ao Parque Rivadavia",
+"Barrancas y casonas de Belgrano": "Barrancas e casarões de Belgrano",
+"El Abasto de Gardel": "O Abasto de Gardel",
+"El corazón de la ciudad: el Parque Centenario, el Hospital Durand, un café notable y la feria de libros del Parque Rivadavia.": "O coração da cidade: o Parque Centenario, o Hospital Durand, um café histórico e a feira de livros do Parque Rivadavia.",
+"Las Barrancas de Belgrano, la casa de Sarmiento, el Museo Larreta y sus jardines, y un té en Casa Watson.": "As Barrancas de Belgrano, a casa de Sarmiento, o Museu Larreta e seus jardins, e um chá na Casa Watson.",
+"El viejo Mercado del Abasto, la esquina y la casa de Carlos Gardel, y una escuela de tango para dar los primeros pasos.": "O antigo Mercado do Abasto, a esquina e a casa de Carlos Gardel, e uma escola de tango para dar os primeiros passos.",
+"Vecina de Caballito y guía matriculada. Parques, cafés y la historia del centro geográfico de la ciudad.": "Moradora de Caballito e guia credenciada. Parques, cafés e a história do centro geográfico da cidade.",
+"Guía de Belgrano. Barrancas, casonas y museos del barrio que fue capital por unos días.": "Guia de Belgrano. Barrancas, casarões e museus do bairro que foi capital por alguns dias.",
+"Guía y milonguera. El Abasto, Gardel y el tango que nació en sus calles.": "Guia e milongueira. O Abasto, Gardel e o tango que nasceu em suas ruas.",
+"Tres guías nuevas: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) y Florencia Enrique (Abasto), cada una con un tour.": "Três novas guias: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) e Florencia Enrique (Abasto), cada uma com um tour.",
+"El cuadro \"Precios justos para los guías\" pasa de la portada al panel del guía.": "O quadro \"Preços justos para os guias\" sai da página inicial e vai para o painel do guia."
+});

@@ -97,18 +97,6 @@
     </div>
   </section>
 
-  <section class="block" id="precios">
-    <div class="ref-precios">
-      <div class="rp-ic">🤝</div>
-      <div class="rp-txt">
-        <h3 data-i18n="Precios justos para los guías">Precios justos para los guías</h3>
-        <p id="refPreciosTxt"></p>
-        <a class="rp-link" id="refPreciosLink" target="_blank" rel="noopener"></a>
-        <small id="refPreciosNota"></small>
-      </div>
-    </div>
-  </section>
-
   <div class="quote" id="guias">
     <div><p data-i18n="¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.">¿Sos guía de turismo? Mostrá tus salidas a quien está a pocas cuadras.</p><a class="btn" href="guia.html" data-i18n="Entrar al panel del guía">Entrar al panel del guía</a></div>
   </div>
@@ -243,9 +231,6 @@ function buildLanding(){
     return `<button class="barrio" style="background:${b.bg}" onclick="startApp('demo','${n}')"><span class="em">${b.e}</span><h3>${n}</h3>${b.alias ? `<small class="alias">${esc(tr(b.alias))}</small>` : ''}<span>${tn(c, '{n} tour de guías', '{n} tours de guías')}</span></button>`;
   }).join('') + `<button class="barrio mas" onclick="startApp('demo')"><span class="em">🗺️</span><h3>${tr('Toda la Ciudad')}</h3><span>${tr('{n} barrios', {n:BARRIOS_CABA.length})}</span></button>`;
   document.getElementById('askRules').textContent = tr('👥 Desde {p} personas · ⏱️ Desde 1 hora · 💰 Precio de referencia AGuiTBA', {p:PEDIDO.minPersonas});
-  document.getElementById('refPreciosTxt').innerHTML = tr('Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.', {f:fechaVigencia()});
-  const rl = document.getElementById('refPreciosLink'); rl.href = AGUITBA.url; rl.textContent = tr('Ver los honorarios sugeridos') + ' ↗';
-  document.getElementById('refPreciosNota').textContent = tr('AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.');
   document.getElementById('copy').textContent = tr(COPYRIGHT) + SEP_FINO;
   document.title = tr('TourCerca · Tours cerca tuyo, ahora');
 }

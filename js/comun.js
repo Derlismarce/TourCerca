@@ -6,10 +6,14 @@
    ===================================================================== */
 
 /* ---------- versión ---------- */
-const VERSION = '3.20';
+const VERSION = '3.21';
 const COPYRIGHT = '© 2026 Derlis Marcelo Fernandez Rivas · Todos los derechos reservados';
 const SEP_FINO = '⁠​‌​​​‌​​​‌​​‌‌​‌​‌​​​‌‌​​‌​‌​​‌​⁠';     // separador fino del pie (no se ve)
 const CHANGELOG = [
+  {v:'3.21', f:'2026-10-14', items:[
+    'Tres guías nuevas: Rocío Carisimo (Caballito), Deisy Morales (Belgrano) y Florencia Enrique (Abasto), cada una con un tour.',
+    'El cuadro "Precios justos para los guías" pasa de la portada al panel del guía.',
+  ]},
   {v:'3.20', f:'2026-10-08', items:[
     'En el celular, los íconos de la portada quedan más arriba.',
   ]},
@@ -171,6 +175,9 @@ const GUIDES = {
   julian:{n:'Julián Morales', c:'#6BAF5C', r:4.6, rv:77, y:3, bio:'Fanático de la tele y el cine argentino. Chimentos garantizados.'},
   paula:{n:'Paula Giménez', c:'#C98B4F', r:4.9, rv:120, y:9, bio:'Bailarina de tango y guía. Noches porteñas auténticas.'},
   nico:{n:'Nicolás Herrera', c:'#3FA1C9', r:4.8, rv:95, y:5, bio:'Guía bilingüe de La Boca, hincha de toda la vida.'},
+  rocio:{n:'Rocío Carisimo', c:'#E8834E', r:4.8, rv:54, y:4, bio:'Vecina de Caballito y guía matriculada. Parques, cafés y la historia del centro geográfico de la ciudad.'},
+  deisy:{n:'Deisy Morales', c:'#9B6FD0', r:4.9, rv:83, y:6, bio:'Guía de Belgrano. Barrancas, casonas y museos del barrio que fue capital por unos días.'},
+  flor:{n:'Florencia Enrique', c:'#D2577F', r:4.9, rv:71, y:5, bio:'Guía y milonguera. El Abasto, Gardel y el tango que nació en sus calles.'},
 };
 const TOURS = [
   {id:1, name:'San Telmo colonial', cat:'historico', barrio:'San Telmo', g:'lucia', price:18000, first:25, every:240, dur:120, cupos:15, ocup:9, langs:['ES','EN'],
@@ -221,6 +228,15 @@ const TOURS = [
   {id:16, name:'Puerto Madero al atardecer', cat:'foto', barrio:'Puerto Madero', g:'sofia', price:18000, first:110, every:300, dur:90, cupos:10, ocup:3, langs:['ES','EN'],
    desc:'El Puente de la Mujer, la Fragata Sarmiento y la Costanera Sur, con la mejor luz del día para fotos.',
    route:[[-34.6078,-58.3650,'Puente de la Mujer'],[-34.6070,-58.3654,'Fragata Sarmiento'],[-34.6110,-58.3625,'Dique 3'],[-34.6135,-58.3605,'Costanera Sur']]},
+  {id:17, name:'Caballito: del Parque Centenario al Parque Rivadavia', cat:'historico', barrio:'Caballito', g:'rocio', price:15000, first:30, every:240, dur:90, cupos:15, ocup:6, langs:['ES','EN'],
+   desc:'El corazón de la ciudad: el Parque Centenario, el Hospital Durand, un café notable y la feria de libros del Parque Rivadavia.',
+   route:[[-34.6067,-58.4353,'Parque Centenario'],[-34.6102,-58.4384,'Hospital Durand'],[-34.6174,-58.4347,'Café El Coleccionista'],[-34.6178,-58.4331,'Parque Rivadavia']]},
+  {id:18, name:'Barrancas y casonas de Belgrano', cat:'arquitectura', barrio:'Belgrano', g:'deisy', price:20000, first:-25, every:240, dur:120, cupos:12, ocup:5, langs:['ES','PT'],
+   desc:'Las Barrancas de Belgrano, la casa de Sarmiento, el Museo Larreta y sus jardines, y un té en Casa Watson.',
+   route:[[-34.5602,-58.4492,'Barrancas de Belgrano'],[-34.5612,-58.4545,'Museo Histórico Sarmiento'],[-34.5611,-58.4553,'Museo Larreta'],[-34.5618,-58.4554,'Casa Watson']]},
+  {id:19, name:'El Abasto de Gardel', cat:'tematico', barrio:'Balvanera', g:'flor', price:18000, first:80, every:300, dur:90, cupos:16, ocup:9, langs:['ES','EN'],
+   desc:'El viejo Mercado del Abasto, la esquina y la casa de Carlos Gardel, y una escuela de tango para dar los primeros pasos.',
+   route:[[-34.6040,-58.4107,'Mercado del Abasto'],[-34.6033,-58.4100,'Esquina Carlos Gardel'],[-34.6028,-58.4099,'Escuela de tango'],[-34.6016,-58.4080,'Casa de Carlos Gardel']]},
 ];
 /* barrios destacados en la portada (los nombres son los oficiales; ver js/barrios.js con los 48) */
 const BARRIOS = {

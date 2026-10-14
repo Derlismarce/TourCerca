@@ -280,6 +280,18 @@ function salCard(s){
       </div>
     </div></div>`;
 }
+/* referencia de precios AGuiTBA: desde la V 3.21 solo la ve el guía (antes estaba en la portada) */
+function cajaPreciosJustos(){
+  return `<section class="g-sec"><div class="ref-precios">
+    <div class="rp-ic">🤝</div>
+    <div class="rp-txt">
+      <h3>${tr('Precios justos para los guías')}</h3>
+      <p>${tr('Los precios de TourCerca toman como referencia los <b>honorarios sugeridos por AGuiTBA</b>, la Asociación de Guías de Turismo de Buenos Aires, vigentes desde el {f}. Así, cada tour paga al guía lo que corresponde por su trabajo.', {f:fechaVigencia()})}</p>
+      <a class="rp-link" href="${AGUITBA.url}" target="_blank" rel="noopener">${tr('Ver los honorarios sugeridos')} ↗</a>
+      <small>${tr('AGuiTBA no forma parte de TourCerca. Los honorarios pueden cambiar; los precios se actualizan con cada nueva publicación.')}</small>
+    </div>
+  </div></section>`;
+}
 function vDash(){
   if(!guia) return vLogin();
   curView = 'dash';
@@ -326,6 +338,8 @@ function vDash(){
         <button class="tcard new" data-act="new"><span>＋</span>${tr('Crear un tour nuevo')}</button>
       </div>
     </section>
+
+    ${cajaPreciosJustos()}
 
     ${incs.length ? `<section class="g-sec"><h2>📝 ${tr('Incidentes registrados')} <small>${incs.length}</small></h2>
       ${incs.slice(0,5).map(i=>`<div class="inc"><b>${esc(tr(i.tipo))}</b> · ${diaLabel(i.ts)} ${hora(i.ts)} · ${esc(nombreTour(i.salida))}

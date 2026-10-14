@@ -11,6 +11,7 @@ Proyecto final de la Licenciatura en Turismo. **Prototipo:** los guías, los tou
 
 ## Versiones
 
+- **V 3.21**: tres guías nuevas (Rocío Carisimo en Caballito, Deisy Morales en Belgrano y Florencia Enrique en el Abasto), cada una con un tour; el cuadro "Precios justos para los guías" pasa de la portada al panel del guía.
 - **V 3.20**: en el celular, los íconos de la portada quedan más arriba.
 - **V 3.19**: portada más ágil: la frase en negro se va antes y todo aparece en unos 3 segundos.
 - **V 3.18**: portada a pantalla completa con animación: aparece "No busques qué hacer en Buenos Aires.", se desvanece y llega "Descubrí qué podés hacer cerca tuyo, ahora.", después los botones; los íconos pasan al fondo rosa sobre la silueta de la ciudad.
